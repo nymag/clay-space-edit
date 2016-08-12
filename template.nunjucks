@@ -1,0 +1,26 @@
+{% if locals.edit %}
+<div data-uri="{{ _ref or _self }}" class="clay-space {{ 'clay-space-edit' if locals.edit }}">
+
+  {# scripts #}
+  <script>
+  {{ ('node_modules/clay-space/dist/clay-space-edit.js')|includeFile }}
+  </script>
+
+
+  {# Browse Space Button #}
+  <template class="browse-space">
+    <button type="button" class="space-browse">
+      ^^^
+    </button>
+  </template>
+
+  {# Create Space Button #}
+  <template class="create-space">
+    <button type="button" class="space-create">
+      &amp;&amp;&amp;
+    </button>
+  </template>
+
+
+</div>
+{% endif %}
