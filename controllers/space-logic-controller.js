@@ -38,7 +38,7 @@ var proto = SpaceLogicController.prototype;
  * Launch a filterable list using the BrowseSpace controller
  */
 proto.browseSpace = function() {
-  SpaceSettings(this.options, this.parent);
+  SpaceSettings(this.parent);
 }
 
 /**
