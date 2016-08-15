@@ -1,5 +1,6 @@
 var dom = require('@nymag/dom'),
-  SpaceSettings = require('./space-settings-controller');
+  SpaceSettings = require('./space-settings-controller'),
+  tpl = window.kiln.services.tpl;
 
 /**
  * [SpaceLogicController description]
@@ -24,7 +25,8 @@ function SpaceLogicController(el, options, parent) {
   this.parent = parent;
 
   // Add the buttons necessary
-  this.addBrowseSpaceButton();
+  this.addBrowseSpaceButton()
+    .removeDefaultButtons();
 }
 
 /**
@@ -44,14 +46,21 @@ proto.browseSpace = function() {
  */
 proto.addBrowseSpaceButton = function() {
   var parentButton = dom.find(this.el, '.selected-info-parent'),
-    browseButton = dom.create(
-      `<button type="button" class="browse-space-button">
-        <svg width="18" height="11" viewBox="0 0 18 11" xmlns="http://www.w3.org/2000/svg"><path d="M12.8 4.267H0V6.4h12.8V4.267zM0 0v2.133h17.067V0H0zm0 10.667h8.533V8.533H0v2.134z" fill="#4A4A4A" fill-rule="evenodd"/></svg>
-      </button>`
-    );
+    browseSpaceButton = tpl.get('.browse-space'),
+    browseButton;
 
-  dom.insertAfter(parentButton, browseButton);
+  // Insert the button
+  dom.insertAfter(parentButton, browseSpaceButton);
+
+  browseButton = dom.find(this.el, '.space-browse');
   browseButton.addEventListener('click', this.browseSpace.bind(this));
+
+  return this;
+}
+
+proto.removeDefaultButtons = function() {
+  var settingsButton = dom.find(this.el, '.selected-action-settings');
+  settingsButton.classList.add('kiln-hide');
 }
 
 module.exports = function(el, options, parent) {

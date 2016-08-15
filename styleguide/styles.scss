@@ -1,3 +1,6 @@
+$UI_PRIMARY: #B4A5BC;
+$UI_BUTTON: #694C79;
+
 .clay-space.selected-parent,
 .space-logic.selected-parent {
   padding-top: 10px;
@@ -11,7 +14,22 @@
   display: block;
 }
 
-
 .clay-space.clay-space-edit > .space-logic-active ~ .space-logic-active {
   display: none;
+}
+
+.space-button {
+  border-left: 1px solid $UI_PRIMARY;
+  background: 0 0;
+  border: none;
+  cursor: pointer;
+  margin: 0;
+  outline: 0;
+  color: #694C79;
+  padding: 6px 8px;
+
+  & svg {
+    fill: $UI_BUTTON;
+    transition: 150ms fill ease-out
+  }
 }

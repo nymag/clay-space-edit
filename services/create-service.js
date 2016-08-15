@@ -27,24 +27,6 @@ function newComponentInLogic(componentName) {
 }
 
 /**
- * add a new component to a parent's list
- * @param {object} args
- * @param {Element} pane
- * @param {string} [prevRef]
- * @returns {Promise}
- */
-function addToList(args, pane, prevRef) {
-  // if we're adding AFTER a component, add that to the arguments
-  _.assign(args, { prevRef: prevRef });
-
-  return edit.addToParentList(args)
-    .then(function(newEl) {
-      dom.find(pane, '.component-list-inner').appendChild(newEl);
-      return newEl;
-    });
-}
-
-/**
  * [wrapInLogic description]
  * @param  {[type]} clickedComponent [description]
  * @param  {[type]} options          [description]
@@ -75,15 +57,15 @@ function addInSpace(options, parent, logicComponent) {
         args = {
           ref: newRef,
           parentField: parent.path,
-          parentRef: parent.ref
+          parentRef: parent.ref,
+          prevRef: 'localhost/daily/intelligencer/components/top-stories-desktop/instances/di'
         };
 
-      return addToList(args, parent.listEl, options.ref)
+      return edit.addToParentList(args)
         .then(function(newEl) {
           return render.addComponentsHandlers(newEl).then(function() {
-            focus.unfocus();
-            select.unselect();
-            progress.done('save');
+            // focus.unfocus();
+            // select.unselect();
             return select.select(newEl);
           });
         });
@@ -91,10 +73,18 @@ function addInSpace(options, parent, logicComponent) {
 }
 
 function createSpace(options, parent, e) {
+  if (!confirmMakeSpace()) {
+    return null;
+  }
+
   var parentEl = dom.closest(e.target, '[data-uri]');
 
-  wrapInLogic(parentEl, options, parent)
+  return wrapInLogic(parentEl, options, parent)
     .then(addInSpace.bind(null, options, parent))
+}
+
+function confirmMakeSpace() {
+  return window.confirm('Do you really want to make a new Space?');
 }
 
 module.exports.createSpace = createSpace;
