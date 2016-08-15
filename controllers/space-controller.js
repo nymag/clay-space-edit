@@ -13,7 +13,6 @@ function makeComponentListAttr(parent) {
   });
 }
 
-
 function SpaceController(el, options, parent) {
   this.el = el;
   this.options = options;
@@ -30,8 +29,10 @@ var proto = SpaceController.prototype;
 proto.init = function() {
   var activeChild = dom.find(this.el, '.space-logic-active');
 
-  if (!activeChild && this.childrenComponents.length) {
-    this.childrenComponents[this.childrenComponents.length - 1].classList.add('space-logic-active');
+  if (activeChild) {
+    activeChild.classList.add('space-logic-editing');
+  } else if (!activeChild && this.childrenComponents.length) {
+    this.childrenComponents[this.childrenComponents.length - 1].classList.add('space-logic-active', 'space-logic-editing');
   }
 }
 
