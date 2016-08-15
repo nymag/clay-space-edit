@@ -18,6 +18,16 @@ $UI_BUTTON: #694C79;
   display: none;
 }
 
+// Bold item in filtered list
+.filtered-item-title-bold {
+  font-weight: bold;
+}
+
+.filtered-item-title-sub {
+  font-size: 10px;
+  font-style: italic;
+}
+
 .space-button {
   border-left: 1px solid $UI_PRIMARY;
   background: 0 0;

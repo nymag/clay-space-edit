@@ -131,13 +131,30 @@ proto.makeList = function(components) {
   return _.map(components, function(item) {
     var childComponent = dom.find(item, '[data-uri]'),
       componentType = references.getComponentNameFromReference(childComponent.getAttribute('data-uri')),
-      componentName = label(componentType);
+      componentTitle = label(componentType),
+      tags = findTags(item);
+
+    if (item.classList.contains(editingClass)) {
+      componentTitle = '<span class="filtered-item-title-bold">' + componentTitle + '</span>'
+    }
+
+    componentTitle = tags ? componentTitle + tags : componentTitle;
 
     return {
-      title: componentName,
+      title: componentTitle,
       id: item.getAttribute('data-uri')
     }
   });
+}
+
+function findTags(logic) {
+  var tags = logic.getAttribute('data-logic-tags');
+
+  if (tags) {
+    return '<div class="filtered-item-title-sub">Tags: '+ tags + '</div>';
+  } else {
+    return '';
+  }
 }
 
 /**
