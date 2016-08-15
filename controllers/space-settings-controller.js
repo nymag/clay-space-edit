@@ -178,14 +178,12 @@ proto.reorder = function(id, newIndex, oldIndex) {
     .then(function(newHtml) {
       var logics = dom.findAll(newHtml, '.space-logic'),
         newHtmls = _.map(logics, function(logicComponent) {
-          var query = '&currentUrl=' + encodeURIComponent(window.location.href);
+          var query = { 'currentUrl': window.location.href };
 
           return edit.getHTMLWithQuery(logicComponent.getAttribute('data-uri'), query);
         });
 
       newHtmls.unshift(edit.getHTML(this.parent.ref));
-
-
 
       Promise.all(newHtmls)
         .then(this.renderUpdatedSpace.bind(this))
