@@ -6,12 +6,14 @@ var dom = require('@nymag/dom'),
   pane = kilnServices.pane,
   render = kilnServices.render,
   focus = kilnServices.focus,
+  select = kilnServices.select,
   forms = kilnServices.forms,
   label = kilnServices.label,
   edit = kilnServices.edit,
   removeService = require('../services/remove-service'),
   filterableList = kilnServices['filterable-list'],
-  activeClass = 'space-logic-active';
+  activeClass = 'space-logic-active',
+  editingClass = 'space-logic-editing';
 
 /**
  * [getUpdatedHtml description]
@@ -25,13 +27,10 @@ function getUpdatedHtml(uri, query) {
 
 /**
  * [BrowseController description]
- * @param {[type]} options [description]
  * @param {[type]} parent  [description]
  * @param {[type]} e       [description]
  */
-function BrowseController(options, parent) {
-  this.options = options;
-
+function BrowseController(parent) {
   /**
    * The parent Clay Space component data
    * @type {Object}
@@ -172,7 +171,14 @@ proto.reorder = function(id, newIndex, oldIndex) {
 
 
       Promise.all(newHtmls)
-        .then(this.renderUpdatedSpace.bind(this));
+        .then(this.renderUpdatedSpace.bind(this))
+        .then(function(newEl) {
+          return render.addComponentsHandlers(newEl).then(function() {
+            focus.unfocus();
+            select.unselect();
+            return select.select(newEl);
+          });
+        });
 
     }.bind(this));
 }
@@ -187,8 +193,6 @@ proto.renderUpdatedSpace = function(resp) {
     spaceChildren = dom.findAll(space, '.space-logic'),
     spaceOnPage = dom.find(document, '[data-uri="' + space.getAttribute('data-uri') + '"]');
 
-
-
   _.forEach(spaceChildren, function(child) {
     child.parentNode.removeChild(child);
   });
@@ -199,6 +203,8 @@ proto.renderUpdatedSpace = function(resp) {
 
   dom.replaceElement(spaceOnPage, space);
   this.findChildrenMakeList(space);
+
+  return space;
 }
 
 /**
@@ -209,10 +215,10 @@ proto.listItemClick = function(id) {
   var newActive = dom.find(this.parent.el, '[data-uri="' + id + '"]');
 
   _.each(this.childComponents, function(el) {
-    el.classList.remove(activeClass);
+    el.classList.remove(activeClass, editingClass);
   });
 
-  newActive.classList.add(activeClass);
+  newActive.classList.add(activeClass, editingClass);
 
   pane.close();
 }
@@ -235,8 +241,8 @@ proto.settings = function(id) {
  * @param  {[type]} e       [description]
  * @return {[type]}         [description]
  */
-function spaceSettings(options, parent) {
-  return new BrowseController(options, parent);
+function spaceSettings(parent) {
+  return new BrowseController(parent);
 }
 
 module.exports = spaceSettings;
