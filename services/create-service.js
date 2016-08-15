@@ -64,8 +64,8 @@ function addInSpace(options, parent, logicComponent) {
       return edit.addToParentList(args)
         .then(function(newEl) {
           return render.addComponentsHandlers(newEl).then(function() {
-            // focus.unfocus();
-            // select.unselect();
+            focus.unfocus();
+            select.unselect();
             return select.select(newEl);
           });
         });
