@@ -7,6 +7,7 @@ var dom = require('@nymag/dom'),
   render = kilnServices.render,
   focus = kilnServices.focus,
   forms = kilnServices.forms,
+  label = kilnServices.label,
   edit = kilnServices.edit,
   removeService = require('../services/remove-service'),
   filterableList = kilnServices['filterable-list'],
@@ -127,12 +128,14 @@ proto.remove = function(id) {
  * @return {[type]}            [description]
  */
 proto.makeList = function(components) {
+
   return _.map(components, function(item) {
     var childComponent = dom.find(item, '[data-uri]'),
-      componentType = references.getComponentNameFromReference(childComponent.getAttribute('data-uri'));
+      componentType = references.getComponentNameFromReference(childComponent.getAttribute('data-uri')),
+      componentName = label(componentType);
 
     return {
-      title: componentType,
+      title: componentName,
       id: item.getAttribute('data-uri')
     }
   });
