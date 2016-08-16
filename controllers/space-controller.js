@@ -52,7 +52,8 @@ proto.findFirstActive = function() {
  */
 proto.browseSpace = function() {
   SpaceSettings(this.el, {
-    add: this.updateLogicCount.bind(this)
+    add: this.updateLogicCount.bind(this),
+    remove: this.updateLogicCount.bind(this)
   });
 }
 
@@ -80,6 +81,11 @@ proto.findLogicCount = function() {
   countElement.innerHTML = logicCount;
 };
 
+/**
+ * [updateLogicCount description]
+ * @param  {[type]} component [description]
+ * @return {[type]}           [description]
+ */
 proto.updateLogicCount = function(component) {
   this.el = component ? dom.closest(component, '.clay-space') : this.el;
 

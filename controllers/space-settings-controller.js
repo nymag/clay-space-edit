@@ -119,6 +119,9 @@ proto.remove = function(id) {
       pane.close();
       // Launch new pane with updated components
       this.launchPane();
+
+      this.callbacks.remove(newHtml);
+
       return newHtml;
     }.bind(this))
     .then(this.reloadComponent.bind(this));
