@@ -30,12 +30,14 @@ function getUpdatedHtml(uri, query) {
  * @param {[type]} parent  [description]
  * @param {[type]} e       [description]
  */
-function BrowseController(parent) {
+function BrowseController(el) {
   /**
-   * The parent Clay Space component data
+   * The Clay Space component data
    * @type {Object}
    */
-  this.parent = parent;
+  this.el = el;
+
+  this.spaceRef = el.getAttribute('data-uri');
 
   /**
    * Children Space Logic componens
@@ -51,7 +53,7 @@ function BrowseController(parent) {
   this.componentList = [];
 
 
-  this.findChildrenMakeList(this.parent.el);
+  this.findChildrenMakeList(this.el);
   // Launch the pane
   this.launchPane();
 }
@@ -80,7 +82,7 @@ proto.launchPane = function() {
 
 
 proto.addComponent = function() {
-  AddController(this.parent);
+  AddController(this.el);
 }
 
 /**
@@ -88,7 +90,7 @@ proto.addComponent = function() {
  * @return {[type]} [description]
  */
 proto.reloadComponent = function(newHtml) {
-  return render.reloadComponent(this.parent.ref, newHtml);
+  return render.reloadComponent(this.spaceRef, newHtml);
 }
 
 /**
@@ -96,9 +98,8 @@ proto.reloadComponent = function(newHtml) {
  * @param  {[type]} parent [description]
  * @return {[type]}        [description]
  */
-proto.findChildrenMakeList = function(parent) {
-  this.parent.el = parent;
-  this.childComponents = dom.findAll(parent, '.space-logic');
+proto.findChildrenMakeList = function(el) {
+  this.childComponents = dom.findAll(el, '.space-logic');
   this.componentList = this.makeList(this.childComponents);
 }
 
@@ -108,7 +109,7 @@ proto.findChildrenMakeList = function(parent) {
  * @param  {string} id The `id` value of the item in the filterable list that was clicked
  */
 proto.remove = function(id) {
-  removeService.removeLogic(id, this.parent)
+  removeService.removeLogic(id, this.el)
     .then(function(newHtml) {
       // Make new component list from the returned HTML
       this.findChildrenMakeList(newHtml);
@@ -165,7 +166,7 @@ function findTags(logic) {
  * @return {[type]}          [description]
  */
 proto.reorder = function(id, newIndex, oldIndex) {
-  var data = { _ref: this.parent.ref },
+  var data = { _ref: this.spaceRef },
     content = _.map(this.componentList, function(item) {
       return { _ref: item.id }
     });
@@ -183,7 +184,7 @@ proto.reorder = function(id, newIndex, oldIndex) {
           return edit.getHTMLWithQuery(logicComponent.getAttribute('data-uri'), query);
         });
 
-      newHtmls.unshift(edit.getHTML(this.parent.ref));
+      newHtmls.unshift(edit.getHTML(this.spaceRef));
 
       Promise.all(newHtmls)
         .then(this.renderUpdatedSpace.bind(this))
@@ -227,7 +228,7 @@ proto.renderUpdatedSpace = function(resp) {
  * @return {[type]} [description]
  */
 proto.listItemClick = function(id) {
-  var newActive = dom.find(this.parent.el, '[data-uri="' + id + '"]');
+  var newActive = dom.find(this.el, '[data-uri="' + id + '"]');
 
   _.each(this.childComponents, function(el) {
     el.classList.remove(activeClass, editingClass);

@@ -1,5 +1,4 @@
 var dom = require('@nymag/dom'),
-  SpaceSettings = require('./space-settings-controller'),
   tpl = window.kiln.services.tpl;
 
 /**
@@ -24,9 +23,7 @@ function SpaceLogicController(el, options, parent) {
    */
   this.parent = parent;
 
-  // Add the buttons necessary
-  this.addBrowseSpaceButton()
-    .removeDefaultButtons();
+  this.swapSelectParentButton();
 }
 
 /**
@@ -34,33 +31,8 @@ function SpaceLogicController(el, options, parent) {
  */
 var proto = SpaceLogicController.prototype;
 
-/**
- * Launch a filterable list using the BrowseSpace controller
- */
-proto.browseSpace = function() {
-  SpaceSettings(this.parent);
-}
+proto.swapSelectParentButton = function() {
 
-/**
- * Add the button to browse the space
- */
-proto.addBrowseSpaceButton = function() {
-  var parentButton = dom.find(this.el, '.selected-info-parent'),
-    browseSpaceButton = tpl.get('.browse-space'),
-    browseButton;
-
-  // Insert the button
-  dom.insertAfter(parentButton, browseSpaceButton);
-
-  browseButton = dom.find(this.el, '.space-browse');
-  browseButton.addEventListener('click', this.browseSpace.bind(this));
-
-  return this;
-}
-
-proto.removeDefaultButtons = function() {
-  var settingsButton = dom.find(this.el, '.selected-action-settings');
-  settingsButton.classList.add('kiln-hide');
 }
 
 module.exports = function(el, options, parent) {
