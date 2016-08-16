@@ -30,7 +30,7 @@ function getUpdatedHtml(uri, query) {
  * @param {[type]} parent  [description]
  * @param {[type]} e       [description]
  */
-function BrowseController(el) {
+function BrowseController(el, callbacks) {
   /**
    * The Clay Space component data
    * @type {Object}
@@ -38,6 +38,8 @@ function BrowseController(el) {
   this.el = el;
 
   this.spaceRef = el.getAttribute('data-uri');
+
+  this.callbacks = callbacks;
 
   /**
    * Children Space Logic componens
@@ -82,7 +84,7 @@ proto.launchPane = function() {
 
 
 proto.addComponent = function() {
-  AddController(this.el);
+  AddController(this.el, this.callbacks.add);
 }
 
 /**
@@ -257,8 +259,8 @@ proto.settings = function(id) {
  * @param  {[type]} e       [description]
  * @return {[type]}         [description]
  */
-function spaceSettings(parent) {
-  return new BrowseController(parent);
+function spaceSettings(parent, callbacks) {
+  return new BrowseController(parent, callbacks);
 }
 
 module.exports = spaceSettings;

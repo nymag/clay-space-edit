@@ -17,10 +17,12 @@ var dom = require('@nymag/dom'),
   kilnHide = 'kiln-hide';
 
 
-function AddComponent(spaceParent) {
+function AddComponent(spaceParent, callback) {
   this.parent = spaceParent;
 
   this.parentRef = spaceParent.getAttribute('data-uri');
+
+  this.callback = callback;
 
   this.launchPane();
 }
@@ -69,6 +71,7 @@ proto.listItemClick = function(id) {
             focus.unfocus();
             select.unselect();
             pane.close();
+            this.callback(newEl);
             return select.select(dom.find(newEl, '[data-uri]'));
           }.bind(this));
         }.bind(this));
@@ -85,6 +88,6 @@ proto.makeNewComponentActive = function(targetEl) {
   targetEl.classList.add(activeClass)
 }
 
-module.exports = function(spaceParent) {
-  return new AddComponent(spaceParent);
+module.exports = function(spaceParent, callback) {
+  return new AddComponent(spaceParent, callback);
 };
