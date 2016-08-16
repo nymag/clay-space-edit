@@ -16,6 +16,7 @@
   <template class="browse-space">
     <button type="button" class="space-button space-browse">
       {% include 'public/media/components/clay-space-edit/list-space.svg' %}
+      <span class="logic-count"></span>
     </button>
   </template>
 

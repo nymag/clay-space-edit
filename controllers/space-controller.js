@@ -20,6 +20,7 @@ function SpaceController(el, options, parent) {
   this.el = el;
   this.options = options;
   this.parent = parent;
+  this.browseButton;
   this.childrenComponents = dom.findAll(this.el, '.space-logic');
   this.el.setAttribute('data-components', makeComponentListAttr(this.parent));
 
@@ -50,7 +51,9 @@ proto.findFirstActive = function() {
  * Launch a filterable list using the BrowseSpace controller
  */
 proto.browseSpace = function() {
-  SpaceSettings(this.el);
+  SpaceSettings(this.el, {
+    add: this.updateLogicCount.bind(this)
+  });
 }
 
 /**
@@ -58,18 +61,29 @@ proto.browseSpace = function() {
  */
 proto.addBrowseSpaceButton = function() {
   var parentButton = dom.find(this.el, '.selected-info-parent'),
-    browseSpaceButton = tpl.get('.browse-space'),
-    browseButton;
+    browseSpaceButton = tpl.get('.browse-space');
 
   // Insert the button
   dom.insertAfter(parentButton, browseSpaceButton);
 
-  browseButton = dom.find(this.el, '.space-browse');
-  browseButton.addEventListener('click', this.browseSpace.bind(this));
+  this.browseButton = dom.find(this.el, '.space-browse');
+  this.browseButton.addEventListener('click', this.browseSpace.bind(this));
+  this.findLogicCount();
 
   return this;
 }
 
+proto.findLogicCount = function() {
+  var logicCount = dom.findAll(this.el, '.space-logic').length,
+    countElement = dom.find(this.browseButton, '.logic-count');
 
+  countElement.innerHTML = logicCount;
+};
+
+proto.updateLogicCount = function(component) {
+  this.el = component ? dom.closest(component, '.clay-space') : this.el;
+
+  this.findLogicCount();
+}
 
 module.exports = function(el, options, parent) { return new SpaceController(el, options, parent)};

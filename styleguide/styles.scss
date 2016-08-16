@@ -1,5 +1,6 @@
 $UI_PRIMARY: #B4A5BC;
 $UI_BUTTON: #694C79;
+
 .clay-space.selected-parent {
   padding-top: 10px;
 }
@@ -44,6 +45,16 @@ $UI_BUTTON: #694C79;
   & svg * {
     fill: $UI_BUTTON;
     transition: 150ms fill ease-out
+  }
+}
+
+.space-browse {
+  position: relative;
+
+  .logic-count {
+    bottom: 3px;
+    position: absolute;
+    right: 2px;
   }
 }
 
