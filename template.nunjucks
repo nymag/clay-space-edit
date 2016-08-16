@@ -26,6 +26,12 @@
     </button>
   </template>
 
+  {# Select Space Parent #}
+  <template class="parent-space">
+    <button type="button" class="space-button space-parent">
+      {% include 'public/media/components/clay-kiln/component-bar-parent.svg' %}
+    </button>
+  </template>
 
 </div>
 {% endif %}
