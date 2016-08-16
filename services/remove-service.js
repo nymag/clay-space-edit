@@ -11,12 +11,12 @@ var dom = require('@nymag/dom'),
  * @return {[type]}        [description]
  */
 function removeLogic(ref, parent) {
-  var targetEl = dom.find(parent.el, '[data-uri="' + ref + '"]'),
+  var targetEl = dom.find(parent, '[data-uri="' + ref + '"]'),
     removeOpts = {
       el: targetEl,
       ref: ref,
       parentField: 'content',
-      parentRef: parent.ref
+      parentRef: parent.getAttribute('data-uri')
     };
 
   return edit.removeFromParentList(removeOpts)

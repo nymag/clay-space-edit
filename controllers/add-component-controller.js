@@ -20,6 +20,8 @@ var dom = require('@nymag/dom'),
 function AddComponent(spaceParent) {
   this.parent = spaceParent;
 
+  this.parentRef = spaceParent.getAttribute('data-uri');
+
   this.launchPane();
 }
 
@@ -30,7 +32,7 @@ var proto = AddComponent.prototype;
  * @return {[type]} [description]
  */
 proto.launchPane = function() {
-  var availableComponents = this.parent.el.getAttribute('data-components').split(','),
+  var availableComponents = this.parent.getAttribute('data-components').split(','),
     paneContent = filterableList.create(availableComponents, {
       click: this.listItemClick.bind(this),
     });
@@ -46,11 +48,11 @@ proto.launchPane = function() {
 proto.listItemClick = function(id) {
   createService.newComponentInLogic(id)
     .then(function(newComponent) {
-      var prevRef = dom.find(this.parent.el, '.space-logic').getAttribute('data-uri'),
+      var prevRef = dom.find(this.parent, '.space-logic').getAttribute('data-uri'),
         args = {
           ref: newComponent._ref,
           parentField: 'content',
-          parentRef: this.parent.ref,
+          parentRef: this.parentRef,
           prevRef: prevRef,
           above: true
         };
@@ -58,7 +60,7 @@ proto.listItemClick = function(id) {
       return edit.addToParentList(args)
         .then(function(newEl) {
           // insert it at the beginning of the component list
-          dom.prependChild(this.parent.el, newEl);
+          dom.prependChild(this.parent, newEl);
           return newEl;
         }.bind(this))
         .then(function(newEl) {
@@ -67,14 +69,14 @@ proto.listItemClick = function(id) {
             focus.unfocus();
             select.unselect();
             pane.close();
-            return select.select(newEl);
+            return select.select(dom.find(newEl, '[data-uri]'));
           }.bind(this));
         }.bind(this));
     }.bind(this));
 }
 
 proto.makeNewComponentActive = function(targetEl) {
-  var logics = dom.findAll(this.parent.el, '.space-logic');
+  var logics = dom.findAll(this.parent, '.space-logic');
 
   _.forEach(logics, function(logic) {
     logic.classList.remove(activeClass);
