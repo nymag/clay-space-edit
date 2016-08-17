@@ -35,6 +35,9 @@ proto.init = function() {
     .addBrowseSpaceButton();
 };
 
+/**
+ * Find the first logic component that's active
+ */
 proto.findFirstActive = function() {
   var activeChild = dom.find(this.el, '.space-logic-active');
 
@@ -53,8 +56,13 @@ proto.findFirstActive = function() {
 proto.browseSpace = function() {
   SpaceSettings(this.el, {
     add: this.updateLogicCount.bind(this),
-    remove: this.updateLogicCount.bind(this)
+    remove: this.onRemoveCallback.bind(this)
   });
+}
+
+proto.onRemoveCallback = function(component) {
+  this.updateLogicCount(component)
+    .findFirstActive();
 }
 
 /**
@@ -74,22 +82,33 @@ proto.addBrowseSpaceButton = function() {
   return this;
 }
 
+/**
+ * Find the number of logic components within a space
+ * and put that number in the browse space button
+ */
 proto.findLogicCount = function() {
   var logicCount = dom.findAll(this.el, '.space-logic').length,
     countElement = dom.find(this.browseButton, '.logic-count');
 
   countElement.innerHTML = logicCount;
+
+  return this;
 };
 
 /**
- * [updateLogicCount description]
- * @param  {[type]} component [description]
- * @return {[type]}           [description]
+ * Update the component's logic count inside the
+ * browse button. Triggered on addition/removal of
+ * logic components
+ *
+ * @param  {element} component
  */
 proto.updateLogicCount = function(component) {
   this.el = component ? dom.closest(component, '.clay-space') : this.el;
 
-  this.findLogicCount();
+  this.findLogicCount()
+    .findFirstActive();
+
+  return this;
 }
 
 module.exports = function(el, options, parent) { return new SpaceController(el, options, parent)};
