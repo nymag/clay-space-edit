@@ -1,23 +1,18 @@
 $UI_PRIMARY: #B4A5BC;
 $UI_BUTTON: #694C79;
 
-.clay-space.selected-parent {
-  padding-top: 10px;
-}
-
-.space-logic > .component-selector {
-  display: none;
-}
-
+.space-logic > .component-selector,
 .clay-space > .space-logic {
   display: none;
 }
 
-.clay-space > .space-logic-active {
+.clay-space > .space-logic-active,
+.clay-space > .space-logic-editing  {
   display: block;
 }
 
-.clay-space.clay-space-edit > .space-logic-active ~ .space-logic-active {
+.clay-space.clay-space-edit > .space-logic-active ~ .space-logic-active,
+.clay-space.clay-space-edit > .space-logic-editing ~ .space-logic-active {
   display: none;
 }
 
