@@ -212,7 +212,8 @@ proto.reorder = function(id, newIndex, oldIndex) {
  * @return {[type]}      [description]
  */
 proto.renderUpdatedSpace = function(resp) {
-  var spaceChildren = dom.findAll(this.el, '.space-logic'),
+  var space = this.el,
+    spaceChildren = dom.findAll(this.el, '.space-logic'),
     spaceOnPage = dom.find(document, '[data-uri="' + this.spaceRef + '"]');
 
   _.forEach(spaceChildren, function(child) {
