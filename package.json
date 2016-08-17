@@ -7,6 +7,9 @@
     "type": "git",
     "url": "git+https://github.com/nymag/clay-space-edit.git"
   },
+  "scripts": {
+    "prepublish": "gulp --once"
+  },
   "keywords": [
     "clay",
     "space",
