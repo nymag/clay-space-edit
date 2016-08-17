@@ -70,15 +70,14 @@ var proto = BrowseController.prototype;
 
 
 proto.launchPane = function() {
-  var paneContent = filterableList.create(this.componentList, {
+  var paneContent = this.markActiveInList(filterableList.create(this.componentList, {
     click: this.listItemClick.bind(this),
     reorder: this.reorder.bind(this),
     settings: this.settings.bind(this),
     remove: this.remove.bind(this),
     add: this.addComponent.bind(this),
     addTitle: 'Add Component To Space'
-  });
-
+  }));
 
   pane.open([{ header: 'Match Criteria - Show First Match', content: paneContent }]);
 }
@@ -96,6 +95,21 @@ proto.addComponent = function() {
 proto.findChildrenMakeList = function(el) {
   this.childComponents = dom.findAll(el, '.space-logic');
   this.componentList = this.makeList(this.childComponents);
+}
+
+/**
+ * Apply active styling to the proper item in the filterable list
+ * @param  {element} listHtml
+ * @return {element}
+ */
+proto.markActiveInList = function(listHtml) {
+  _.each(this.childComponents, function (logicComponent) {
+    if (logicComponent.classList.contains(editingClass)) {
+      dom.find(listHtml, '[data-item-id="' + logicComponent.getAttribute('data-uri') + '"]').classList.add('active');
+    }
+  });
+
+  return listHtml;
 }
 
 /**
@@ -129,10 +143,6 @@ proto.makeList = function(components) {
       componentType = references.getComponentNameFromReference(childComponent.getAttribute('data-uri')),
       componentTitle = label(componentType),
       tags = findTags(item);
-
-    if (item.classList.contains(editingClass)) {
-      componentTitle = '<span class="filtered-item-title-bold">' + componentTitle + '</span>'
-    }
 
     componentTitle = tags ? componentTitle + tags : componentTitle;
 
