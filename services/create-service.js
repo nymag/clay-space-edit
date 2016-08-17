@@ -87,5 +87,15 @@ function confirmMakeSpace() {
   return window.confirm('Do you really want to make a new Space?');
 }
 
+
+function attachHandlersAndFocus(el) {
+  return render.addComponentsHandlers(el).then(function() {
+    focus.unfocus();
+    select.unselect();
+    return select.select(el);
+  });
+}
+
 module.exports.createSpace = createSpace;
 module.exports.newComponentInLogic = newComponentInLogic;
+module.exports.attachHandlersAndFocus = attachHandlersAndFocus;
