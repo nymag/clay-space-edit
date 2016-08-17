@@ -11,6 +11,7 @@ var dom = require('@nymag/dom'),
   label = kilnServices.label,
   edit = kilnServices.edit,
   removeService = require('../services/remove-service'),
+  createService = require('../services/create-service'),
   filterableList = kilnServices['filterable-list'],
   activeClass = 'space-logic-active',
   editingClass = 'space-logic-editing';
@@ -88,14 +89,6 @@ proto.addComponent = function() {
 }
 
 /**
- * [reloadComponent description]
- * @return {[type]} [description]
- */
-proto.reloadComponent = function(newHtml) {
-  return render.reloadComponent(this.spaceRef, newHtml);
-}
-
-/**
  * [findChildrenMakeList description]
  * @param  {[type]} parent [description]
  * @return {[type]}        [description]
@@ -114,17 +107,15 @@ proto.remove = function(id) {
   removeService.removeLogic(id, this.el)
     .then(function(newHtml) {
       // Make new component list from the returned HTML
-      this.findChildrenMakeList(newHtml);
-      // Close old pane
+      this.findChildrenMakeList(this.el);
+
+      // Invoke the callback
+      this.callbacks.remove(this.el);
+      // Close the old pane
       pane.close();
       // Launch new pane with updated components
       this.launchPane();
-
-      this.callbacks.remove(newHtml);
-
-      return newHtml;
-    }.bind(this))
-    .then(this.reloadComponent.bind(this));
+    }.bind(this));
 }
 
 /**
@@ -133,7 +124,6 @@ proto.remove = function(id) {
  * @return {[type]}            [description]
  */
 proto.makeList = function(components) {
-
   return _.map(components, function(item) {
     var childComponent = dom.find(item, '[data-uri]'),
       componentType = references.getComponentNameFromReference(childComponent.getAttribute('data-uri')),
@@ -153,11 +143,16 @@ proto.makeList = function(components) {
   });
 }
 
+/**
+ * [findTags description]
+ * @param  {[type]} logic [description]
+ * @return {[type]}       [description]
+ */
 function findTags(logic) {
   var tags = logic.getAttribute('data-logic-tags');
 
   if (tags) {
-    return '<div class="filtered-item-title-sub">Tags: '+ tags + '</div>';
+    return '<div class="filtered-item-title-sub">Tags: ' + tags + '</div>';
   } else {
     return '';
   }
@@ -182,24 +177,21 @@ proto.reorder = function(id, newIndex, oldIndex) {
   // Save the space
   edit.savePartial(data)
     .then(function(newHtml) {
-      var logics = dom.findAll(newHtml, '.space-logic'),
-        newHtmls = _.map(logics, function(logicComponent) {
-          var query = { 'currentUrl': window.location.href };
+      var newChildHtmlPromises;
 
-          return edit.getHTMLWithQuery(logicComponent.getAttribute('data-uri'), query);
-        });
+      // Make new component list from the returned HTML
+      this.findChildrenMakeList(newHtml);
 
-      newHtmls.unshift(edit.getHTML(this.spaceRef));
+      // Make an array of promises for the updated children HTML
+      newChildHtmlPromises = _.map(this.childComponents, function(logicComponent) {
+        var query = { 'currentUrl': window.location.href };
 
-      Promise.all(newHtmls)
+        return edit.getHTMLWithQuery(logicComponent.getAttribute('data-uri'), query);
+      });
+
+      return Promise.all(newChildHtmlPromises)
         .then(this.renderUpdatedSpace.bind(this))
-        .then(function(newEl) {
-          return render.addComponentsHandlers(newEl).then(function() {
-            focus.unfocus();
-            select.unselect();
-            return select.select(newEl);
-          });
-        });
+        .then(createService.attachHandlersAndFocus);
 
     }.bind(this));
 }
@@ -210,9 +202,8 @@ proto.reorder = function(id, newIndex, oldIndex) {
  * @return {[type]}      [description]
  */
 proto.renderUpdatedSpace = function(resp) {
-  var space = resp.shift(),
-    spaceChildren = dom.findAll(space, '.space-logic'),
-    spaceOnPage = dom.find(document, '[data-uri="' + space.getAttribute('data-uri') + '"]');
+  var spaceChildren = dom.findAll(this.el, '.space-logic'),
+    spaceOnPage = dom.find(document, '[data-uri="' + this.spaceRef + '"]');
 
   _.forEach(spaceChildren, function(child) {
     child.parentNode.removeChild(child);
@@ -236,10 +227,10 @@ proto.listItemClick = function(id) {
   var newActive = dom.find(this.el, '[data-uri="' + id + '"]');
 
   _.each(this.childComponents, function(el) {
-    el.classList.remove(activeClass, editingClass);
+    el.classList.remove(editingClass);
   });
 
-  newActive.classList.add(activeClass, editingClass);
+  newActive.classList.add(editingClass);
 
   pane.close();
 }
