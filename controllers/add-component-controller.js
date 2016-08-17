@@ -14,6 +14,7 @@ var dom = require('@nymag/dom'),
   pane = kilnServices.pane,
   activeClass = 'space-logic-active',
   spaceName = 'clay-space',
+  editingClass = 'space-logic-editing',
   kilnHide = 'kiln-hide';
 
 
@@ -82,10 +83,10 @@ proto.makeNewComponentActive = function(targetEl) {
   var logics = dom.findAll(this.parent, '.space-logic');
 
   _.forEach(logics, function(logic) {
-    logic.classList.remove(activeClass);
+    logic.classList.remove(editingClass);
   });
 
-  targetEl.classList.add(activeClass)
+  targetEl.classList.add(editingClass);
 }
 
 module.exports = function(spaceParent, callback) {
