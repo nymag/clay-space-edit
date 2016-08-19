@@ -67,9 +67,24 @@ function addInSpace(options, parent, position, logicComponent) {
             focus.unfocus();
             select.unselect();
             return select.select(newEl);
+          })
+          .then(function () {
+            return putNewSpaceInDOM(position, newEl);
           });
         });
     });
+}
+
+function putNewSpaceInDOM(position, space) {
+  var prevElement = dom.find('[data-uri="' + position.prevRef + '"]');
+  console.log(prevElement);
+
+  if (position.above) {
+    dom.insertBefore(prevElement, space);
+  } else {
+    dom.insertAfter(prevElement, space);
+  }
+
 }
 
 function findPrevRef(targetComponent) {
