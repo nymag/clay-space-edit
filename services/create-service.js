@@ -17,7 +17,6 @@ function newComponentInLogic(componentName) {
       return edit.createComponent('space-logic', {
         embededComponent: {
           ref: component._ref,
-          path: null,
           data: {
             _ref: component._ref
           }
@@ -48,7 +47,7 @@ function wrapInLogic(clickedComponent, options, parent) {
  * @param {[type]} parent         [description]
  * @param {[type]} logicComponent [description]
  */
-function addInSpace(options, parent, logicComponent) {
+function addInSpace(options, parent, position, logicComponent) {
   return Promise.all([edit.createComponent('clay-space', { content: [{ _ref: logicComponent[references.referenceProperty] }] }), edit.getData(parent.ref)])
     .then(function(promises) {
       var res = promises[0],
@@ -58,7 +57,8 @@ function addInSpace(options, parent, logicComponent) {
           ref: newRef,
           parentField: parent.path,
           parentRef: parent.ref,
-          prevRef: 'localhost/daily/intelligencer/components/top-stories-desktop/instances/di'
+          prevRef: position.prevRef,
+          above: position.above
         };
 
       return edit.addToParentList(args)
@@ -72,15 +72,40 @@ function addInSpace(options, parent, logicComponent) {
     });
 }
 
+function findPrevRef(targetComponent) {
+  var targetRef = targetComponent.getAttribute('data-uri'),
+    allComponentsInList = targetComponent.parentElement.children,
+    indexOfTarget = null,
+    prevRef = '',
+    above = false;
+
+    _.forEach(allComponentsInList, function (component, index) {
+      if (targetRef === component.getAttribute('data-uri')) {
+        indexOfTarget = index;
+      }
+    });
+
+  if (!indexOfTarget) {
+    prevRef = allComponentsInList[indexOfTarget + 1].getAttribute('data-uri');
+    above = true;
+  } else {
+    prevRef = allComponentsInList[indexOfTarget - 1].getAttribute('data-uri');
+  }
+
+  return {prevRef: prevRef, above: above};
+}
+
 function createSpace(options, parent, e) {
   if (!confirmMakeSpace()) {
     return null;
   }
 
-  var parentEl = dom.closest(e.target, '[data-uri]');
+  var clickedComponent = dom.find(parent.el, '[data-uri="' + options.ref + '"]'),
+    position = findPrevRef(clickedComponent);
 
-  return wrapInLogic(parentEl, options, parent)
-    .then(addInSpace.bind(null, options, parent))
+
+  return wrapInLogic(clickedComponent, options, parent)
+    .then(addInSpace.bind(null, options, parent, position))
 }
 
 function confirmMakeSpace() {
