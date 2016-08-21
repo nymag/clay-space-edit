@@ -25,12 +25,11 @@ $UI_BUTTON: #694C79;
 .space-button {
   background: 0 0;
   border: none;
-  border-left: 1px solid $UI_PRIMARY;
   color: $UI_BUTTON;
   cursor: pointer;
   margin: 0;
   outline: 0;
-  padding: 8px;
+  padding: 14px;
 
   & svg,
   & svg * {
@@ -39,18 +38,23 @@ $UI_BUTTON: #694C79;
   }
 }
 
+.space-create {
+  padding: 16px 14px;
+}
+
 .space-browse {
   position: relative;
+  padding: 17px 14px;
 
   .logic-count {
-    bottom: 3px;
+    bottom: 13px;
     position: absolute;
-    right: 2px;
+    right: 7px;
   }
 }
 
 .space-parent {
-  padding: 6px 8px;
+  padding: 14px;
 
   & svg {
     height: 16px;
