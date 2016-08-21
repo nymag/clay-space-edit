@@ -30,7 +30,7 @@
   {# Select Space Parent #}
   <template class="parent-space">
     <button type="button" class="space-button space-parent">
-      {% include 'public/media/components/clay-kiln/component-bar-parent.svg' %}
+      {% include 'public/media/components/clay-kiln/parent.svg' %}
     </button>
   </template>
 
