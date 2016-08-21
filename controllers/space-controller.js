@@ -9,20 +9,32 @@ var dom = require('@nymag/dom'),
 
 function makeComponentListAttr(parent) {
   var include = _.get(parent, 'list.include') || _.get(parent, 'prop.include'),
-  exclude = _.get(parent, 'list.exclude') || _.get(parent, 'prop.exclude');
+    exclude = _.get(parent, 'list.exclude') || _.get(parent, 'prop.exclude');
 
   return _.remove(getAddableComponents(include, exclude), function(component) {
     return component !== spaceName;
   });
 }
 
-function SpaceController(el, options, parent) {
+function SpaceController(el, parent) {
+  if (!Object.keys(parent).length) {
+    // Whenever a new space is first created, Kiln does not
+    // have reference to its parent's schema/component list
+    // information. Because of this we can't add new components
+    // properly. To fix this, trigger a reload if this
+    // is a brand new Space component.
+    window.location.reload();
+  }
+
   this.el = el;
-  this.options = options;
+
   this.parent = parent;
-  this.browseButton;
-  this.childrenComponents = dom.findAll(this.el, '.space-logic');
+
+  this.childrenLogics = dom.findAll(this.el, '.space-logic');
+
   this.el.setAttribute('data-components', makeComponentListAttr(this.parent));
+
+  this.spaceRef = this.el.getAttribute('data-uri');
 
   this.init();
 }
@@ -32,7 +44,12 @@ var proto = SpaceController.prototype;
 
 proto.init = function() {
   this.findFirstActive()
-    .addBrowseSpaceButton();
+    .addButtons();
+};
+
+proto.setupNewSpace = function(newEl) {
+  this.isNewSpace = false;
+  this.addButtons();
 };
 
 /**
@@ -43,8 +60,8 @@ proto.findFirstActive = function() {
 
   if (activeChild) {
     activeChild.classList.add('space-logic-editing');
-  } else if (!activeChild && this.childrenComponents.length) {
-    this.childrenComponents[this.childrenComponents.length - 1].classList.add('space-logic-active', 'space-logic-editing');
+  } else if (!activeChild && this.childrenLogics.length) {
+    this.childrenLogics[this.childrenLogics.length - 1].classList.add('space-logic-active', 'space-logic-editing');
   }
 
   return this;
@@ -55,28 +72,58 @@ proto.findFirstActive = function() {
  */
 proto.browseSpace = function() {
   SpaceSettings(this.el, {
-    add: this.updateLogicCount.bind(this),
+    add: this.onAddCallback.bind(this),
     remove: this.onRemoveCallback.bind(this)
   });
 }
 
+proto.onAddCallback = function(newEl) {
+  this.addBrowseButton(newEl)
+    .updateLogicCount(newEl);
+}
+
+/**
+ * [onRemoveCallback description]
+ * @param  {[type]} component [description]
+ * @return {[type]}           [description]
+ */
 proto.onRemoveCallback = function(component) {
   this.updateLogicCount(component)
     .findFirstActive();
 }
 
+proto.addBrowseButton = function(logicComponent) {
+  var embeddedComponent = dom.find(logicComponent, '[data-uri]'),
+    embeddedComponentParentButton = dom.find(embeddedComponent, '.selected-actions'),
+    browseSpaceButton = tpl.get('.browse-space');
+
+  if (!embeddedComponent || !embeddedComponentParentButton) {
+    return this;
+  }
+
+  // Insert the button
+  dom.prependChild(embeddedComponentParentButton, browseSpaceButton);
+
+  dom.find(embeddedComponent, '.space-browse').addEventListener('click', this.browseSpace.bind(this));
+
+  return this;
+}
+
 /**
  * Add the button to browse the space
  */
-proto.addBrowseSpaceButton = function() {
-  var parentButton = dom.find(this.el, '.selected-info-parent'),
-    browseSpaceButton = tpl.get('.browse-space');
+proto.addButtons = function() {
+  var allLogics = dom.findAll(this.el, '.space-logic');
 
-  // Insert the button
-  dom.insertAfter(parentButton, browseSpaceButton);
+  // Return early if it's a new space
+  if (this.isNewSpace) {
+    return this;
+  }
 
-  this.browseButton = dom.find(this.el, '.space-browse');
-  this.browseButton.addEventListener('click', this.browseSpace.bind(this));
+  _.each(allLogics, this.addBrowseButton.bind(this));
+
+  // Get count of logics
+  // TODO: Count on each button
   this.findLogicCount();
 
   return this;
@@ -88,9 +135,11 @@ proto.addBrowseSpaceButton = function() {
  */
 proto.findLogicCount = function() {
   var logicCount = dom.findAll(this.el, '.space-logic').length,
-    countElement = dom.find(this.browseButton, '.logic-count');
+    countElement = dom.findAll(this.el, '.logic-count');
 
-  countElement.innerHTML = logicCount;
+  _.each(countElement, function(count) {
+    count.innerHTML = logicCount;
+  });
 
   return this;
 };
@@ -111,4 +160,5 @@ proto.updateLogicCount = function(component) {
   return this;
 }
 
-module.exports = function(el, options, parent) { return new SpaceController(el, options, parent)};
+module.exports = function(el, parent) {
+  return new SpaceController(el, parent) };

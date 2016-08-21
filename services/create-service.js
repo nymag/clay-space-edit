@@ -10,7 +10,11 @@ var dom = require('@nymag/dom'),
   edit = kilnServices.edit,
   spaceName = 'clay-space';
 
-
+/**
+ * [newComponentInLogic description]
+ * @param  {[type]} componentName [description]
+ * @return {[type]}               [description]
+ */
 function newComponentInLogic(componentName) {
   return edit.createComponent(componentName)
     .then(function(component) {
@@ -42,51 +46,10 @@ function wrapInLogic(clickedComponent, options, parent) {
 }
 
 /**
- * [addInSpace description]
- * @param {[type]} options        [description]
- * @param {[type]} parent         [description]
- * @param {[type]} logicComponent [description]
+ * [findPrevRef description]
+ * @param  {[type]} targetComponent [description]
+ * @return {[type]}                 [description]
  */
-function addInSpace(options, parent, position, logicComponent) {
-  return Promise.all([edit.createComponent('clay-space', { content: [{ _ref: logicComponent[references.referenceProperty] }] }), edit.getData(parent.ref)])
-    .then(function(promises) {
-      var res = promises[0],
-        parentRes = promises[1],
-        newRef = res._ref,
-        args = {
-          ref: newRef,
-          parentField: parent.path,
-          parentRef: parent.ref,
-          prevRef: position.prevRef,
-          above: position.above
-        };
-
-      return edit.addToParentList(args)
-        .then(function(newEl) {
-          return render.addComponentsHandlers(newEl).then(function() {
-            focus.unfocus();
-            select.unselect();
-            return select.select(newEl);
-          })
-          .then(function () {
-            return putNewSpaceInDOM(position, newEl);
-          });
-        });
-    });
-}
-
-function putNewSpaceInDOM(position, space) {
-  var prevElement = dom.find('[data-uri="' + position.prevRef + '"]');
-  console.log(prevElement);
-
-  if (position.above) {
-    dom.insertBefore(prevElement, space);
-  } else {
-    dom.insertAfter(prevElement, space);
-  }
-
-}
-
 function findPrevRef(targetComponent) {
   var targetRef = targetComponent.getAttribute('data-uri'),
     allComponentsInList = targetComponent.parentElement.children,
@@ -110,6 +73,40 @@ function findPrevRef(targetComponent) {
   return {prevRef: prevRef, above: above};
 }
 
+/**
+ * [addInSpace description]
+ * @param {[type]} options        [description]
+ * @param {[type]} parent         [description]
+ * @param {[type]} logicComponent [description]
+ */
+function addInSpace(options, parent, position, logicComponent) {
+  return Promise.all([edit.createComponent('clay-space', { content: [{ _ref: logicComponent[references.referenceProperty] }] }), edit.getData(parent.ref)])
+    .then(function(promises) {
+      var res = promises[0],
+        parentRes = promises[1],
+        newRef = res._ref,
+        args = {
+          ref: newRef,
+          parentField: parent.path,
+          parentRef: parent.ref,
+          prevRef: position.prevRef,
+          above: position.above
+        };
+
+      return edit.addToParentList(args)
+        .then(function(newEl) {
+          return attachHandlersAndFocus(newEl);
+        });
+    });
+}
+
+/**
+ * [createSpace description]
+ * @param  {[type]} options [description]
+ * @param  {[type]} parent  [description]
+ * @param  {[type]} e       [description]
+ * @return {[type]}         [description]
+ */
 function createSpace(options, parent, e) {
   if (!confirmMakeSpace()) {
     return null;
@@ -117,7 +114,6 @@ function createSpace(options, parent, e) {
 
   var clickedComponent = dom.find(parent.el, '[data-uri="' + options.ref + '"]'),
     position = findPrevRef(clickedComponent);
-
 
   return wrapInLogic(clickedComponent, options, parent)
     .then(addInSpace.bind(null, options, parent, position))
@@ -127,9 +123,13 @@ function confirmMakeSpace() {
   return window.confirm('Do you really want to make a new Space?');
 }
 
-
+/**
+ * [attachHandlersAndFocus description]
+ * @param  {[type]} el [description]
+ * @return {[type]}    [description]
+ */
 function attachHandlersAndFocus(el) {
-  return render.addComponentsHandlers(el).then(function() {
+  return render.addComponentsHandlers(el, true).then(function() {
     focus.unfocus();
     select.unselect();
     return select.select(el);

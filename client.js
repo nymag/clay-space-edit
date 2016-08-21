@@ -18,7 +18,7 @@ function updateSelector(el, options, parent) {
   }
 
   if (isSpaceComponent) {
-    SpaceController(el, options, parent);
+    SpaceController(el, parent);
   }
 }
 
