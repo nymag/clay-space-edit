@@ -24,7 +24,8 @@
   "files": [
     "dist",
     "media",
-    "template.nunjucks"
+    "template.nunjucks",
+    "schema.yml"
   ],
   "homepage": "https://github.com/nymag/clay-space-edit#readme",
   "dependencies": {
