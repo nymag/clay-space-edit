@@ -5,6 +5,7 @@ var dom = require('@nymag/dom'),
   render = kilnServices.render,
   focus = kilnServices.focus,
   select = kilnServices.select,
+  pane = kilnServices.pane,
   progress = kilnServices.progress,
   select = kilnServices.select,
   edit = kilnServices.edit,
@@ -119,6 +120,10 @@ function createSpace(options, parent, e) {
     .then(addInSpace.bind(null, options, parent, position))
 }
 
+/**
+ * [confirmMakeSpace description]
+ * @return {[type]} [description]
+ */
 function confirmMakeSpace() {
   return window.confirm('Do you really want to make a new Space?');
 }
@@ -129,13 +134,44 @@ function confirmMakeSpace() {
  * @return {[type]}    [description]
  */
 function attachHandlersAndFocus(el) {
-  return render.addComponentsHandlers(el, true).then(function() {
+  return render.addComponentsHandlers(el).then(function() {
     focus.unfocus();
     select.unselect();
-    return select.select(el);
+    select.select(el);
+    return el;
   });
+}
+
+/**
+ * [fakeAnAddToComponentList description]
+ * @param  {[type]} space          [description]
+ * @param  {[type]} componentToAdd [description]
+ * @return {[type]}                [description]
+ */
+function fakeAnAddToComponentList(options, parent, componentToAdd) {
+  return Promise.all([edit.createComponent(componentToAdd)])
+    .then(function(promises) {
+      var res = promises[0],
+        newRef = res._ref,
+        args = {
+          ref: newRef,
+          parentField: parent.path,
+          parentRef: parent.ref,
+          prevRef: options.ref
+        };
+
+      return edit.addToParentList(args)
+        .then(attachHandlersAndFocus)
+        .then(function(el) {
+          // Insert the new component
+          dom.insertAfter(dom.find(parent.listEl, '[data-uri="' + options.ref + '"]'), el);
+          // Close the pane
+          pane.close();
+        });
+    });
 }
 
 module.exports.createSpace = createSpace;
 module.exports.newComponentInLogic = newComponentInLogic;
 module.exports.attachHandlersAndFocus = attachHandlersAndFocus;
+module.exports.fakeAnAddToComponentList = fakeAnAddToComponentList;

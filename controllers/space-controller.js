@@ -1,20 +1,9 @@
 var dom = require('@nymag/dom'),
   _ = require('lodash'),
+  tpl = window.kiln.services.tpl,
   SpaceSettings = require('./space-settings-controller'),
-  kilnServices = window.kiln.services,
-  references = kilnServices.references,
-  tpl = kilnServices.tpl,
-  getAddableComponents = kilnServices.addComponentsHandler.getAddableComponents,
+  utils = require('../services/utils'),
   spaceName = 'clay-space';
-
-function makeComponentListAttr(parent) {
-  var include = _.get(parent, 'list.include') || _.get(parent, 'prop.include'),
-    exclude = _.get(parent, 'list.exclude') || _.get(parent, 'prop.exclude');
-
-  return _.remove(getAddableComponents(include, exclude), function(component) {
-    return component !== spaceName;
-  });
-}
 
 function SpaceController(el, parent) {
   if (!Object.keys(parent).length) {
@@ -32,7 +21,7 @@ function SpaceController(el, parent) {
 
   this.childrenLogics = dom.findAll(this.el, '.space-logic');
 
-  this.el.setAttribute('data-components', makeComponentListAttr(this.parent));
+  this.el.setAttribute('data-components', utils.makeComponentListAttr(this.parent));
 
   this.spaceRef = this.el.getAttribute('data-uri');
 

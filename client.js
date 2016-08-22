@@ -13,12 +13,13 @@ function updateSelector(el, options, parent) {
     selector.addCreateSpaceButton(el, options, parent);
   }
 
-  if (parentIsSpaceLogic) {
-    selector.swapSelectParentButton(el);
-  }
-
   if (isSpaceComponent) {
     SpaceController(el, parent);
+    selector.addToComponentList(el, options, parent);
+  }
+
+  if (parentIsSpaceLogic) {
+    selector.swapSelectParentButton(el);
   }
 }
 
