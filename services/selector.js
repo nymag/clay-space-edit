@@ -49,13 +49,16 @@ function launchAddComponent(element, options, parent) {
  * @param {[type]} parent  [description]
  */
 function addToComponentList(el, options, parent) {
-  var bottom = dom.find(dom.find(dom.find(el, '.space-logic'), '[data-uri]'), '.component-selector-bottom'),
-    addButton = dom.find(bottom, '.selected-add');
+  var logics = dom.findAll(el, '.space-logic');
 
+  _.each(logics, function (logic) {
+    var bottom = dom.find(dom.find(logic, '[data-uri]'), '.component-selector-bottom'),
+      addButton = dom.find(bottom, '.selected-add');
 
-  bottom.classList.remove('kiln-hide');
-  addButton.classList.remove('kiln-hide');
-  addButton.addEventListener('click', launchAddComponent.bind(null, addButton, options, parent));
+    bottom.classList.remove('kiln-hide');
+    addButton.classList.remove('kiln-hide');
+    addButton.addEventListener('click', launchAddComponent.bind(null, addButton, options, parent));
+  });
 }
 
 /**
