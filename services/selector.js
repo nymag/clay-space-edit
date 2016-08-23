@@ -51,7 +51,7 @@ function launchAddComponent(element, options, parent) {
 function addToComponentList(el, options, parent) {
   var logics = el.classList.contains('space-logic') ? [el] : dom.findAll(el, '.space-logic');
 
-  _.each(logics, function (logic) {
+  _.each(logics, function(logic) {
     var bottom = dom.find(dom.find(logic, '[data-uri]'), '.component-selector-bottom'),
       addButton = dom.find(bottom, '.selected-add');
 
@@ -80,7 +80,48 @@ function swapSelectParentButton(el) {
   spaceButton.addEventListener('click', selectSpaceParent.bind(null, el));
 }
 
+/**
+ * [revealAddComponentButton description]
+ * @param  {[type]} el [description]
+ * @return {[type]}    [description]
+ */
+function revealAddComponentButton(el) {
+  var targetComponent = dom.find(el, '[data-uri]'),
+    addComponentButton = dom.find(targetComponent, '.selected-add');
+
+  dom.find(targetComponent, '.component-selector-bottom').classList.remove('kiln-hide');
+  addComponentButton.classList.remove('kiln-hide');
+  addComponentButton.setAttribute('data-components', el.parentElement.getAttribute('data-components'));
+
+  return addComponentButton;
+}
+
+/**
+ * [addBrowseButton description]
+ * @param {[type]} logicComponent [description]
+ */
+function addBrowseButton(logicComponent) {
+  if (dom.find(logicComponent, '.space-browse')) {
+    return false;
+  }
+
+  var embeddedComponent = dom.find(logicComponent, '[data-uri]'),
+    embeddedComponentParentButton = dom.find(embeddedComponent, '.selected-actions'),
+    browseSpaceButton = tpl.get('.browse-space');
+
+  if (!embeddedComponent || !embeddedComponentParentButton) {
+    return this;
+  }
+
+  // Insert the button
+  dom.prependChild(embeddedComponentParentButton, browseSpaceButton);
+
+  return dom.find(embeddedComponent, '.space-browse');
+}
+
 module.exports.addCreateSpaceButton = addCreateSpaceButton;
 module.exports.swapSelectParentButton = swapSelectParentButton;
 module.exports.addToComponentList = addToComponentList;
 module.exports.launchAddComponent = launchAddComponent;
+module.exports.revealAddComponentButton = revealAddComponentButton;
+module.exports.addBrowseButton = addBrowseButton;

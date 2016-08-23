@@ -9,6 +9,7 @@ var dom = require('@nymag/dom'),
   progress = kilnServices.progress,
   select = kilnServices.select,
   edit = kilnServices.edit,
+  addComponent = kilnServices['add-component'],
   spaceName = 'clay-space';
 
 /**
@@ -149,25 +150,9 @@ function attachHandlersAndFocus(el) {
  * @return {[type]}                [description]
  */
 function fakeAnAddToComponentList(options, parent, componentToAdd) {
-  return Promise.all([edit.createComponent(componentToAdd)])
-    .then(function(promises) {
-      var res = promises[0],
-        newRef = res._ref,
-        args = {
-          ref: newRef,
-          parentField: parent.path,
-          parentRef: parent.ref,
-          prevRef: options.ref
-        };
-
-      return edit.addToParentList(args)
-        .then(attachHandlersAndFocus)
-        .then(function(el) {
-          // Insert the new component
-          dom.insertAfter(dom.find(parent.listEl, '[data-uri="' + options.ref + '"]'), el);
-          // Close the pane
-          pane.close();
-        });
+  return addComponent(parent.listEl, parent, componentToAdd, options.ref)
+    .then(function(arg){
+      pane.close();
     });
 }
 

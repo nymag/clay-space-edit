@@ -68,11 +68,13 @@ proto.listItemClick = function(id) {
         }.bind(this))
         .then(function(newEl) {
           return render.addComponentsHandlers(newEl).then(function() {
-
             focus.unfocus();
             select.unselect();
+            // Close a pane
             pane.close();
+            // Invoke callback
             this.callback(newEl);
+            // Update the space editing class
             this.makeNewComponentActive(newEl);
             return select.select(dom.find(newEl, '[data-uri]'));
           }.bind(this));

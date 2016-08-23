@@ -5,7 +5,8 @@ var dom = require('@nymag/dom'),
   utils = require('../services/utils'),
   spaceName = 'clay-space',
   createService = require('../services/create-service'),
-  selectorService = require('../services/selector');
+  selectorService = require('../services/selector'),
+  saveService = require('../services/save-service');
 
 function SpaceController(el, parent) {
   if (!Object.keys(parent).length) {
@@ -27,6 +28,13 @@ function SpaceController(el, parent) {
 
   this.spaceRef = this.el.getAttribute('data-uri');
 
+  window.kiln.on('save', function onLogicSave(component) {
+    if (_.contains(component._ref, 'space-logic') && dom.find(this.el, '[data-uri="' + component._ref + '"]')) {
+      saveService.call(this, component);
+    }
+  }.bind(this));
+
+
   this.init();
 }
 
@@ -36,10 +44,6 @@ var proto = SpaceController.prototype;
 proto.init = function() {
   this.findFirstActive()
     .addButtons();
-};
-
-proto.setupNewSpace = function(newEl) {
-  this.addButtons();
 };
 
 /**
@@ -84,18 +88,14 @@ proto.onAddCallback = function(newEl) {
  * @return {[type]}    [description]
  */
 proto.componentListButton = function(el) {
-  var targetComponent,
-    addComponentButton,
+  var addComponentButton,
     options;
 
   if (!el) {
     return this;
   }
-  targetComponent = dom.find(el, '[data-uri]');
-  addComponentButton = dom.find(targetComponent, '.selected-add');
-  dom.find(targetComponent, '.component-selector-bottom').classList.remove('kiln-hide');
-  addComponentButton.classList.remove('kiln-hide');
-  addComponentButton.setAttribute('data-components', el.parentElement.getAttribute('data-components'));
+
+  addComponentButton = selectorService.revealAddComponentButton(el);
   options = { ref: el.parentElement.getAttribute('data-uri') };
   addComponentButton.addEventListener('click', selectorService.launchAddComponent.bind(null, el, options, this.parent));
 }
@@ -111,19 +111,13 @@ proto.onRemoveCallback = function(component) {
 }
 
 proto.addBrowseButton = function(logicComponent) {
-  var embeddedComponent = dom.find(logicComponent, '[data-uri]'),
-    embeddedComponentParentButton = dom.find(embeddedComponent, '.selected-actions'),
-    browseSpaceButton = tpl.get('.browse-space');
+  var browseButton = selectorService.addBrowseButton(logicComponent);
 
-  if (!embeddedComponent || !embeddedComponentParentButton) {
-    return this;
+  if (!browseButton) {
+    browseButton = dom.find(logicComponent, '.space-browse');
   }
 
-  // Insert the button
-  dom.prependChild(embeddedComponentParentButton, browseSpaceButton);
-
-  dom.find(embeddedComponent, '.space-browse').addEventListener('click', this.browseSpace.bind(this));
-
+  browseButton.addEventListener('click', this.browseSpace.bind(this));
   return this;
 }
 
