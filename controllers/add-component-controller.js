@@ -68,11 +68,12 @@ proto.listItemClick = function(id) {
         }.bind(this))
         .then(function(newEl) {
           return render.addComponentsHandlers(newEl).then(function() {
-            this.makeNewComponentActive(newEl);
+
             focus.unfocus();
             select.unselect();
             pane.close();
             this.callback(newEl);
+            this.makeNewComponentActive(newEl);
             return select.select(dom.find(newEl, '[data-uri]'));
           }.bind(this));
         }.bind(this));
