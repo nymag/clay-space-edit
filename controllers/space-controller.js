@@ -3,7 +3,9 @@ var dom = require('@nymag/dom'),
   tpl = window.kiln.services.tpl,
   SpaceSettings = require('./space-settings-controller'),
   utils = require('../services/utils'),
-  spaceName = 'clay-space';
+  spaceName = 'clay-space',
+  createService = require('../services/create-service'),
+  selectorService = require('../services/selector');
 
 function SpaceController(el, parent) {
   if (!Object.keys(parent).length) {
@@ -37,7 +39,6 @@ proto.init = function() {
 };
 
 proto.setupNewSpace = function(newEl) {
-  this.isNewSpace = false;
   this.addButtons();
 };
 
@@ -66,9 +67,37 @@ proto.browseSpace = function() {
   });
 }
 
+/**
+ * [onAddCallback description]
+ * @param  {[type]} newEl [description]
+ * @return {[type]}       [description]
+ */
 proto.onAddCallback = function(newEl) {
   this.addBrowseButton(newEl)
-    .updateLogicCount(newEl);
+    .updateLogicCount(newEl)
+    .componentListButton(newEl);
+}
+
+/**
+ * [componentListButton description]
+ * @param  {[type]} el [description]
+ * @return {[type]}    [description]
+ */
+proto.componentListButton = function(el) {
+  var targetComponent,
+    addComponentButton,
+    options;
+
+  if (!el) {
+    return this;
+  }
+  targetComponent = dom.find(el, '[data-uri]');
+  addComponentButton = dom.find(targetComponent, '.selected-add');
+  dom.find(targetComponent, '.component-selector-bottom').classList.remove('kiln-hide');
+  addComponentButton.classList.remove('kiln-hide');
+  addComponentButton.setAttribute('data-components', el.parentElement.getAttribute('data-components'));
+  options = { ref: el.parentElement.getAttribute('data-uri') };
+  addComponentButton.addEventListener('click', selectorService.launchAddComponent.bind(null, el, options, this.parent));
 }
 
 /**
@@ -103,11 +132,6 @@ proto.addBrowseButton = function(logicComponent) {
  */
 proto.addButtons = function() {
   var allLogics = dom.findAll(this.el, '.space-logic');
-
-  // Return early if it's a new space
-  if (this.isNewSpace) {
-    return this;
-  }
 
   _.each(allLogics, this.addBrowseButton.bind(this));
 
@@ -150,4 +174,5 @@ proto.updateLogicCount = function(component) {
 }
 
 module.exports = function(el, parent) {
-  return new SpaceController(el, parent) };
+  return new SpaceController(el, parent)
+};
