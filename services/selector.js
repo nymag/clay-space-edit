@@ -49,7 +49,7 @@ function launchAddComponent(element, options, parent) {
  * @param {[type]} parent  [description]
  */
 function addToComponentList(el, options, parent) {
-  var logics = dom.findAll(el, '.space-logic');
+  var logics = el.classList.contains('space-logic') ? [el] : dom.findAll(el, '.space-logic');
 
   _.each(logics, function (logic) {
     var bottom = dom.find(dom.find(logic, '[data-uri]'), '.component-selector-bottom'),
@@ -83,3 +83,4 @@ function swapSelectParentButton(el) {
 module.exports.addCreateSpaceButton = addCreateSpaceButton;
 module.exports.swapSelectParentButton = swapSelectParentButton;
 module.exports.addToComponentList = addToComponentList;
+module.exports.launchAddComponent = launchAddComponent;
