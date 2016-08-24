@@ -1,5 +1,4 @@
-var _ = require('lodash'),
-  dom = require('@nymag/dom'),
+var dom = require('@nymag/dom'),
   kilnServices = window.kiln.services,
   select = kilnServices.select;
 

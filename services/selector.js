@@ -4,7 +4,6 @@ var _ = require('lodash'),
   tpl = kilnServices.tpl,
   filterableList = kilnServices['filterable-list'],
   pane = kilnServices.pane,
-  utils = require('./utils'),
   createService = require('./create-service'),
   removeService = require('./remove-service'),
   selectSpaceParent = require('./select-space-parent'),
@@ -12,9 +11,9 @@ var _ = require('lodash'),
 
 /**
  * [addCreateSpaceButton description]
- * @param {[type]} el      [description]
- * @param {[type]} options [description]
- * @param {[type]} parent  [description]
+ * @param {[type]} el
+ * @param {[type]} options
+ * @param {[type]} parent
  */
 function addCreateSpaceButton(el, options, parent) {
   var parentButton = dom.find(el, '.selected-actions'),
@@ -29,10 +28,9 @@ function addCreateSpaceButton(el, options, parent) {
 
 /**
  * [launchAddComponent description]
- * @param  {[type]} element [description]
- * @param  {[type]} options [description]
- * @param  {[type]} parent  [description]
- * @return {[type]}         [description]
+ * @param  {[type]} element
+ * @param  {[type]} options
+ * @param  {[type]} parent
  */
 function launchAddComponent(element, options, parent) {
   var spaceParent = dom.closest(element, '.clay-space'),
@@ -46,16 +44,16 @@ function launchAddComponent(element, options, parent) {
 
 /**
  * [addCreateSpaceButton description]
- * @param {[type]} el      [description]
- * @param {[type]} options [description]
- * @param {[type]} parent  [description]
+ * @param {[type]} el
+ * @param {[type]} options
+ * @param {[type]} parent
  */
 function addToComponentList(el, options, parent) {
   var logics = el.classList.contains('space-logic') ? [el] : dom.findAll(el, '.space-logic'),
     bottom,
     addButton;
 
-  _.each(logics, function(logic) {
+  _.each(logics, function (logic) {
     bottom = dom.find(dom.find(logic, '[data-uri]'), '.component-selector-bottom');
 
     if (bottom) {
@@ -69,8 +67,7 @@ function addToComponentList(el, options, parent) {
 
 /**
  * [swapSelectParentButton description]
- * @param  {[type]} el [description]
- * @return {[type]}    [description]
+ * @param  {[type]} el
  */
 function swapSelectParentButton(el) {
   var kilnParentButton = dom.find(el, '.selected-info-parent'),
@@ -89,8 +86,8 @@ function swapSelectParentButton(el) {
 
 /**
  * [revealAddComponentButton description]
- * @param  {[type]} el [description]
- * @return {[type]}    [description]
+ * @param  {[type]} el
+ * @return {[type]}
  */
 function revealAddComponentButton(el) {
   var targetComponent = dom.find(el, '[data-uri]'),
@@ -105,14 +102,15 @@ function revealAddComponentButton(el) {
 
 /**
  * [addBrowseButton description]
- * @param {[type]} logicComponent [description]
+ * @param {[type]} logicComponent
+ * @return {SpaceController}
  */
 function addBrowseButton(logicComponent) {
   var targetButton = dom.find(logicComponent, '.space-browse'),
     embeddedComponent,
     embeddedComponentParentButton,
     browseSpaceButton,
-    browseButton
+    browseButton;
 
   // If there's not a `targetButton`, add it!
   if (!targetButton) {
@@ -127,7 +125,7 @@ function addBrowseButton(logicComponent) {
     // Assign the proper reference to `browseButton`
     browseButton = targetButton ? targetButton : dom.find(logicComponent, '.space-browse');
     // Add an event listener
-    browseButton.addEventListener('click', function() {
+    browseButton.addEventListener('click', function () {
       SpaceSettings(this.el, {
         add: this.onAddCallback.bind(this),
         remove: this.onRemoveCallback.bind(this)
