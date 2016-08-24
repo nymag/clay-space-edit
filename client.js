@@ -8,7 +8,7 @@ function updateSelector(el, options, parent) {
   var isSpaceComponent = el.classList.contains(spaceName),
     parentIsSpaceLogic = parent.ref && parent.ref.indexOf('space-logic') > -1;
 
-  if (_.get(parent, 'list.include', '') && _.contains(parent.list.include, spaceName) && !isSpaceComponent) {
+  if (_.get(parent, 'list.include', '') && _.includes(parent.list.include, spaceName) && !isSpaceComponent) {
     selector.addCreateSpaceButton(el, options, parent);
   }
 
