@@ -1,28 +1,39 @@
 var dom = require('@nymag/dom'),
   _ = require('lodash'),
+  tpl = window.kiln.services.tpl,
   SpaceSettings = require('./space-settings-controller'),
-  kilnServices = window.kiln.services,
-  references = kilnServices.references,
-  tpl = kilnServices.tpl,
-  getAddableComponents = kilnServices.addComponentsHandler.getAddableComponents,
-  spaceName = 'clay-space';
+  utils = require('../services/utils'),
+  spaceName = 'clay-space',
+  createService = require('../services/create-service'),
+  selectorService = require('../services/selector'),
+  saveService = require('../services/save-service');
 
-function makeComponentListAttr(parent) {
-  var include = _.get(parent, 'list.include') || _.get(parent, 'prop.include'),
-  exclude = _.get(parent, 'list.exclude') || _.get(parent, 'prop.exclude');
+function SpaceController(el, parent) {
+  if (!Object.keys(parent).length) {
+    // Whenever a new space is first created, Kiln does not
+    // have reference to its parent's schema/component list
+    // information. Because of this we can't add new components
+    // properly. To fix this, trigger a reload if this
+    // is a brand new Space component.
+    window.location.reload();
+  }
 
-  return _.remove(getAddableComponents(include, exclude), function(component) {
-    return component !== spaceName;
-  });
-}
-
-function SpaceController(el, options, parent) {
   this.el = el;
-  this.options = options;
+
   this.parent = parent;
-  this.browseButton;
-  this.childrenComponents = dom.findAll(this.el, '.space-logic');
-  this.el.setAttribute('data-components', makeComponentListAttr(this.parent));
+
+  this.childrenLogics;
+
+  this.el.setAttribute('data-components', utils.makeComponentListAttr(this.parent));
+
+  this.spaceRef = this.el.getAttribute('data-uri');
+
+  window.kiln.on('save', function onLogicSave(component) {
+    if (_.contains(component._ref, 'space-logic') && dom.find(this.el, '[data-uri="' + component._ref + '"]')) {
+      saveService.call(this, component);
+    }
+  }.bind(this));
+
 
   this.init();
 }
@@ -31,8 +42,9 @@ var proto = SpaceController.prototype;
 
 
 proto.init = function() {
-  this.findFirstActive()
-    .addBrowseSpaceButton();
+  this.updateChildrenCount()
+    .findFirstActive()
+    .addButtons();
 };
 
 /**
@@ -43,40 +55,71 @@ proto.findFirstActive = function() {
 
   if (activeChild) {
     activeChild.classList.add('space-logic-editing');
-  } else if (!activeChild && this.childrenComponents.length) {
-    this.childrenComponents[this.childrenComponents.length - 1].classList.add('space-logic-active', 'space-logic-editing');
+  } else if (!activeChild && this.childrenLogics.length) {
+    this.childrenLogics[this.childrenLogics.length - 1].classList.add('space-logic-active', 'space-logic-editing');
   }
 
   return this;
 }
 
 /**
- * Launch a filterable list using the BrowseSpace controller
+ * [onAddCallback description]
+ * @param  {[type]} newEl [description]
+ * @return {[type]}       [description]
  */
-proto.browseSpace = function() {
-  SpaceSettings(this.el, {
-    add: this.updateLogicCount.bind(this),
-    remove: this.onRemoveCallback.bind(this)
-  });
+proto.onAddCallback = function(newEl) {
+  selectorService.addBrowseButton.call(this, newEl);
+  selectorService.addRemoveButton.call(this, newEl);
+  this.updateChildrenCount()
+    .updateLogicCount(newEl)
+    .componentListButton(newEl);
 }
 
+proto.updateChildrenCount = function() {
+  this.childrenLogics = dom.findAll(this.el, '.space-logic');
+  return this;
+}
+
+/**
+ * [componentListButton description]
+ * @param  {[type]} el [description]
+ * @return {[type]}    [description]
+ */
+proto.componentListButton = function(el) {
+  var addComponentButton,
+    options;
+
+  if (!el) {
+    return this;
+  }
+
+  addComponentButton = selectorService.revealAddComponentButton(el);
+  options = { ref: el.parentElement.getAttribute('data-uri') };
+  addComponentButton.addEventListener('click', selectorService.launchAddComponent.bind(null, el, options, this.parent));
+}
+
+/**
+ * [onRemoveCallback description]
+ * @param  {[type]} component [description]
+ * @return {[type]}           [description]
+ */
 proto.onRemoveCallback = function(component) {
-  this.updateLogicCount(component)
+  this.updateChildrenCount()
+    .updateLogicCount(component)
     .findFirstActive();
 }
 
 /**
  * Add the button to browse the space
  */
-proto.addBrowseSpaceButton = function() {
-  var parentButton = dom.find(this.el, '.selected-info-parent'),
-    browseSpaceButton = tpl.get('.browse-space');
+proto.addButtons = function() {
+  _.each(this.childrenLogics, function(logic) {
+    selectorService.addBrowseButton.call(this, logic);
+    selectorService.addRemoveButton.call(this, logic);
+  }.bind(this));
 
-  // Insert the button
-  dom.insertAfter(parentButton, browseSpaceButton);
-
-  this.browseButton = dom.find(this.el, '.space-browse');
-  this.browseButton.addEventListener('click', this.browseSpace.bind(this));
+  // Get count of logics
+  // TODO: Count on each button
   this.findLogicCount();
 
   return this;
@@ -87,10 +130,12 @@ proto.addBrowseSpaceButton = function() {
  * and put that number in the browse space button
  */
 proto.findLogicCount = function() {
-  var logicCount = dom.findAll(this.el, '.space-logic').length,
-    countElement = dom.find(this.browseButton, '.logic-count');
+  var logicCount = this.childrenLogics.length,
+    countElement = dom.findAll(this.el, '.logic-count');
 
-  countElement.innerHTML = logicCount;
+  _.each(countElement, function(count) {
+    count.innerHTML = logicCount;
+  });
 
   return this;
 };
@@ -111,4 +156,6 @@ proto.updateLogicCount = function(component) {
   return this;
 }
 
-module.exports = function(el, options, parent) { return new SpaceController(el, options, parent)};
+module.exports = function(el, parent) {
+  return new SpaceController(el, parent)
+};

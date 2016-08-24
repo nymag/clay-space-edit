@@ -1,20 +1,21 @@
 $UI_PRIMARY: #B4A5BC;
 $UI_BUTTON: #694C79;
 
+.clay-space > .component-selector,
 .space-logic > .component-selector,
 .clay-space > .space-logic {
   display: none;
 }
 
-.clay-space > .space-logic-active,
+// .clay-space > .space-logic-active,
 .clay-space > .space-logic-editing  {
   display: block;
 }
 
-.clay-space.clay-space-edit > .space-logic-active ~ .space-logic-active,
-.clay-space.clay-space-edit > .space-logic-editing ~ .space-logic-active {
-  display: none;
-}
+// .clay-space.clay-space-edit > .space-logic-active ~ .space-logic-active,
+// .clay-space.clay-space-edit > .space-logic-editing ~ .space-logic-active {
+//   display: none;
+// }
 
 .filtered-item-title-sub {
   font-size: 10px;
@@ -38,12 +39,14 @@ $UI_BUTTON: #694C79;
 }
 
 .space-create {
+  border-left: 1px solid $UI_PRIMARY;
   padding: 16px 14px;
 }
 
 .space-browse {
-  position: relative;
+  border-left: 1px solid $UI_PRIMARY;
   padding: 17px 14px;
+  position: relative;
 
   .logic-count {
     bottom: 13px;

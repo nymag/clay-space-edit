@@ -4,7 +4,8 @@ var _ = require('lodash'),
   select = kilnServices.select;
 
 function selectSpaceParent(el, e) {
-  var spaceParent = dom.closest(el, '.clay-space');
+  var spaceParent = dom.closest(el, '.clay-space'),
+    targetComponent = dom.closest(spaceParent.parentElement, '[data-uri]');
 
   // Stop propagation to make sure the child
   // component isn't selected again
@@ -13,7 +14,7 @@ function selectSpaceParent(el, e) {
   // Unselect any currently selected component
   select.unselect();
   // Select the parent
-  select.select(spaceParent);
+  select.select(targetComponent);
 }
 
 module.exports = selectSpaceParent;
