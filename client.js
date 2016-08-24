@@ -1,5 +1,4 @@
-var dom = require('@nymag/dom'),
-  _ = require('lodash'),
+var _ = require('lodash'),
   spaceName = 'clay-space',
   selector = require('./services/selector'),
   SpaceController = require('./controllers/space-controller');

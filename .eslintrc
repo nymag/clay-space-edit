@@ -41,7 +41,7 @@
     "complexity": [2, 8],
     "default-case": 2,
     "guard-for-in": 2,
-    "no-alert": 1,
+    "no-alert": 0,
     "no-floating-decimal": 1,
     "no-self-compare": 2,
     "no-throw-literal": 2,

@@ -1,12 +1,9 @@
 var dom = require('@nymag/dom'),
   _ = require('lodash'),
-  tpl = window.kiln.services.tpl,
-  SpaceSettings = require('./space-settings-controller'),
   utils = require('../services/utils'),
-  spaceName = 'clay-space',
-  createService = require('../services/create-service'),
   selectorService = require('../services/selector'),
-  saveService = require('../services/save-service');
+  saveService = require('../services/save-service'),
+  proto;
 
 function SpaceController(el, parent) {
   if (!Object.keys(parent).length) {
@@ -38,10 +35,10 @@ function SpaceController(el, parent) {
   this.init();
 }
 
-var proto = SpaceController.prototype;
+proto = SpaceController.prototype;
 
 
-proto.init = function() {
+proto.init = function () {
   this.updateChildrenCount()
     .findFirstActive()
     .addButtons();
@@ -49,8 +46,9 @@ proto.init = function() {
 
 /**
  * Find the first logic component that's active
+ * @returns {SpaceController}
  */
-proto.findFirstActive = function() {
+proto.findFirstActive = function () {
   var activeChild = dom.find(this.el, '.space-logic-active');
 
   if (activeChild) {
@@ -60,60 +58,62 @@ proto.findFirstActive = function() {
   }
 
   return this;
-}
+};
 
 /**
- * [onAddCallback description]
- * @param  {[type]} newEl [description]
- * @return {[type]}       [description]
+ * Called after a componet is added to a space
+ * @param {Element} newEl [description]
  */
-proto.onAddCallback = function(newEl) {
+proto.onAddCallback = function (newEl) {
   selectorService.addBrowseButton.call(this, newEl);
   selectorService.addRemoveButton.call(this, newEl);
   this.updateChildrenCount()
     .updateLogicCount(newEl)
     .componentListButton(newEl);
-}
-
-proto.updateChildrenCount = function() {
-  this.childrenLogics = dom.findAll(this.el, '.space-logic');
-  return this;
-}
+};
 
 /**
- * [componentListButton description]
- * @param  {[type]} el [description]
- * @return {[type]}    [description]
+ * [updateChildrenCount description]
+ * @returns {SpaceController}
  */
-proto.componentListButton = function(el) {
+proto.updateChildrenCount = function () {
+  this.childrenLogics = dom.findAll(this.el, '.space-logic');
+  return this;
+};
+
+/**
+ *
+ * @param  {Element} el
+ * @returns {SpaceController}
+ */
+proto.componentListButton = function (el) {
   var addComponentButton,
     options;
 
-  if (!el) {
-    return this;
+  if (el) {
+    addComponentButton = selectorService.revealAddComponentButton(el);
+    options = { ref: el.parentElement.getAttribute('data-uri') };
+    addComponentButton.addEventListener('click', selectorService.launchAddComponent.bind(null, el, options, this.parent));
   }
 
-  addComponentButton = selectorService.revealAddComponentButton(el);
-  options = { ref: el.parentElement.getAttribute('data-uri') };
-  addComponentButton.addEventListener('click', selectorService.launchAddComponent.bind(null, el, options, this.parent));
-}
+  return this;
+};
 
 /**
- * [onRemoveCallback description]
- * @param  {[type]} component [description]
- * @return {[type]}           [description]
+ * @param  {Element} component
  */
-proto.onRemoveCallback = function(component) {
+proto.onRemoveCallback = function (component) {
   this.updateChildrenCount()
     .updateLogicCount(component)
     .findFirstActive();
-}
+};
 
 /**
  * Add the button to browse the space
+ * @returns {SpaceController}
  */
-proto.addButtons = function() {
-  _.each(this.childrenLogics, function(logic) {
+proto.addButtons = function () {
+  _.each(this.childrenLogics, function (logic) {
     selectorService.addBrowseButton.call(this, logic);
     selectorService.addRemoveButton.call(this, logic);
   }.bind(this));
@@ -123,17 +123,18 @@ proto.addButtons = function() {
   this.findLogicCount();
 
   return this;
-}
+};
 
 /**
  * Find the number of logic components within a space
  * and put that number in the browse space button
+ * @returns {SpaceController}
  */
-proto.findLogicCount = function() {
+proto.findLogicCount = function () {
   var logicCount = this.childrenLogics.length,
     countElement = dom.findAll(this.el, '.logic-count');
 
-  _.each(countElement, function(count) {
+  _.each(countElement, function (count) {
     count.innerHTML = logicCount;
   });
 
@@ -145,17 +146,18 @@ proto.findLogicCount = function() {
  * browse button. Triggered on addition/removal of
  * logic components
  *
- * @param  {element} component
+ * @param {Element} component
+ * @returns {SpaceController}
  */
-proto.updateLogicCount = function(component) {
+proto.updateLogicCount = function (component) {
   this.el = component ? dom.closest(component, '.clay-space') : this.el;
 
   this.findLogicCount()
     .findFirstActive();
 
   return this;
-}
+};
 
-module.exports = function(el, parent) {
-  return new SpaceController(el, parent)
+module.exports = function (el, parent) {
+  return new SpaceController(el, parent);
 };

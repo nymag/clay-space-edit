@@ -1,5 +1,4 @@
 var dom = require('@nymag/dom'),
-  _ = require('lodash'),
   kilnServices = window.kiln.services,
   edit = kilnServices.edit,
   createService = require('./create-service'),
@@ -9,15 +8,16 @@ var dom = require('@nymag/dom'),
 
 
 function onLogicSave(logic) {
-
   var targetLogic = dom.find(document, '[data-uri="' + logic._ref + '"]'),
-    query = { 'currentUrl': window.location.href };
+    query = { currentUrl: window.location.href };
 
   return edit.getHTMLWithQuery(logic._ref, query)
-    .then(function(html) {
+    .then(function (html) {
       return createService.attachHandlersAndFocus(html)
-        .then(function() {
-          var newComponent = dom.find(document, '[data-uri="' + logic._ref + '"]')
+        .then(function () {
+          var newComponent = dom.find(document, '[data-uri="' + logic._ref + '"]'),
+            addComponentButton;
+
           // Replace the targetLogic with the new HTML
           dom.replaceElement(targetLogic, html);
           // TODO: Figure out why adding a class to `html` isn't persisting
@@ -26,10 +26,10 @@ function onLogicSave(logic) {
             newComponent.classList.add(editingClass);
           }
 
-          var addComponentButton = selectorService.revealAddComponentButton(newComponent);
+          addComponentButton = selectorService.revealAddComponentButton(newComponent);
 
           this.addButtons();
-          addComponentButton.addEventListener('click', selectorService.launchAddComponent.bind(null, newComponent, {ref: this.spaceRef}, this.parent));
+          addComponentButton.addEventListener('click', selectorService.launchAddComponent.bind(null, newComponent, { ref: this.spaceRef }, this.parent));
         }.bind(this));
     }.bind(this));
 }

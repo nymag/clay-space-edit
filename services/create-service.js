@@ -6,20 +6,18 @@ var dom = require('@nymag/dom'),
   focus = kilnServices.focus,
   select = kilnServices.select,
   pane = kilnServices.pane,
-  progress = kilnServices.progress,
   select = kilnServices.select,
   edit = kilnServices.edit,
-  addComponent = kilnServices['add-component'],
-  spaceName = 'clay-space';
+  addComponent = kilnServices['add-component'];
 
 /**
  * [newComponentInLogic description]
- * @param  {[type]} componentName [description]
- * @return {[type]}               [description]
+ * @param  {string} componentName
+ * @return {Promise}
  */
 function newComponentInLogic(componentName) {
   return edit.createComponent(componentName)
-    .then(function(component) {
+    .then(function (component) {
       return edit.createComponent('space-logic', {
         embededComponent: {
           ref: component._ref,
@@ -42,7 +40,7 @@ function wrapInLogic(clickedComponent, options, parent) {
   return Promise.all([
     edit.createComponent('space-logic', { embededComponent: options }),
     edit.removeFromParentList({ el: clickedComponent, ref: options.ref, parentField: parent.path, parentRef: parent.ref })
-  ]).then(function(resp) {
+  ]).then(function (resp) {
     return resp[0];
   });
 }
@@ -59,11 +57,11 @@ function findPrevRef(targetComponent) {
     prevRef = '',
     above = false;
 
-    _.forEach(allComponentsInList, function (component, index) {
-      if (targetRef === component.getAttribute('data-uri')) {
-        indexOfTarget = index;
-      }
-    });
+  _.forEach(allComponentsInList, function (component, index) {
+    if (targetRef === component.getAttribute('data-uri')) {
+      indexOfTarget = index;
+    }
+  });
 
   if (!indexOfTarget) {
     prevRef = allComponentsInList[indexOfTarget + 1].getAttribute('data-uri');
@@ -72,20 +70,21 @@ function findPrevRef(targetComponent) {
     prevRef = allComponentsInList[indexOfTarget - 1].getAttribute('data-uri');
   }
 
-  return {prevRef: prevRef, above: above};
+  return { prevRef: prevRef, above: above };
 }
 
 /**
  * [addInSpace description]
- * @param {[type]} options        [description]
- * @param {[type]} parent         [description]
- * @param {[type]} logicComponent [description]
+ * @param {Object} options
+ * @param {Object} parent
+ * @param {Object} position
+ * @param {Element} logicComponent
+ * @return {Promise}
  */
 function addInSpace(options, parent, position, logicComponent) {
   return Promise.all([edit.createComponent('clay-space', { content: [{ _ref: logicComponent[references.referenceProperty] }] }), edit.getData(parent.ref)])
-    .then(function(promises) {
+    .then(function (promises) {
       var res = promises[0],
-        parentRes = promises[1],
         newRef = res._ref,
         args = {
           ref: newRef,
@@ -96,7 +95,7 @@ function addInSpace(options, parent, position, logicComponent) {
         };
 
       return edit.addToParentList(args)
-        .then(function(newEl) {
+        .then(function (newEl) {
           return attachHandlersAndFocus(newEl);
         });
     });
@@ -104,26 +103,28 @@ function addInSpace(options, parent, position, logicComponent) {
 
 /**
  * [createSpace description]
- * @param  {[type]} options [description]
- * @param  {[type]} parent  [description]
- * @param  {[type]} e       [description]
- * @return {[type]}         [description]
+ * @param  {Object} options
+ * @param  {Object} parent
+ * @return {Promise}
  */
-function createSpace(options, parent, e) {
+function createSpace(options, parent) {
+  var clickedComponent,
+    position;
+
   if (!confirmMakeSpace()) {
     return null;
   }
 
-  var clickedComponent = dom.find(parent.el, '[data-uri="' + options.ref + '"]'),
-    position = findPrevRef(clickedComponent);
+  clickedComponent = dom.find(parent.el, '[data-uri="' + options.ref + '"]');
+  position = findPrevRef(clickedComponent);
 
   return wrapInLogic(clickedComponent, options, parent)
-    .then(addInSpace.bind(null, options, parent, position))
+    .then(addInSpace.bind(null, options, parent, position));
 }
 
 /**
  * [confirmMakeSpace description]
- * @return {[type]} [description]
+ * @return {Boolean}
  */
 function confirmMakeSpace() {
   return window.confirm('Do you really want to make a new Space?');
@@ -135,7 +136,7 @@ function confirmMakeSpace() {
  * @return {[type]}    [description]
  */
 function attachHandlersAndFocus(el) {
-  return render.addComponentsHandlers(el).then(function() {
+  return render.addComponentsHandlers(el).then(function () {
     focus.unfocus();
     select.unselect();
     select.select(el);
@@ -145,13 +146,14 @@ function attachHandlersAndFocus(el) {
 
 /**
  * [fakeAnAddToComponentList description]
- * @param  {[type]} space          [description]
- * @param  {[type]} componentToAdd [description]
- * @return {[type]}                [description]
+ * @param  {Object} options
+ * @param  {Object} parent
+ * @param  {String} componentToAdd
+ * @return {Promise}
  */
 function fakeAnAddToComponentList(options, parent, componentToAdd) {
   return addComponent(parent.listEl, parent, componentToAdd, options.ref)
-    .then(function(arg){
+    .then(function () {
       pane.close();
     });
 }

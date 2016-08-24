@@ -4,32 +4,19 @@ var dom = require('@nymag/dom'),
   kilnServices = window.kiln.services,
   references = kilnServices.references,
   pane = kilnServices.pane,
-  render = kilnServices.render,
   focus = kilnServices.focus,
-  select = kilnServices.select,
   forms = kilnServices.forms,
   label = kilnServices.label,
   edit = kilnServices.edit,
   removeService = require('../services/remove-service'),
   createService = require('../services/create-service'),
   filterableList = kilnServices['filterable-list'],
-  activeClass = 'space-logic-active',
-  editingClass = 'space-logic-editing';
+  editingClass = 'space-logic-editing',
+  proto;
 
 /**
- * [getUpdatedHtml description]
- * @param  {[type]} uri   [description]
- * @param  {[type]} query [description]
- * @return {[type]}       [description]
- */
-function getUpdatedHtml(uri, query) {
-  return edit.getHTMLWithQuery(uri, query);
-}
-
-/**
- * [BrowseController description]
- * @param {[type]} parent  [description]
- * @param {[type]} e       [description]
+ * @param {Element} el
+ * @param {Object} callbacks
  */
 function BrowseController(el, callbacks) {
   /**
@@ -61,15 +48,12 @@ function BrowseController(el, callbacks) {
   this.launchPane();
 }
 
-var proto = BrowseController.prototype;
+proto = BrowseController.prototype;
 
 /**
- * [launchPane description]
- * @return {[type]} [description]
+ * Open the settins pane
  */
-
-
-proto.launchPane = function() {
+proto.launchPane = function () {
   var paneContent = this.markActiveInList(filterableList.create(this.componentList, {
     click: this.listItemClick.bind(this),
     reorder: this.reorder.bind(this),
@@ -80,29 +64,30 @@ proto.launchPane = function() {
   }));
 
   pane.open([{ header: 'Match Criteria - Show First Match', content: paneContent }]);
-}
+};
 
-
-proto.addComponent = function() {
+/**
+ * Launch the AddController
+ */
+proto.addComponent = function () {
   AddController(this.el, this.callbacks.add);
-}
+};
 
 /**
  * [findChildrenMakeList description]
- * @param  {[type]} parent [description]
- * @return {[type]}        [description]
+ * @param  {Element} el
  */
-proto.findChildrenMakeList = function(el) {
+proto.findChildrenMakeList = function (el) {
   this.childComponents = dom.findAll(el, '.space-logic');
   this.componentList = this.makeList(this.childComponents);
-}
+};
 
 /**
  * Apply active styling to the proper item in the filterable list
  * @param  {element} listHtml
- * @return {element}
+ * @returns {element}
  */
-proto.markActiveInList = function(listHtml) {
+proto.markActiveInList = function (listHtml) {
   _.each(this.childComponents, function (logicComponent) {
     if (logicComponent.classList.contains(editingClass)) {
       dom.find(listHtml, '[data-item-id="' + logicComponent.getAttribute('data-uri') + '"]').classList.add('active');
@@ -110,16 +95,16 @@ proto.markActiveInList = function(listHtml) {
   });
 
   return listHtml;
-}
+};
 
 /**
  * Delete a component from a space
  *
  * @param  {string} id The `id` value of the item in the filterable list that was clicked
  */
-proto.remove = function(id) {
+proto.remove = function (id) {
   removeService.removeLogic(id, this.el)
-    .then(function(newHtml) {
+    .then(function () {
       // Make new component list from the returned HTML
       this.findChildrenMakeList(this.el);
 
@@ -130,15 +115,15 @@ proto.remove = function(id) {
       // Launch new pane with updated components
       this.launchPane();
     }.bind(this));
-}
+};
 
 /**
  * [makeList description]
- * @param  {[type]} components [description]
- * @return {[type]}            [description]
+ * @param  {Array} components
+ * @return {Object}
  */
-proto.makeList = function(components) {
-  return _.map(components, function(item) {
+proto.makeList = function (components) {
+  return _.map(components, function (item) {
     var childComponent = dom.find(item, '[data-uri]'),
       componentType = references.getComponentNameFromReference(childComponent.getAttribute('data-uri')),
       componentTitle = label(componentType),
@@ -149,14 +134,14 @@ proto.makeList = function(components) {
     return {
       title: componentTitle,
       id: item.getAttribute('data-uri')
-    }
+    };
   });
-}
+};
 
 /**
  * [findTags description]
- * @param  {[type]} logic [description]
- * @return {[type]}       [description]
+ * @param  {[type]} logic
+ * @return {[type]}
  */
 function findTags(logic) {
   var tags = logic.getAttribute('data-logic-tags');
@@ -166,35 +151,34 @@ function findTags(logic) {
   } else {
     return '';
   }
-}
+};
 
 /**
  * [reorder description]
- * @param  {[type]} id       [description]
- * @param  {[type]} newIndex [description]
- * @param  {[type]} oldIndex [description]
- * @return {[type]}          [description]
+ * @param  {string} id
+ * @param  {number} newIndex
+ * @param  {number} oldIndex
  */
-proto.reorder = function(id, newIndex, oldIndex) {
+proto.reorder = function (id, newIndex, oldIndex) {
   var data = { _ref: this.spaceRef },
-    content = _.map(this.componentList, function(item) {
-      return { _ref: item.id }
+    content = _.map(this.componentList, function (item) {
+      return { _ref: item.id };
     });
 
-  content.splice(newIndex, 0, content.splice(oldIndex, 1)[0]); //reorder the array
+  content.splice(newIndex, 0, content.splice(oldIndex, 1)[0]); // reorder the array
   data.content = content;
 
   // Save the space
   edit.savePartial(data)
-    .then(function(newHtml) {
+    .then(function (newHtml) {
       var newChildHtmlPromises;
 
       // Make new component list from the returned HTML
       this.findChildrenMakeList(newHtml);
 
       // Make an array of promises for the updated children HTML
-      newChildHtmlPromises = _.map(this.childComponents, function(logicComponent) {
-        var query = { 'currentUrl': window.location.href };
+      newChildHtmlPromises = _.map(this.childComponents, function (logicComponent) {
+        var query = { currentUrl : window.location.href };
 
         return edit.getHTMLWithQuery(logicComponent.getAttribute('data-uri'), query);
       });
@@ -204,23 +188,23 @@ proto.reorder = function(id, newIndex, oldIndex) {
         .then(createService.attachHandlersAndFocus);
 
     }.bind(this));
-}
+};
 
 /**
  * [renderUpdatedSpace description]
- * @param  {[type]} resp [description]
- * @return {[type]}      [description]
+ * @param  {Element} resp
+ * @return {Element}
  */
-proto.renderUpdatedSpace = function(resp) {
+proto.renderUpdatedSpace = function (resp) {
   var space = this.el,
     spaceChildren = dom.findAll(this.el, '.space-logic'),
     spaceOnPage = dom.find(document, '[data-uri="' + this.spaceRef + '"]');
 
-  _.forEach(spaceChildren, function(child) {
+  _.forEach(spaceChildren, function (child) {
     child.parentNode.removeChild(child);
   });
 
-  _.forEach(resp, function(logicComponent) {
+  _.forEach(resp, function (logicComponent) {
     space.appendChild(logicComponent);
   });
 
@@ -228,44 +212,41 @@ proto.renderUpdatedSpace = function(resp) {
   this.findChildrenMakeList(space);
 
   return space;
-}
+};
 
 /**
  * [listItemClick description]
- * @return {[type]} [description]
+ * @param {string} id
  */
-proto.listItemClick = function(id) {
+proto.listItemClick = function (id) {
   var newActive = dom.find(this.el, '[data-uri="' + id + '"]');
 
-  _.each(this.childComponents, function(el) {
+  _.each(this.childComponents, function (el) {
     el.classList.remove(editingClass);
   });
 
   newActive.classList.add(editingClass);
 
   pane.close();
-}
+};
 
 /**
- * [settings description]
- * @param  {[type]} id [description]
- * @return {[type]}    [description]
+ * @param  {string} id
  */
-proto.settings = function(id) {
-  focus.unfocus().then(function() {
+proto.settings = function (id) {
+  focus.unfocus().then(function () {
     return forms.open(id, document.body);
   }).catch(_.noop);
-}
+};
 
 /**
  * [spaceSettings description]
- * @param  {[type]} options [description]
- * @param  {[type]} parent  [description]
- * @param  {[type]} e       [description]
- * @return {[type]}         [description]
+ * @param  {Object} parent
+ * @param  {Object} callbacks
+ * @return {BrowseController}
  */
 function spaceSettings(parent, callbacks) {
   return new BrowseController(parent, callbacks);
-}
+};
 
 module.exports = spaceSettings;
