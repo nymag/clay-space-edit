@@ -22,6 +22,21 @@ function removeLogic(ref, parent) {
   return edit.removeFromParentList(removeOpts)
 }
 
+/**
+ * [removeSpace description]
+ * @return {[type]} [description]
+ */
+function removeSpace(space, parent) {
+  var removeOpts = {
+    el: space,
+    ref: space.getAttribute('data-uri'),
+    parentField: parent.path,
+    parentRef: parent.ref
+  };
+
+  return edit.removeFromParentList(removeOpts)
+}
+
 
 /**
  * [removeIconClick description]
@@ -52,9 +67,13 @@ function findNextActive(index, newEl) {
   } else if (this.childrenLogics[index - 1]) {
     this.childrenLogics[index - 1].classList.add('space-logic-editing');
   } else {
-    console.log('Nothing else in space!');
+    if (window.confirm('You are removing the last component in this Space, this will remove the Space entirely from the page, is this ok?')) {
+      removeSpace(this.el, this.parent);
+      delete(this);
+    }
   }
 }
 
 module.exports.removeLogic = removeLogic;
+module.exports.removeSpace = removeSpace;
 module.exports.removeIconClick = removeIconClick;
