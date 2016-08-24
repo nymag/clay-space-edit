@@ -6,7 +6,9 @@ var _ = require('lodash'),
   pane = kilnServices.pane,
   utils = require('./utils'),
   createService = require('./create-service'),
-  selectSpaceParent = require('./select-space-parent');
+  removeService = require('./remove-service'),
+  selectSpaceParent = require('./select-space-parent'),
+  SpaceSettings = require('../controllers/space-settings-controller');
 
 /**
  * [addCreateSpaceButton description]
@@ -15,11 +17,11 @@ var _ = require('lodash'),
  * @param {[type]} parent  [description]
  */
 function addCreateSpaceButton(el, options, parent) {
-  var parentButton = dom.find(el, '.selected-action-settings'),
+  var parentButton = dom.find(el, '.selected-actions'),
     createSpaceButton = tpl.get('.create-space'),
     createButton;
 
-  dom.insertAfter(parentButton, createSpaceButton);
+  parentButton.appendChild(createSpaceButton);
 
   createButton = dom.find(el, '.space-create');
   createButton.addEventListener('click', createService.createSpace.bind(null, options, parent));
@@ -49,15 +51,19 @@ function launchAddComponent(element, options, parent) {
  * @param {[type]} parent  [description]
  */
 function addToComponentList(el, options, parent) {
-  var logics = el.classList.contains('space-logic') ? [el] : dom.findAll(el, '.space-logic');
+  var logics = el.classList.contains('space-logic') ? [el] : dom.findAll(el, '.space-logic'),
+    bottom,
+    addButton;
 
   _.each(logics, function(logic) {
-    var bottom = dom.find(dom.find(logic, '[data-uri]'), '.component-selector-bottom'),
-      addButton = dom.find(bottom, '.selected-add');
+    bottom = dom.find(dom.find(logic, '[data-uri]'), '.component-selector-bottom');
 
-    bottom.classList.remove('kiln-hide');
-    addButton.classList.remove('kiln-hide');
-    addButton.addEventListener('click', launchAddComponent.bind(null, addButton, options, parent));
+    if (bottom) {
+      addButton = dom.find(bottom, '.selected-add');
+      bottom.classList.remove('kiln-hide');
+      addButton.classList.remove('kiln-hide');
+      addButton.addEventListener('click', launchAddComponent.bind(null, addButton, options, parent));
+    }
   });
 }
 
@@ -68,13 +74,14 @@ function addToComponentList(el, options, parent) {
  */
 function swapSelectParentButton(el) {
   var kilnParentButton = dom.find(el, '.selected-info-parent'),
+    kilnSettingsButton = dom.find(el, '.selected-action-settings'),
     spaceParentButton = tpl.get('.parent-space'),
     spaceButton;
 
   // Hide the original parent selector button provided by kiln
   kilnParentButton.classList.add('kiln-hide');
   // Insert a button that will mimic the functionality of the kiln parent
-  dom.insertAfter(kilnParentButton, spaceParentButton);
+  dom.insertAfter(kilnSettingsButton, spaceParentButton);
 
   spaceButton = dom.find(el, '.space-parent');
   spaceButton.addEventListener('click', selectSpaceParent.bind(null, el));
@@ -101,22 +108,43 @@ function revealAddComponentButton(el) {
  * @param {[type]} logicComponent [description]
  */
 function addBrowseButton(logicComponent) {
-  if (dom.find(logicComponent, '.space-browse')) {
-    return false;
-  }
+  var targetButton = dom.find(logicComponent, '.space-browse'),
+    embeddedComponent,
+    embeddedComponentParentButton,
+    browseSpaceButton,
+    browseButton
 
-  var embeddedComponent = dom.find(logicComponent, '[data-uri]'),
-    embeddedComponentParentButton = dom.find(embeddedComponent, '.selected-actions'),
+  // If there's not a `targetButton`, add it!
+  if (!targetButton) {
+    embeddedComponent = dom.find(logicComponent, '[data-uri]');
+    embeddedComponentParentButton = dom.find(embeddedComponent, '.selected-actions');
     browseSpaceButton = tpl.get('.browse-space');
-
-  if (!embeddedComponent || !embeddedComponentParentButton) {
-    return this;
   }
 
-  // Insert the button
-  dom.prependChild(embeddedComponentParentButton, browseSpaceButton);
+  if (embeddedComponent && embeddedComponentParentButton) {
+    // Insert the button
+    embeddedComponentParentButton.appendChild(browseSpaceButton);
+    // Assign the proper reference to `browseButton`
+    browseButton = targetButton ? targetButton : dom.find(logicComponent, '.space-browse');
+    // Add an event listener
+    browseButton.addEventListener('click', function() {
+      SpaceSettings(this.el, {
+        add: this.onAddCallback.bind(this),
+        remove: this.onRemoveCallback.bind(this)
+      });
+    }.bind(this));
+  }
+  return this;
 
-  return dom.find(embeddedComponent, '.space-browse');
+}
+
+function addRemoveButton(logic) {
+  var removeButton = dom.find(dom.find(logic, '[data-uri]'), '.selected-action-delete');
+
+  if (removeButton) {
+    removeButton.classList.remove('kiln-hide');
+    removeButton.addEventListener('click', removeService.removeIconClick.bind(this, logic));
+  }
 }
 
 module.exports.addCreateSpaceButton = addCreateSpaceButton;
@@ -125,3 +153,4 @@ module.exports.addToComponentList = addToComponentList;
 module.exports.launchAddComponent = launchAddComponent;
 module.exports.revealAddComponentButton = revealAddComponentButton;
 module.exports.addBrowseButton = addBrowseButton;
+module.exports.addRemoveButton = addRemoveButton;

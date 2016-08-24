@@ -22,7 +22,7 @@ function SpaceController(el, parent) {
 
   this.parent = parent;
 
-  this.childrenLogics = dom.findAll(this.el, '.space-logic');
+  this.childrenLogics;
 
   this.el.setAttribute('data-components', utils.makeComponentListAttr(this.parent));
 
@@ -42,7 +42,8 @@ var proto = SpaceController.prototype;
 
 
 proto.init = function() {
-  this.findFirstActive()
+  this.updateChildrenCount()
+    .findFirstActive()
     .addButtons();
 };
 
@@ -62,24 +63,21 @@ proto.findFirstActive = function() {
 }
 
 /**
- * Launch a filterable list using the BrowseSpace controller
- */
-proto.browseSpace = function() {
-  SpaceSettings(this.el, {
-    add: this.onAddCallback.bind(this),
-    remove: this.onRemoveCallback.bind(this)
-  });
-}
-
-/**
  * [onAddCallback description]
  * @param  {[type]} newEl [description]
  * @return {[type]}       [description]
  */
 proto.onAddCallback = function(newEl) {
-  this.addBrowseButton(newEl)
+  selectorService.addBrowseButton.call(this, newEl);
+  selectorService.addRemoveButton.call(this, newEl);
+  this.updateChildrenCount()
     .updateLogicCount(newEl)
     .componentListButton(newEl);
+}
+
+proto.updateChildrenCount = function() {
+  this.childrenLogics = dom.findAll(this.el, '.space-logic');
+  return this;
 }
 
 /**
@@ -106,28 +104,19 @@ proto.componentListButton = function(el) {
  * @return {[type]}           [description]
  */
 proto.onRemoveCallback = function(component) {
-  this.updateLogicCount(component)
+  this.updateChildrenCount()
+    .updateLogicCount(component)
     .findFirstActive();
-}
-
-proto.addBrowseButton = function(logicComponent) {
-  var browseButton = selectorService.addBrowseButton(logicComponent);
-
-  if (!browseButton) {
-    browseButton = dom.find(logicComponent, '.space-browse');
-  }
-
-  browseButton.addEventListener('click', this.browseSpace.bind(this));
-  return this;
 }
 
 /**
  * Add the button to browse the space
  */
 proto.addButtons = function() {
-  var allLogics = dom.findAll(this.el, '.space-logic');
-
-  _.each(allLogics, this.addBrowseButton.bind(this));
+  _.each(this.childrenLogics, function(logic) {
+    selectorService.addBrowseButton.call(this, logic);
+    selectorService.addRemoveButton.call(this, logic);
+  }.bind(this));
 
   // Get count of logics
   // TODO: Count on each button
@@ -141,7 +130,7 @@ proto.addButtons = function() {
  * and put that number in the browse space button
  */
 proto.findLogicCount = function() {
-  var logicCount = dom.findAll(this.el, '.space-logic').length,
+  var logicCount = this.childrenLogics.length,
     countElement = dom.findAll(this.el, '.logic-count');
 
   _.each(countElement, function(count) {
