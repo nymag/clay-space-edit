@@ -3,7 +3,7 @@ var dom = require('@nymag/dom'),
   utils = require('../services/utils'),
   selectorService = require('../services/selector'),
   saveService = require('../services/save-service'),
-  proto;
+  proto = SpaceController.prototype;
 
 function SpaceController(el, parent) {
   if (!Object.keys(parent).length) {
@@ -34,9 +34,6 @@ function SpaceController(el, parent) {
 
   this.init();
 }
-
-proto = SpaceController.prototype;
-
 
 proto.init = function () {
   this.updateChildrenCount()

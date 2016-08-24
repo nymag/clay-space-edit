@@ -12,7 +12,7 @@ var dom = require('@nymag/dom'),
   createService = require('../services/create-service'),
   filterableList = kilnServices['filterable-list'],
   editingClass = 'space-logic-editing',
-  proto;
+  proto = BrowseController.prototype;
 
 /**
  * @param {Element} el
@@ -47,8 +47,6 @@ function BrowseController(el, callbacks) {
   // Launch the pane
   this.launchPane();
 }
-
-proto = BrowseController.prototype;
 
 /**
  * Open the settins pane

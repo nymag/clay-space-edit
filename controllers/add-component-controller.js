@@ -10,7 +10,7 @@ var dom = require('@nymag/dom'),
   filterableList = kilnServices['filterable-list'],
   pane = kilnServices.pane,
   editingClass = 'space-logic-editing',
-  proto;
+  proto = AddComponent.prototype;
 
 
 function AddComponent(spaceParent, callback) {
@@ -22,9 +22,6 @@ function AddComponent(spaceParent, callback) {
 
   this.launchPane();
 }
-
-// Alias prototype
-proto = AddComponent.prototype;
 
 /**
  * Open a pane with with the components available to be
