@@ -157,6 +157,18 @@ proto.updateLogicCount = function (component) {
   return this;
 };
 
+/**
+ * Clear the editing classes
+ * @return {SpaceController}
+ */
+proto.clearEditing = function () {
+  _.each(this.childrenLogics, (logic) => {
+    logic.classList.remove('space-logic-editing');
+  });
+
+  return this;
+}
+
 module.exports = function (el, parent) {
   return new SpaceController(el, parent);
 };
