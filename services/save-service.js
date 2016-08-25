@@ -1,15 +1,16 @@
 var dom = require('@nymag/dom'),
   kilnServices = window.kiln.services,
   edit = kilnServices.edit,
+  pane = kilnServices.pane,
   createService = require('./create-service'),
   selectorService = require('./selector'),
-  editingClass = 'space-logic-editing';
+  editingClass = 'space-logic-editing',
+  activeClass = 'space-logic-active';
 
 
 
-function onLogicSave(logic) {
-  var targetLogic = dom.find(document, `[data-uri="${logic._ref}"]`),
-    query = { currentUrl: window.location.href };
+function onLogicSave(logic, logicComponent) {
+  var query = { currentUrl: window.location.href };
 
   return edit.getHTMLWithQuery(logic._ref, query)
     .then(html => {
@@ -18,18 +19,30 @@ function onLogicSave(logic) {
           var newComponent = dom.find(document, `[data-uri="${logic._ref}"]`),
             addComponentButton;
 
-          // Replace the targetLogic with the new HTML
-          dom.replaceElement(targetLogic, html);
+          // Replace the logicComponent with the new HTML
+          dom.replaceElement(logicComponent, html);
+
           // TODO: Figure out why adding a class to `html` isn't persisting
           // when the replace is done. Shouldn't need to re-query the DOM
-          if (targetLogic.classList.contains(editingClass)) {
-            newComponent.classList.add(editingClass);
-          }
-
           addComponentButton = selectorService.revealAddComponentButton(newComponent);
 
-          this.addButtons();
+          this.updateChildrenCount()
+            .clearEditing()
+            .addButtons();
+
           addComponentButton.addEventListener('click', selectorService.launchAddComponent.bind(null, newComponent, { ref: this.spaceRef }, this.parent));
+
+          newComponent.classList.add(editingClass);
+          if (html.classList.contains(activeClass)) {
+            newComponent.classList.add(activeClass);
+          }
+
+          pane.close();
+
+          selectorService.launchBrowsePane(this.el, {
+            add: this.onAddCallback.bind(this),
+            remove: this.onRemoveCallback.bind(this)
+          });
         });
     });
 }

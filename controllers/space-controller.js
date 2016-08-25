@@ -26,8 +26,10 @@ function SpaceController(el, parent) {
   this.spaceRef = this.el.getAttribute('data-uri');
 
   window.kiln.on('save', (component) => {
-    if (_.includes(component._ref, 'space-logic') && dom.find(this.el, '[data-uri="' + component._ref + '"]')) {
-      saveService.call(this, component);
+    var componentElement = dom.find(this.el, '[data-uri="' + component._ref + '"]');
+
+    if (_.includes(component._ref, 'space-logic') && componentElement) {
+      saveService.call(this, component, componentElement);
     }
   });
 
@@ -154,6 +156,18 @@ proto.updateLogicCount = function (component) {
 
   return this;
 };
+
+/**
+ * Clear the editing classes
+ * @return {SpaceController}
+ */
+proto.clearEditing = function () {
+  _.each(this.childrenLogics, (logic) => {
+    logic.classList.remove('space-logic-editing');
+  });
+
+  return this;
+}
 
 module.exports = function (el, parent) {
   return new SpaceController(el, parent);
