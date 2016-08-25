@@ -26,8 +26,10 @@ function SpaceController(el, parent) {
   this.spaceRef = this.el.getAttribute('data-uri');
 
   window.kiln.on('save', (component) => {
-    if (_.includes(component._ref, 'space-logic') && dom.find(this.el, '[data-uri="' + component._ref + '"]')) {
-      saveService.call(this, component);
+    var componentElement = dom.find(this.el, '[data-uri="' + component._ref + '"]');
+
+    if (_.includes(component._ref, 'space-logic') && componentElement) {
+      saveService.call(this, component, componentElement);
     }
   });
 
