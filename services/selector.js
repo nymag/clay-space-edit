@@ -126,14 +126,22 @@ function addBrowseButton(logicComponent) {
     browseButton = targetButton ? targetButton : dom.find(logicComponent, '.space-browse');
     // Add an event listener
     browseButton.addEventListener('click', () => {
-      SpaceSettings(this.el, {
+      launchBrowsePane(this.el, {
         add: this.onAddCallback.bind(this),
         remove: this.onRemoveCallback.bind(this)
       });
     });
   }
   return this;
+}
 
+/**
+ * [launchBrowsePane description]
+ * @param  {Element} spaceElement [description]
+ * @param  {Object} callbacks    [description]
+ */
+function launchBrowsePane(spaceElement, callbacks) {
+  SpaceSettings(spaceElement, callbacks);
 }
 
 function addRemoveButton(logic) {
@@ -149,6 +157,7 @@ module.exports.addCreateSpaceButton = addCreateSpaceButton;
 module.exports.swapSelectParentButton = swapSelectParentButton;
 module.exports.addToComponentList = addToComponentList;
 module.exports.launchAddComponent = launchAddComponent;
+module.exports.launchBrowsePane = launchBrowsePane;
 module.exports.revealAddComponentButton = revealAddComponentButton;
 module.exports.addBrowseButton = addBrowseButton;
 module.exports.addRemoveButton = addRemoveButton;
