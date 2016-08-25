@@ -25,11 +25,11 @@ function SpaceController(el, parent) {
 
   this.spaceRef = this.el.getAttribute('data-uri');
 
-  window.kiln.on('save', function onLogicSave(component) {
+  window.kiln.on('save', (component) => {
     if (_.includes(component._ref, 'space-logic') && dom.find(this.el, '[data-uri="' + component._ref + '"]')) {
       saveService.call(this, component);
     }
-  }.bind(this));
+  });
 
 
   this.init();
@@ -110,10 +110,10 @@ proto.onRemoveCallback = function (component) {
  * @returns {SpaceController}
  */
 proto.addButtons = function () {
-  _.each(this.childrenLogics, function (logic) {
+  _.each(this.childrenLogics, (logic) => {
     selectorService.addBrowseButton.call(this, logic);
     selectorService.addRemoveButton.call(this, logic);
-  }.bind(this));
+  });
 
   // Get count of logics
   // TODO: Count on each button

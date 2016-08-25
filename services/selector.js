@@ -125,12 +125,12 @@ function addBrowseButton(logicComponent) {
     // Assign the proper reference to `browseButton`
     browseButton = targetButton ? targetButton : dom.find(logicComponent, '.space-browse');
     // Add an event listener
-    browseButton.addEventListener('click', function () {
+    browseButton.addEventListener('click', () => {
       SpaceSettings(this.el, {
         add: this.onAddCallback.bind(this),
         remove: this.onRemoveCallback.bind(this)
       });
-    }.bind(this));
+    });
   }
   return this;
 
