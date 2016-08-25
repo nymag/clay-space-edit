@@ -3,6 +3,9 @@ var _ = require('lodash'),
   selector = require('./services/selector'),
   SpaceController = require('./controllers/space-controller');
 
+// Load styles
+require('./styleguide/styles.scss');
+
 function updateSelector(el, options, parent) {
   var isSpaceComponent = el.classList.contains(spaceName),
     parentIsSpaceLogic = parent.ref && parent.ref.indexOf('space-logic') > -1;
