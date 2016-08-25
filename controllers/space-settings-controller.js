@@ -102,7 +102,7 @@ proto.markActiveInList = function (listHtml) {
  */
 proto.remove = function (id) {
   removeService.removeLogic(id, this.el)
-    .then(function () {
+    .then(() => {
       // Make new component list from the returned HTML
       this.findChildrenMakeList(this.el);
 
@@ -112,7 +112,7 @@ proto.remove = function (id) {
       pane.close();
       // Launch new pane with updated components
       this.launchPane();
-    }.bind(this));
+    });
 };
 
 /**
@@ -168,7 +168,7 @@ proto.reorder = function (id, newIndex, oldIndex) {
 
   // Save the space
   edit.savePartial(data)
-    .then(function (newHtml) {
+    .then((newHtml) => {
       var newChildHtmlPromises;
 
       // Make new component list from the returned HTML
@@ -176,7 +176,7 @@ proto.reorder = function (id, newIndex, oldIndex) {
 
       // Make an array of promises for the updated children HTML
       newChildHtmlPromises = _.map(this.childComponents, function (logicComponent) {
-        var query = { currentUrl : window.location.href };
+        var query = { currentUrl: window.location.href };
 
         return edit.getHTMLWithQuery(logicComponent.getAttribute('data-uri'), query);
       });
@@ -185,7 +185,7 @@ proto.reorder = function (id, newIndex, oldIndex) {
         .then(this.renderUpdatedSpace.bind(this))
         .then(createService.attachHandlersAndFocus);
 
-    }.bind(this));
+    });
 };
 
 /**
@@ -217,7 +217,7 @@ proto.renderUpdatedSpace = function (resp) {
  * @param {string} id
  */
 proto.listItemClick = function (id) {
-  var newActive = dom.find(this.el, '[data-uri="' + id + '"]');
+  var newActive = dom.find(this.el, `[data-uri="${id}"]`);
 
   _.each(this.childComponents, function (el) {
     el.classList.remove(editingClass);

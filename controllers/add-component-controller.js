@@ -46,7 +46,7 @@ proto.launchPane = function () {
  */
 proto.listItemClick = function (id) {
   return createService.newComponentInLogic(id)
-    .then(function (newComponent) {
+    .then(newComponent => {
       var prevRef = dom.find(this.parent, '.space-logic').getAttribute('data-uri'),
         args = {
           ref: newComponent._ref,
@@ -57,13 +57,13 @@ proto.listItemClick = function (id) {
         };
 
       return edit.addToParentList(args)
-        .then(function (newEl) {
+        .then(newEl => {
           // insert it at the beginning of the component list
           dom.prependChild(this.parent, newEl);
           return newEl;
-        }.bind(this))
-        .then(function (newEl) {
-          return render.addComponentsHandlers(newEl).then(function () {
+        })
+        .then(newEl => {
+          return render.addComponentsHandlers(newEl).then(() => {
             focus.unfocus();
             select.unselect();
             // Close a pane
@@ -73,15 +73,15 @@ proto.listItemClick = function (id) {
             // Update the space editing class
             this.makeNewComponentActive(newEl);
             return select.select(dom.find(newEl, '[data-uri]'));
-          }.bind(this));
-        }.bind(this));
-    }.bind(this));
+          });
+        });
+    });
 };
 
 proto.makeNewComponentActive = function (targetEl) {
   var logics = dom.findAll(this.parent, '.space-logic');
 
-  _.forEach(logics, function (logic) {
+  _.forEach(logics, (logic) => {
     logic.classList.remove(editingClass);
   });
 
