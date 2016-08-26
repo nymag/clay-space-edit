@@ -47,19 +47,16 @@ proto.launchPane = function () {
 proto.listItemClick = function (id) {
   return createService.newComponentInLogic(id)
     .then(newComponent => {
-      var prevRef = dom.find(this.parent, '.space-logic').getAttribute('data-uri'),
-        args = {
-          ref: newComponent._ref,
-          parentField: 'content',
-          parentRef: this.parentRef,
-          prevRef: prevRef,
-          above: true
-        };
+      var args = {
+        ref: newComponent._ref,
+        parentField: 'content',
+        parentRef: this.parentRef
+      };
 
       return edit.addToParentList(args)
         .then(newEl => {
           // insert it at the beginning of the component list
-          dom.prependChild(this.parent, newEl);
+          this.parent.appendChild(newEl);
           return newEl;
         })
         .then(newEl => {

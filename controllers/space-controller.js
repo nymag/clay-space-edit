@@ -167,7 +167,7 @@ proto.clearEditing = function () {
   });
 
   return this;
-}
+};
 
 module.exports = function (el, parent) {
   return new SpaceController(el, parent);
