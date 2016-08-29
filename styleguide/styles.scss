@@ -16,44 +16,17 @@ $UI_BUTTON: #694C79;
   font-style: italic;
 }
 
-.space-button {
-  // background: 0 0;
-  // border: none;
-  // color: $UI_BUTTON;
-  // cursor: pointer;
-  // margin: 0;
-  // outline: 0;
-  // padding: 14px;
-
-  // & svg,
-  // & svg * {
-  //   fill: $UI_BUTTON;
-  //   transition: 150ms fill ease-out
-  // }
-}
-
 .space-create {
   border-left: 1px solid $UI_PRIMARY;
-  padding: 16px 14px;
 }
 
 .space-browse {
   border-left: 1px solid $UI_PRIMARY;
-  padding: 14px 14px;
   position: relative;
 
   .logic-count {
     bottom: 13px;
     position: absolute;
     right: 7px;
-  }
-}
-
-.space-parent {
-  padding: 14px;
-
-  & svg {
-    height: 16px;
-    width: 16px;
   }
 }
