@@ -7,11 +7,11 @@ var _ = require('lodash'),
 require('./styleguide/styles.scss');
 
 function updateSelector(el, options, parent) {
-  var isSpaceComponent = el.classList.contains(spaceName),
-    parentIsSpaceLogic = parent.ref && parent.ref.indexOf('space-logic') > -1;
+  var isSpaceComponent = el.classList.contains(spaceName);
 
   if (_.get(parent, 'list.include', '') && _.includes(parent.list.include, spaceName) && !isSpaceComponent) {
     selector.addCreateSpaceButton(el, options, parent);
+    selector.stripSpaceFromComponentList(el);
   }
 
   if (isSpaceComponent) {
