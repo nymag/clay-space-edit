@@ -41,4 +41,22 @@ function onLogicSave(logic, logicComponent) {
     });
 }
 
+/**
+ * TODO: Investigate a way around this hack. Whenever a form closes
+ * it fires the `form:close` event which then refreshes a component's content.
+ * This is cool unless you want that component to have buttons on the selector
+ * AND you need it to retain a reference to a controller. Because of that we
+ * use `setTimeout` to throw this function to the end of the event queue so that
+ * it will run after the `form:close` event is fired and keep all our references.
+ * So yeah, this might cause a memory leak....?
+ * @param  {Element} element
+ */
+function onLogicWrappedSave(element) {
+  setTimeout(function () {
+    var onPageElement = dom.find(`[data-uri="${element.getAttribute('data-uri')}"]`);
+    dom.replaceElement(onPageElement, element);
+  }, 0);
+}
+
 module.exports = onLogicSave;
+module.exports.onLogicWrappedSave = onLogicWrappedSave;

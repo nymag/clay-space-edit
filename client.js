@@ -18,10 +18,6 @@ function updateSelector(el, options, parent) {
     SpaceController(el, parent);
     selector.addToComponentList(el, options, parent);
   }
-
-  if (parentIsSpaceLogic) {
-    selector.swapSelectParentButton(el);
-  }
 }
 
 // Export the init entrypoint

@@ -1,5 +1,6 @@
 var dom = require('@nymag/dom'),
   _ = require('lodash'),
+  references = require('references'),
   utils = require('../services/utils'),
   selectorService = require('../services/selector'),
   saveService = require('../services/save-service'),
@@ -26,11 +27,23 @@ function SpaceController(el, parent) {
   this.spaceRef = this.el.getAttribute('data-uri');
 
   window.kiln.on('save', (component) => {
-    var componentElement = dom.find(this.el, '[data-uri="' + component._ref + '"]');
+    var componentElement = dom.find(this.el, '[data-uri="' + component._ref + '"]'),
+      isLogicElement,
+      parentIsLogic;
 
-    if (_.includes(component._ref, 'space-logic') && componentElement) {
+    if (!componentElement) {
+      return;
+    }
+
+    isLogicElement = componentElement.classList.contains(references.spaceLogicClass);
+    parentIsLogic = componentElement.parentElement.classList.contains(references.spaceLogicClass);
+
+    if (!isLogicElement && parentIsLogic) {
+      saveService.onLogicWrappedSave.call(this, componentElement);
+    } else if (isLogicElement && componentElement) {
       saveService.call(this, component, componentElement);
     }
+
   });
 
 
@@ -115,6 +128,7 @@ proto.addButtons = function () {
   _.each(this.childrenLogics, (logic) => {
     selectorService.addBrowseButton.call(this, logic);
     selectorService.addRemoveButton.call(this, logic);
+    selectorService.swapSelectParentButton(dom.find(logic, '[data-uri]'));
   });
 
   // Get count of logics
