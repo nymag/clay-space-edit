@@ -88,11 +88,12 @@ function swapSelectParentButton(el) {
  */
 function revealAddComponentButton(el) {
   var targetComponent = dom.find(el, '[data-uri]'),
-    addComponentButton = dom.find(targetComponent, '.selected-add');
+    addComponentButton = dom.find(targetComponent, '.selected-add'),
+    componentsAttr = el.parentElement ? el.parentElement.getAttribute('data-components') : el.getAttribute('data-components');
 
   dom.find(targetComponent, '.component-selector-bottom').classList.remove('kiln-hide');
   addComponentButton.classList.remove('kiln-hide');
-  addComponentButton.setAttribute('data-components', el.parentElement.getAttribute('data-components'));
+  addComponentButton.setAttribute('data-components', componentsAttr);
 
   return addComponentButton;
 }
@@ -110,7 +111,7 @@ function addBrowseButton(logicComponent) {
     browseButton;
 
   // If there's not a `targetButton`, add it!
-  if (!targetButton) {
+  if (!targetButton || !embeddedComponent) {
     embeddedComponent = dom.find(logicComponent, '[data-uri]');
     embeddedComponentParentButton = dom.find(embeddedComponent, '.selected-actions');
     browseSpaceButton = references.tpl.get('.browse-space');
