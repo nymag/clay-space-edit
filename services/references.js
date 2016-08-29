@@ -1,26 +1,28 @@
 var _ = require('lodash'),
-  referencesObj;
+  referencesObj,
+  kilnServices;
 
 window.kiln = window.kiln || {};
 window.kiln.services = window.kiln.services || {};
+kilnServices = window.kiln.services;
 
 referencesObj = _.assign({
   spaceClass: 'clay-space',
   spaceEditingClass: 'space-logic-editing',
   spaceActiveClass: 'space-logic-active',
-  render: window.kiln.services.render,
-  focus: window.kiln.services.focus,
-  forms: window.kiln.services.forms,
-  select: window.kiln.services.select,
-  pane: window.kiln.services.pane,
-  select: window.kiln.services.select,
-  edit: window.kiln.services.edit,
-  label: window.kiln.services.label,
-  addComponent: window.kiln.services['add-component'],
-  availableComponents: window.kiln.services.availableComponents,
-  tpl: window.kiln.services.tpl,
-  filterableList: window.kiln.services['filterable-list']
-}, window.kiln.services.references);
+  render: kilnServices.render,
+  focus: kilnServices.focus,
+  forms: kilnServices.forms,
+  select: kilnServices.select,
+  pane: kilnServices.pane,
+  select: kilnServices.select,
+  edit: kilnServices.edit,
+  label: kilnServices.label,
+  addComponent: kilnServices['add-component'],
+  availableComponents: kilnServices.availableComponents,
+  tpl: kilnServices.tpl,
+  filterableList: kilnServices['filterable-list']
+}, kilnServices.references);
 
 
 module.exports = referencesObj;
