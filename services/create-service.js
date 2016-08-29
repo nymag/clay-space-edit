@@ -1,14 +1,6 @@
 var dom = require('@nymag/dom'),
   _ = require('lodash'),
-  kilnServices = window.kiln.services,
-  references = kilnServices.references,
-  render = kilnServices.render,
-  focus = kilnServices.focus,
-  select = kilnServices.select,
-  pane = kilnServices.pane,
-  select = kilnServices.select,
-  edit = kilnServices.edit,
-  addComponent = kilnServices['add-component'];
+  references = require('references');
 
 /**
  * [newComponentInLogic description]
@@ -16,9 +8,9 @@ var dom = require('@nymag/dom'),
  * @return {Promise}
  */
 function newComponentInLogic(componentName) {
-  return edit.createComponent(componentName)
+  return references.edit.createComponent(componentName)
     .then(function (component) {
-      return edit.createComponent('space-logic', {
+      return references.edit.createComponent('space-logic', {
         embededComponent: {
           ref: component._ref,
           data: {
@@ -38,8 +30,8 @@ function newComponentInLogic(componentName) {
  */
 function wrapInLogic(clickedComponent, options, parent) {
   return Promise.all([
-    edit.createComponent('space-logic', { embededComponent: options }),
-    edit.removeFromParentList({ el: clickedComponent, ref: options.ref, parentField: parent.path, parentRef: parent.ref })
+    references.edit.createComponent('space-logic', { embededComponent: options }),
+    references.edit.removeFromParentList({ el: clickedComponent, ref: options.ref, parentField: parent.path, parentRef: parent.ref })
   ]).then(function (resp) {
     return resp[0];
   });
@@ -82,7 +74,7 @@ function findPrevRef(targetComponent) {
  * @return {Promise}
  */
 function addInSpace(options, parent, position, logicComponent) {
-  return Promise.all([edit.createComponent('clay-space', { content: [{ _ref: logicComponent[references.referenceProperty] }] }), edit.getData(parent.ref)])
+  return Promise.all([references.edit.createComponent('clay-space', { content: [{ _ref: logicComponent[references.referenceProperty] }] }), references.edit.getData(parent.ref)])
     .then(function (promises) {
       var res = promises[0],
         newRef = res._ref,
@@ -94,7 +86,7 @@ function addInSpace(options, parent, position, logicComponent) {
           above: position.above
         };
 
-      return edit.addToParentList(args)
+      return references.edit.addToParentList(args)
         .then(function (newEl) {
           return attachHandlersAndFocus(newEl);
         });
@@ -136,10 +128,10 @@ function confirmMakeSpace() {
  * @return {[type]}    [description]
  */
 function attachHandlersAndFocus(el) {
-  return render.addComponentsHandlers(el).then(function () {
-    focus.unfocus();
-    select.unselect();
-    select.select(el);
+  return references.render.addComponentsHandlers(el).then(function () {
+    references.focus.unfocus();
+    references.select.unselect();
+    references.select.select(el);
     return el;
   });
 }
@@ -152,9 +144,9 @@ function attachHandlersAndFocus(el) {
  * @return {Promise}
  */
 function fakeAnAddToComponentList(options, parent, componentToAdd) {
-  return addComponent(parent.listEl, parent, componentToAdd, options.ref)
+  return references.addComponent(parent.listEl, parent, componentToAdd, options.ref)
     .then(function () {
-      pane.close();
+      references.pane.close();
     });
 }
 

@@ -1,7 +1,6 @@
 var dom = require('@nymag/dom'),
   _ = require('lodash'),
-  kilnServices = window.kiln.services,
-  edit = kilnServices.edit;
+  references = require('references');
 
 /**
  * [removeLogic description]
@@ -18,7 +17,7 @@ function removeLogic(ref, parent) {
       parentRef: parent.getAttribute('data-uri')
     };
 
-  return edit.removeFromParentList(removeOpts);
+  return references.edit.removeFromParentList(removeOpts);
 }
 
 /**
@@ -35,7 +34,7 @@ function removeSpace(space, parent) {
     parentRef: parent.ref
   };
 
-  return edit.removeFromParentList(removeOpts);
+  return references.edit.removeFromParentList(removeOpts);
 }
 
 

@@ -1,18 +1,12 @@
 var dom = require('@nymag/dom'),
-  kilnServices = window.kiln.services,
-  edit = kilnServices.edit,
-  pane = kilnServices.pane,
+  references = require('references'),
   createService = require('./create-service'),
-  selectorService = require('./selector'),
-  editingClass = 'space-logic-editing',
-  activeClass = 'space-logic-active';
-
-
+  selectorService = require('./selector');
 
 function onLogicSave(logic, logicComponent) {
   var query = { currentUrl: window.location.href };
 
-  return edit.getHTMLWithQuery(logic._ref, query)
+  return references.edit.getHTMLWithQuery(logic._ref, query)
     .then(html => {
       return createService.attachHandlersAndFocus(html)
         .then(() => {
@@ -32,12 +26,12 @@ function onLogicSave(logic, logicComponent) {
 
           addComponentButton.addEventListener('click', selectorService.launchAddComponent.bind(null, newComponent, { ref: this.spaceRef }, this.parent));
 
-          newComponent.classList.add(editingClass);
-          if (html.classList.contains(activeClass)) {
-            newComponent.classList.add(activeClass);
+          newComponent.classList.add(references.spaceEditingClass);
+          if (html.classList.contains(references.spaceActiveClass)) {
+            newComponent.classList.add(references.spaceActiveClass);
           }
 
-          pane.close();
+          references.pane.close();
 
           selectorService.launchBrowsePane(this.el, {
             add: this.onAddCallback.bind(this),

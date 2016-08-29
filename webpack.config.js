@@ -1,4 +1,5 @@
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var ExtractTextPlugin = require('extract-text-webpack-plugin'),
+  path = require('path');
 
 module.exports = {
   entry: './client.js',
@@ -21,6 +22,11 @@ module.exports = {
         'css!sass' // loaders to preprocess CSS
       )
     }]
+  },
+  resolve: {
+    alias: {
+      references: path.resolve('./services/references.js')
+    }
   },
   plugins: [
     new ExtractTextPlugin('clay-space-edit.css')
