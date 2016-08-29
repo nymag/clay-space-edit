@@ -1,6 +1,5 @@
 var dom = require('@nymag/dom'),
-  kilnServices = window.kiln.services,
-  select = kilnServices.select;
+  references = require('references');
 
 function selectSpaceParent(el, e) {
   var spaceParent = dom.closest(el, '.clay-space'),
@@ -11,9 +10,9 @@ function selectSpaceParent(el, e) {
   e.stopPropagation();
 
   // Unselect any currently selected component
-  select.unselect();
+  references.select.unselect();
   // Select the parent
-  select.select(targetComponent);
+  references.select.select(targetComponent);
 }
 
 module.exports = selectSpaceParent;

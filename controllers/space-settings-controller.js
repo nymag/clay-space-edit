@@ -1,17 +1,9 @@
 var dom = require('@nymag/dom'),
   _ = require('lodash'),
   AddController = require('./add-component-controller'),
-  kilnServices = window.kiln.services,
-  references = kilnServices.references,
-  pane = kilnServices.pane,
-  focus = kilnServices.focus,
-  forms = kilnServices.forms,
-  label = kilnServices.label,
-  edit = kilnServices.edit,
+  references = require('references'),
   removeService = require('../services/remove-service'),
   createService = require('../services/create-service'),
-  filterableList = kilnServices['filterable-list'],
-  editingClass = 'space-logic-editing',
   proto = BrowseController.prototype;
 
 /**
@@ -52,7 +44,7 @@ function BrowseController(el, callbacks) {
  * Open the settins pane
  */
 proto.launchPane = function () {
-  var paneContent = this.markActiveInList(filterableList.create(this.componentList, {
+  var paneContent = this.markActiveInList(references.filterableList.create(this.componentList, {
     click: this.listItemClick.bind(this),
     reorder: this.reorder.bind(this),
     settings: this.settings.bind(this),
@@ -61,7 +53,7 @@ proto.launchPane = function () {
     addTitle: 'Add Component To Space'
   }));
 
-  pane.open([{ header: 'Match Criteria - Show First Match', content: paneContent }]);
+  references.pane.open([{ header: 'Match Criteria - Show First Match', content: paneContent }]);
 };
 
 /**
@@ -87,7 +79,7 @@ proto.findChildrenMakeList = function (el) {
  */
 proto.markActiveInList = function (listHtml) {
   _.each(this.childComponents, function (logicComponent) {
-    if (logicComponent.classList.contains(editingClass)) {
+    if (logicComponent.classList.contains(references.spaceEditingClass)) {
       dom.find(listHtml, '[data-item-id="' + logicComponent.getAttribute('data-uri') + '"]').classList.add('active');
     }
   });
@@ -109,7 +101,7 @@ proto.remove = function (id) {
       // Invoke the callback
       this.callbacks.remove(this.el);
       // Close the old pane
-      pane.close();
+      references.pane.close();
       // Launch new pane with updated components
       this.launchPane();
     });
@@ -124,7 +116,7 @@ proto.makeList = function (components) {
   return _.map(components, function (item) {
     var childComponent = dom.find(item, '[data-uri]'),
       componentType = references.getComponentNameFromReference(childComponent.getAttribute('data-uri')),
-      componentTitle = label(componentType),
+      componentTitle = references.label(componentType),
       tags = findTags(item);
 
     componentTitle = tags ? componentTitle + tags : componentTitle;
@@ -167,7 +159,7 @@ proto.reorder = function (id, newIndex, oldIndex) {
   data.content = content;
 
   // Save the space
-  edit.savePartial(data)
+  references.edit.savePartial(data)
     .then((newHtml) => {
       var newChildHtmlPromises;
 
@@ -178,7 +170,7 @@ proto.reorder = function (id, newIndex, oldIndex) {
       newChildHtmlPromises = _.map(this.childComponents, function (logicComponent) {
         var query = { currentUrl: window.location.href };
 
-        return edit.getHTMLWithQuery(logicComponent.getAttribute('data-uri'), query);
+        return references.edit.getHTMLWithQuery(logicComponent.getAttribute('data-uri'), query);
       });
 
       return Promise.all(newChildHtmlPromises)
@@ -220,20 +212,20 @@ proto.listItemClick = function (id) {
   var newActive = dom.find(this.el, `[data-uri="${id}"]`);
 
   _.each(this.childComponents, function (el) {
-    el.classList.remove(editingClass);
+    el.classList.remove(references.spaceEditingClass);
   });
 
-  newActive.classList.add(editingClass);
+  newActive.classList.add(references.spaceEditingClass);
 
-  pane.close();
+  references.pane.close();
 };
 
 /**
  * @param  {string} id
  */
 proto.settings = function (id) {
-  focus.unfocus().then(function () {
-    return forms.open(id, document.body);
+  references.focus.unfocus().then(function () {
+    return references.forms.open(id, document.body);
   }).catch(_.noop);
 };
 

@@ -1,9 +1,6 @@
 var _ = require('lodash'),
   dom = require('@nymag/dom'),
-  kilnServices = window.kiln.services,
-  tpl = kilnServices.tpl,
-  filterableList = kilnServices['filterable-list'],
-  pane = kilnServices.pane,
+  references = require('references'),
   createService = require('./create-service'),
   removeService = require('./remove-service'),
   selectSpaceParent = require('./select-space-parent'),
@@ -17,7 +14,7 @@ var _ = require('lodash'),
  */
 function addCreateSpaceButton(el, options, parent) {
   var parentButton = dom.find(el, '.selected-actions'),
-    createSpaceButton = tpl.get('.create-space'),
+    createSpaceButton = references.tpl.get('.create-space'),
     createButton;
 
   parentButton.appendChild(createSpaceButton);
@@ -35,11 +32,11 @@ function addCreateSpaceButton(el, options, parent) {
 function launchAddComponent(element, options, parent) {
   var spaceParent = dom.closest(element, '.clay-space'),
     availableComponents = spaceParent.getAttribute('data-components').split(','),
-    paneContent = filterableList.create(availableComponents, {
+    paneContent = references.filterableList.create(availableComponents, {
       click: createService.fakeAnAddToComponentList.bind(null, options, parent)
     });
 
-  pane.open([{ header: 'Add Component', content: paneContent }]);
+  references.pane.open([{ header: 'Add Component', content: paneContent }]);
 }
 
 /**
@@ -72,7 +69,7 @@ function addToComponentList(el, options, parent) {
 function swapSelectParentButton(el) {
   var kilnParentButton = dom.find(el, '.selected-info-parent'),
     kilnSettingsButton = dom.find(el, '.selected-action-settings'),
-    spaceParentButton = tpl.get('.parent-space'),
+    spaceParentButton = references.tpl.get('.parent-space'),
     spaceButton;
 
   // Hide the original parent selector button provided by kiln
@@ -116,7 +113,7 @@ function addBrowseButton(logicComponent) {
   if (!targetButton) {
     embeddedComponent = dom.find(logicComponent, '[data-uri]');
     embeddedComponentParentButton = dom.find(embeddedComponent, '.selected-actions');
-    browseSpaceButton = tpl.get('.browse-space');
+    browseSpaceButton = references.tpl.get('.browse-space');
   }
 
   if (embeddedComponent && embeddedComponentParentButton) {

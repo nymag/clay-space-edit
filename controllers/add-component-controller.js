@@ -1,15 +1,7 @@
 var dom = require('@nymag/dom'),
   _ = require('lodash'),
+  references = require('references'),
   createService = require('../services/create-service'),
-  kilnServices = window.kiln.services,
-  render = kilnServices.render,
-  focus = kilnServices.focus,
-  select = kilnServices.select,
-  select = kilnServices.select,
-  edit = kilnServices.edit,
-  filterableList = kilnServices['filterable-list'],
-  pane = kilnServices.pane,
-  editingClass = 'space-logic-editing',
   proto = AddComponent.prototype;
 
 
@@ -30,13 +22,13 @@ function AddComponent(spaceParent, callback) {
  */
 proto.launchPane = function () {
   var availableComponents = this.parent.getAttribute('data-components').split(','),
-    paneContent = filterableList.create(availableComponents, {
+    paneContent = references.filterableList.create(availableComponents, {
       click: this.listItemClick.bind(this),
     });
 
-  pane.close();
+  references.pane.close();
 
-  pane.open([{ header: 'Browse Space', content: paneContent }]);
+  references.pane.open([{ header: 'Browse Space', content: paneContent }]);
 };
 
 /**
@@ -53,23 +45,23 @@ proto.listItemClick = function (id) {
         parentRef: this.parentRef
       };
 
-      return edit.addToParentList(args)
+      return references.edit.addToParentList(args)
         .then(newEl => {
           // insert it at the beginning of the component list
           this.parent.appendChild(newEl);
           return newEl;
         })
         .then(newEl => {
-          return render.addComponentsHandlers(newEl).then(() => {
-            focus.unfocus();
-            select.unselect();
+          return references.render.addComponentsHandlers(newEl).then(() => {
+            references.focus.unfocus();
+            references.select.unselect();
             // Close a pane
-            pane.close();
+            references.pane.close();
             // Invoke callback
             this.callback(newEl);
             // Update the space editing class
             this.makeNewComponentActive(newEl);
-            return select.select(dom.find(newEl, '[data-uri]'));
+            return references.select.select(dom.find(newEl, '[data-uri]'));
           });
         });
     });
@@ -79,10 +71,10 @@ proto.makeNewComponentActive = function (targetEl) {
   var logics = dom.findAll(this.parent, '.space-logic');
 
   _.forEach(logics, (logic) => {
-    logic.classList.remove(editingClass);
+    logic.classList.remove(references.spaceEditingClass);
   });
 
-  targetEl.classList.add(editingClass);
+  targetEl.classList.add(references.spaceEditingClass);
 };
 
 module.exports = function (spaceParent, callback) {
