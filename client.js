@@ -12,6 +12,7 @@ function updateSelector(el, options, parent) {
 
   if (_.get(parent, 'list.include', '') && _.includes(parent.list.include, spaceName) && !isSpaceComponent) {
     selector.addCreateSpaceButton(el, options, parent);
+    selector.stripSpaceFromComponentList(el);
   }
 
   if (isSpaceComponent) {

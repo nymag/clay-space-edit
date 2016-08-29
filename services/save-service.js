@@ -54,6 +54,7 @@ function onLogicSave(logic, logicComponent) {
 function onLogicWrappedSave(element) {
   setTimeout(function () {
     var onPageElement = dom.find(`[data-uri="${element.getAttribute('data-uri')}"]`);
+
     dom.replaceElement(onPageElement, element);
   }, 0);
 }

@@ -151,6 +151,18 @@ function addRemoveButton(logic) {
   }
 }
 
+/**
+ * Remove 'clay-space' from a component list
+ * @param  {Element} el
+ */
+function stripSpaceFromComponentList(el) {
+  var addButton = dom.find(el, '.selected-add'),
+    components = addButton.getAttribute('data-components').split(','),
+    componentsSansSpace = _.pull(components, references.spaceClass);
+
+  addButton.setAttribute('data-components', componentsSansSpace);
+}
+
 module.exports.addCreateSpaceButton = addCreateSpaceButton;
 module.exports.swapSelectParentButton = swapSelectParentButton;
 module.exports.addToComponentList = addToComponentList;
@@ -159,3 +171,4 @@ module.exports.launchBrowsePane = launchBrowsePane;
 module.exports.revealAddComponentButton = revealAddComponentButton;
 module.exports.addBrowseButton = addBrowseButton;
 module.exports.addRemoveButton = addRemoveButton;
+module.exports.stripSpaceFromComponentList = stripSpaceFromComponentList;
