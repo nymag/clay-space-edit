@@ -30,3 +30,29 @@ $UI_BUTTON: #694C79;
     right: 7px;
   }
 }
+
+
+// Readouts inside the logic browse pane
+.filtered-item-title-logic-readout {
+  display: flex;
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+.logic-group {
+  display: flex;
+
+  & + & {
+    margin-left: 8px;
+  }
+
+  & svg {
+    width: 12px;
+    height: 12px;
+    vertical-align: text-top;
+  }
+
+  & > .logic-icon {
+    margin-right: 5px;
+  }
+}

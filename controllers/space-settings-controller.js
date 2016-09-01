@@ -4,6 +4,7 @@ var dom = require('@nymag/dom'),
   references = require('references'),
   removeService = require('../services/remove-service'),
   createService = require('../services/create-service'),
+  logicReadoutService = require('../services/logic-readout-service'),
   proto = BrowseController.prototype;
 
 /**
@@ -117,30 +118,15 @@ proto.makeList = function (components) {
     var childComponent = dom.find(item, '[data-uri]'),
       componentType = references.getComponentNameFromReference(childComponent.getAttribute('data-uri')),
       componentTitle = references.label(componentType),
-      tags = findTags(item);
+      readouts =  logicReadoutService(item);
 
-    componentTitle = tags ? componentTitle + tags : componentTitle;
+    componentTitle = readouts ? componentTitle + readouts : componentTitle;
 
     return {
       title: componentTitle,
       id: item.getAttribute('data-uri')
     };
   });
-};
-
-/**
- * [findTags description]
- * @param  {[type]} logic
- * @return {[type]}
- */
-function findTags(logic) {
-  var tags = logic.getAttribute('data-logic-tags');
-
-  if (tags) {
-    return '<div class="filtered-item-title-sub">Tags: ' + tags + '</div>';
-  } else {
-    return '';
-  }
 };
 
 /**
