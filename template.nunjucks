@@ -3,12 +3,12 @@
 
   {# styles #}
   <style>
-  {{ ('node_modules/clay-space-edit/dist/clay-space-edit.css')|includeFile }}
+  {{ ('node_modules/clay-space-edit/dist/clay-space-edit.css')| includeFile | safe }}
   </style>
 
   {# scripts #}
   <script>
-  {{ ('node_modules/clay-space-edit/dist/clay-space-edit.js')|includeFile }}
+  {{ ('node_modules/clay-space-edit/dist/clay-space-edit.js')| includeFile | safe }}
   </script>
 
 
