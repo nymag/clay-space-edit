@@ -37,7 +37,5 @@ function spaceInComponentList(parent) {
   });
 }
 
-
 module.exports.makeComponentListAttr = makeComponentListAttr;
 module.exports.spaceInComponentList = spaceInComponentList;
-
