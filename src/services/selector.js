@@ -163,12 +163,20 @@ function stripSpaceFromComponentList(el) {
   addButton.setAttribute('data-components', componentsSansSpace);
 }
 
+/**
+ * Add a data attribute to components when a Space is
+ * available. This attribute contains all the Spaces
+ * that can be made out of this component
+ *
+ * @param {Element} el             The element to add the attribute to
+ * @param {Array} availableSpaces  Array of strings with available Spaces
+ */
 function addAvailableSpaces(el, availableSpaces) {
   if (!availableSpaces.length) {
     return;
   }
 
-  el.setAttribute(references.dataAvailableSpaces, availableSpaces.join(', '));
+  el.setAttribute(references.dataAvailableSpaces, availableSpaces.join(','));
 }
 
 module.exports.addCreateSpaceButton = addCreateSpaceButton;
