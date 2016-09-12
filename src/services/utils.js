@@ -47,15 +47,22 @@ function spaceInComponentList(parent) {
  * @return {String}
  */
 function availableSpaces(el) {
-  var availableSpaces = el.getAttribute(references.dataAvailableSpaces).split(',');
+  return el.getAttribute(references.dataAvailableSpaces).split(',');
+}
 
-  if (availableSpaces.length === 1) {
-    return availableSpaces[0];
-  }
-
-  return availableSpaces;
+/**
+ * Create the HTML for a filterable list as provided by Kiln
+ *
+ * @param  {Array} items
+ * @param  {Object} callbacks
+ * @return {Element}
+ */
+function createFilterableList(items, callbacks) {
+  return references.filterableList.create(items, callbacks);
 }
 
 module.exports.makeComponentListAttr = makeComponentListAttr;
 module.exports.spaceInComponentList = spaceInComponentList;
 module.exports.availableSpaces = availableSpaces;
+module.exports.createFilterableList = createFilterableList;
+
