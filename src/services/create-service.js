@@ -1,6 +1,7 @@
 var dom = require('@nymag/dom'),
   _ = require('lodash'),
-  references = require('references');
+  references = require('references'),
+  utils = require('./utils');
 
 /**
  * [newComponentInLogic description]
@@ -66,15 +67,20 @@ function findPrevRef(targetComponent) {
 }
 
 /**
- * [addInSpace description]
+ * At this stage the component has already been wrapped in newly created
+ * Logic component. This function then creats a Space per the user's
+ * selection and adds that Logic to the Space and adds the Space to the
+ * componentList of the original component.
+ *
+ * @param {Element} clickedComponent
  * @param {Object} options
  * @param {Object} parent
  * @param {Object} position
  * @param {Element} logicComponent
  * @return {Promise}
  */
-function addInSpace(options, parent, position, logicComponent) {
-  return Promise.all([references.edit.createComponent('clay-space', { content: [{ _ref: logicComponent[references.referenceProperty] }] }), references.edit.getData(parent.ref)])
+function addInSpace(clickedComponent, options, parent, position, logicComponent) {
+  return Promise.all([references.edit.createComponent(utils.availableSpaces(clickedComponent), { content: [{ _ref: logicComponent[references.referenceProperty] }] }), references.edit.getData(parent.ref)])
     .then(function (promises) {
       var res = promises[0],
         newRef = res._ref,
@@ -104,14 +110,14 @@ function createSpace(options, parent) {
     position;
 
   if (!confirmMakeSpace()) {
-    return null;
+    return;
   }
 
   clickedComponent = dom.find(parent.el, '[data-uri="' + options.ref + '"]');
   position = findPrevRef(clickedComponent);
 
   return wrapInLogic(clickedComponent, options, parent)
-    .then(addInSpace.bind(null, options, parent, position));
+    .then(addInSpace.bind(null, clickedComponent, options, parent, position));
 }
 
 /**

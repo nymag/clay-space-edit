@@ -81,6 +81,6 @@
     "generator-star-spacing": [2, "before"],
     // legacy jshint rules
     "max-depth": [2, 4],
-    "max-params": [2, 4]
+    "max-params": [2, 5]
   }
 }
