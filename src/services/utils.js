@@ -41,8 +41,6 @@ function spaceInComponentList(parent) {
  * Return a string with the Space that a user wants to
  * wrap a component in.
  *
- * TODO: Right now there's only one space, this will expand to multiple! Allow users to choose!
- *
  * @param  {Element} el  The component that is being initially wrapped in a Space
  * @return {String}
  */
