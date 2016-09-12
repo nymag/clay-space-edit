@@ -9,7 +9,7 @@ require('./styleguide/styles.scss');
 
 function updateSelector(el, options, parent) {
   var isSpaceComponent = el.classList.contains(spaceName),
-    availableSpaces = utils.spaceInComponentList(_.get(parent, 'list.include', []));
+    availableSpaces = utils.spaceInComponentList(parent);
 
   if (availableSpaces && availableSpaces.length > 0 && !isSpaceComponent) {
     selector.addAvailableSpaces(el, availableSpaces);

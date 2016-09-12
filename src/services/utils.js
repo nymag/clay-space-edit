@@ -2,8 +2,8 @@ var _ = require('lodash'),
   references = require('references');
 
 function makeComponentListAttr(parent) {
-  var include = _.get(parent, 'list.include') || _.get(parent, 'prop.include'),
-    exclude = _.get(parent, 'list.exclude') || _.get(parent, 'prop.exclude');
+  var include = _.get(parent, 'list.include', '') || _.get(parent, 'prop.include', ''),
+    exclude = _.get(parent, 'list.exclude', '') || _.get(parent, 'prop.exclude', '');
 
   return _.remove(references.availableComponents(include, exclude), function (component) {
     return component !== references.spaceClass;
@@ -16,11 +16,15 @@ function makeComponentListAttr(parent) {
  * a Space is both available and allow for selecting
  * from specific Spaces.
  *
- * @param  {Array} componentList  A component list
+ * @param  {Object} parent  The parent component which contains a componentList
  * @return {Array}
  */
-function spaceInComponentList(componentList) {
-  return _.filter(componentList, function (item) {
+function spaceInComponentList(parent) {
+  var include = _.get(parent, 'list.include', '') || _.get(parent, 'prop.include', ''),
+    exclude = _.get(parent, 'list.exclude', '') || _.get(parent, 'prop.exclude', '');
+
+  // Filter out components that are not Space components nor the Edit component
+  return _.filter(references.availableComponents(include, exclude), function (item) {
     return _.startsWith(item, references.spacePrefix) && item !== references.spaceEdit;
   });
 }
@@ -28,3 +32,4 @@ function spaceInComponentList(componentList) {
 
 module.exports.makeComponentListAttr = makeComponentListAttr;
 module.exports.spaceInComponentList = spaceInComponentList;
+
