@@ -7,10 +7,13 @@ window.kiln.services = window.kiln.services || {};
 kilnServices = window.kiln.services;
 
 referencesObj = _.assign({
+  spaceEdit: 'clay-space-edit',
+  spacePrefix: 'clay-space',
   spaceClass: 'clay-space',
   spaceLogicClass: 'space-logic',
   spaceEditingClass: 'space-logic-editing',
   spaceActiveClass: 'space-logic-active',
+  dataAvailableSpaces: 'data-spaces-available',
   render: kilnServices.render,
   focus: kilnServices.focus,
   forms: kilnServices.forms,

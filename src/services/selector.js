@@ -163,6 +163,14 @@ function stripSpaceFromComponentList(el) {
   addButton.setAttribute('data-components', componentsSansSpace);
 }
 
+function addAvailableSpaces(el, availableSpaces) {
+  if (!availableSpaces.length) {
+    return;
+  }
+
+  el.setAttribute(references.dataAvailableSpaces, availableSpaces.join(', '));
+}
+
 module.exports.addCreateSpaceButton = addCreateSpaceButton;
 module.exports.swapSelectParentButton = swapSelectParentButton;
 module.exports.addToComponentList = addToComponentList;
@@ -172,3 +180,4 @@ module.exports.revealAddComponentButton = revealAddComponentButton;
 module.exports.addBrowseButton = addBrowseButton;
 module.exports.addRemoveButton = addRemoveButton;
 module.exports.stripSpaceFromComponentList = stripSpaceFromComponentList;
+module.exports.addAvailableSpaces = addAvailableSpaces;

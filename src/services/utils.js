@@ -10,5 +10,21 @@ function makeComponentListAttr(parent) {
   });
 }
 
+/**
+ * Filter down a component list to the available Space
+ * components. This will be used to inform the UI that
+ * a Space is both available and allow for selecting
+ * from specific Spaces.
+ *
+ * @param  {Array} componentList  A component list
+ * @return {Array}
+ */
+function spaceInComponentList(componentList) {
+  return _.filter(componentList, function (item) {
+    return _.startsWith(item, references.spacePrefix) && item !== references.spaceEdit;
+  });
+}
+
 
 module.exports.makeComponentListAttr = makeComponentListAttr;
+module.exports.spaceInComponentList = spaceInComponentList;
