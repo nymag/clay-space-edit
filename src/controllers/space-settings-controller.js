@@ -2,6 +2,7 @@ var dom = require('@nymag/dom'),
   _ = require('lodash'),
   AddController = require('./add-component-controller'),
   references = require('references'),
+  utils = require('../services/utils'),
   removeService = require('../services/remove-service'),
   createService = require('../services/create-service'),
   logicReadoutService = require('../services/logic-readout-service'),
@@ -45,7 +46,7 @@ function BrowseController(el, callbacks) {
  * Open the settins pane
  */
 proto.launchPane = function () {
-  var paneContent = this.markActiveInList(references.filterableList.create(this.componentList, {
+  var paneContent = this.markActiveInList(utils.createFilterableList(this.componentList, {
     click: this.listItemClick.bind(this),
     reorder: this.reorder.bind(this),
     settings: this.settings.bind(this),
