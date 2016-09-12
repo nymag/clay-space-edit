@@ -37,5 +37,25 @@ function spaceInComponentList(parent) {
   });
 }
 
+/**
+ * Return a string with the Space that a user wants to
+ * wrap a component in.
+ *
+ * TODO: Right now there's only one space, this will expand to multiple! Allow users to choose!
+ *
+ * @param  {Element} el  The component that is being initially wrapped in a Space
+ * @return {String}
+ */
+function availableSpaces(el) {
+  var availableSpaces = el.getAttribute(references.dataAvailableSpaces).split(',');
+
+  if (availableSpaces.length === 1) {
+    return availableSpaces[0];
+  }
+
+  return availableSpaces;
+}
+
 module.exports.makeComponentListAttr = makeComponentListAttr;
 module.exports.spaceInComponentList = spaceInComponentList;
+module.exports.availableSpaces = availableSpaces;
