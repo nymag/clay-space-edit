@@ -1,5 +1,4 @@
-var _ = require('lodash'),
-  spaceName = 'clay-space',
+var spaceName = 'clay-space',
   selector = require('./services/selector'),
   SpaceController = require('./controllers/space-controller'),
   utils = require('./services/utils');

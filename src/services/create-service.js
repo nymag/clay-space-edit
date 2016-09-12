@@ -67,7 +67,12 @@ function findPrevRef(targetComponent) {
 }
 
 /**
- * [addInSpace description]
+ * At this stage the component has already been wrapped in newly created
+ * Logic component. This function then creats a Space per the user's
+ * selection and adds that Logic to the Space and adds the Space to the
+ * componentList of the original component.
+ *
+ * @param {Element} clickedComponent
  * @param {Object} options
  * @param {Object} parent
  * @param {Object} position
