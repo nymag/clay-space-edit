@@ -55,7 +55,7 @@ proto.launchPane = function () {
     addTitle: 'Add Component To Space'
   }));
 
-  references.pane.open([{ header: 'Match Criteria - Show First Match', content: paneContent }]);
+  references.pane.open([{ header: this.el.getAttribute(references.dataPaneTitle) || 'Browse Space', content: paneContent }]);
 };
 
 /**
@@ -119,7 +119,7 @@ proto.makeList = function (components) {
     var childComponent = dom.find(item, '[data-uri]'),
       componentType = references.getComponentNameFromReference(childComponent.getAttribute('data-uri')),
       componentTitle = references.label(componentType),
-      readouts =  logicReadoutService(item);
+      readouts = logicReadoutService(item);
 
     componentTitle = readouts ? componentTitle + readouts : componentTitle;
 
@@ -227,3 +227,4 @@ function spaceSettings(parent, callbacks) {
 };
 
 module.exports = spaceSettings;
+
