@@ -14,6 +14,7 @@ referencesObj = _.assign({
   spaceEditingClass: 'space-logic-editing',
   spaceActiveClass: 'space-logic-active',
   dataAvailableSpaces: 'data-spaces-available',
+  dataPaneTitle: 'data-space-browse-title',
   render: kilnServices.render,
   focus: kilnServices.focus,
   forms: kilnServices.forms,
