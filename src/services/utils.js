@@ -41,21 +41,26 @@ function spaceInComponentList(parent) {
  * Return a string with the Space that a user wants to
  * wrap a component in.
  *
- * TODO: Right now there's only one space, this will expand to multiple! Allow users to choose!
- *
  * @param  {Element} el  The component that is being initially wrapped in a Space
  * @return {String}
  */
 function availableSpaces(el) {
-  var availableSpaces = el.getAttribute(references.dataAvailableSpaces).split(',');
+  return el.getAttribute(references.dataAvailableSpaces).split(',');
+}
 
-  if (availableSpaces.length === 1) {
-    return availableSpaces[0];
-  }
-
-  return availableSpaces;
+/**
+ * Create the HTML for a filterable list as provided by Kiln
+ *
+ * @param  {Array} items
+ * @param  {Object} callbacks
+ * @return {Element}
+ */
+function createFilterableList(items, callbacks) {
+  return references.filterableList.create(items, callbacks);
 }
 
 module.exports.makeComponentListAttr = makeComponentListAttr;
 module.exports.spaceInComponentList = spaceInComponentList;
 module.exports.availableSpaces = availableSpaces;
+module.exports.createFilterableList = createFilterableList;
+

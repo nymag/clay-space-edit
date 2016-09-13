@@ -1,7 +1,9 @@
 var dom = require('@nymag/dom'),
   _ = require('lodash'),
   references = require('references'),
+  utils = require('../services/utils'),
   createService = require('../services/create-service'),
+
   proto = AddComponent.prototype;
 
 
@@ -22,7 +24,7 @@ function AddComponent(spaceParent, callback) {
  */
 proto.launchPane = function () {
   var availableComponents = this.parent.getAttribute('data-components').split(','),
-    paneContent = references.filterableList.create(availableComponents, {
+    paneContent = utils.createFilterableList(availableComponents, {
       click: this.listItemClick.bind(this),
     });
 
@@ -37,7 +39,7 @@ proto.launchPane = function () {
  * @return {Promise}
  */
 proto.listItemClick = function (id) {
-  return createService.newComponentInLogic(id)
+  return createService.newComponentInLogic(references.getComponentNameFromReference(this.parentRef), id)
     .then(newComponent => {
       var args = {
         ref: newComponent._ref,

@@ -25,7 +25,8 @@ referencesObj = _.assign({
   addComponent: kilnServices['add-component'],
   availableComponents: kilnServices.availableComponents,
   tpl: kilnServices.tpl,
-  filterableList: kilnServices['filterable-list']
+  filterableList: kilnServices['filterable-list'],
+  site: kilnServices.site
 }, kilnServices.references);
 
 

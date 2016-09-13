@@ -1,6 +1,7 @@
 var _ = require('lodash'),
   dom = require('@nymag/dom'),
   references = require('references'),
+  utils = require('./utils'),
   createService = require('./create-service'),
   removeService = require('./remove-service'),
   selectSpaceParent = require('./select-space-parent'),
@@ -32,7 +33,7 @@ function addCreateSpaceButton(el, options, parent) {
 function launchAddComponent(element, options, parent) {
   var spaceParent = dom.closest(element, '.clay-space'),
     availableComponents = spaceParent.getAttribute('data-components').split(','),
-    paneContent = references.filterableList.create(availableComponents, {
+    paneContent = utils.createFilterableList(availableComponents, {
       click: createService.fakeAnAddToComponentList.bind(null, options, parent)
     });
 
