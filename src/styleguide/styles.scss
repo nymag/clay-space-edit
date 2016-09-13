@@ -35,16 +35,15 @@ $UI_BUTTON: #694C79;
 // Readouts inside the logic browse pane
 .filtered-item-title-logic-readout {
   display: flex;
+  flex-wrap: wrap;
   font-size: 11px;
   margin-top: 4px;
 }
 
 .logic-group {
   display: flex;
-
-  & + & {
-    margin-left: 8px;
-  }
+  flex-wrap: wrap;
+  margin-right: 8px;
 
   & svg {
     width: 12px;
