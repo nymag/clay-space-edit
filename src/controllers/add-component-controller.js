@@ -3,7 +3,6 @@ var dom = require('@nymag/dom'),
   references = require('references'),
   utils = require('../services/utils'),
   createService = require('../services/create-service'),
-
   proto = AddComponent.prototype;
 
 
