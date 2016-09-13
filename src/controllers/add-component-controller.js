@@ -39,7 +39,7 @@ proto.launchPane = function () {
  * @return {Promise}
  */
 proto.listItemClick = function (id) {
-  return createService.newComponentInLogic(id)
+  return createService.newComponentInLogic(references.getComponentNameFromReference(this.parentRef), id)
     .then(newComponent => {
       var args = {
         ref: newComponent._ref,

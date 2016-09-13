@@ -4,34 +4,45 @@ var dom = require('@nymag/dom'),
   utils = require('./utils');
 
 /**
- * [newComponentInLogic description]
- * @param  {string} componentName
+ * Take the name of the Space and the desired component to be created
+ * and wrap that component in a Logic and add to the Space. The Space
+ * name is needed because we do a lookup in the schema to see which
+ * logic is available to it.
+ *
+ * @param  {String} spaceName     Name of the Space component is going in
+ * @param  {String} componentName Name of the component to create
  * @return {Promise}
  */
-function newComponentInLogic(componentName) {
-  return references.edit.createComponent(componentName)
-    .then(function (component) {
-      return references.edit.createComponent('space-logic', {
-        embededComponent: {
-          ref: component._ref,
-          data: {
-            _ref: component._ref
-          }
-        }
-      });
+function newComponentInLogic(spaceName, componentName) {
+  return findSpaceLogic(spaceName)
+    .then(function (logicComponent) {
+      return references.edit.createComponent(componentName)
+        .then(function (component) {
+          return references.edit.createComponent(logicComponent, {
+            embededComponent: {
+              ref: component._ref,
+              data: {
+                _ref: component._ref
+              }
+            }
+          });
+        });
     });
 }
 
 /**
- * [wrapInLogic description]
- * @param  {[type]} clickedComponent [description]
- * @param  {[type]} options          [description]
- * @param  {[type]} parent           [description]
- * @return {[type]}                  [description]
+ * Take a component, wrap it in a Logic component, and then return
+ * the Logic component's data.
+ *
+ * @param  {String}  logicComponent   The name of the logic component
+ * @param  {Element} clickedComponent The element that was clicked to create the space
+ * @param  {Object}  options          Component options
+ * @param  {Object}  parent           Parent component
+ * @return {Promise}
  */
-function wrapInLogic(clickedComponent, options, parent) {
+function wrapInLogic(logicComponent, clickedComponent, options, parent) {
   return Promise.all([
-    references.edit.createComponent('space-logic', { embededComponent: options }),
+    references.edit.createComponent(logicComponent, { embededComponent: options }),
     references.edit.removeFromParentList({ el: clickedComponent, ref: options.ref, parentField: parent.path, parentRef: parent.ref })
   ]).then(function (resp) {
     return resp[0];
@@ -168,6 +179,26 @@ function spaceSelectCallback(clickedComponent, options, parent, id) {
 }
 
 /**
+ * Grab the schema for whatever Space component is selected and
+ * find the Logic component available to it.
+ *
+ * @param  {String} space  The component name
+ * @return {Promise}
+ */
+function findSpaceLogic(space) {
+  return references.edit.getSchema(`${references.site.get('prefix')}/components/${space}`)
+    .then(function (resp) {
+      var componentList = _.get(resp, 'content._componentList.include', '') || _.get(resp, 'prop._componentList.include', '');
+
+      if (componentList && componentList.length === 1) {
+        return componentList[0];
+      } else if (componentList && componentList.length > 1) {
+        throw new Error('A Logic componentList can only have 1 component (for now....)')
+      }
+    });
+}
+
+/**
  * Create a componenet wrapped in a Logic which is inside of a
  * component list in a Space
  *
@@ -180,8 +211,11 @@ function spaceSelectCallback(clickedComponent, options, parent, id) {
 function componentToSpace(clickedComponent, options, parent, space) {
   var position = findPrevRef(clickedComponent);
 
-  return wrapInLogic(clickedComponent, options, parent)
-    .then(addInSpace.bind(null, space, options, parent, position));
+  return findSpaceLogic(space)
+    .then(function (logicComponent) {
+      return wrapInLogic(logicComponent, clickedComponent, options, parent)
+        .then(addInSpace.bind(null, space, options, parent, position));
+    });
 }
 
 /**
