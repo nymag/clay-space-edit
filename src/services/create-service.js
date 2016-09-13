@@ -83,11 +83,11 @@ function findPrevRef(targetComponent) {
  * selection and adds that Logic to the Space and adds the Space to the
  * componentList of the original component.
  *
- * @param {Element} clickedComponent
+ * @param {String} space
  * @param {Object} options
  * @param {Object} parent
  * @param {Object} position
- * @param {Element} logicComponent
+ * @param {Object} logicComponent
  * @return {Promise}
  */
 function addInSpace(space, options, parent, position, logicComponent) {
@@ -147,9 +147,12 @@ function confirmMakeSpace() {
  * component list then open a pane to allow the user to choose
  * which Space they want
  *
- * @param  {Array} availableSpaces
+ * @param {Array}   availableSpaces
+ * @param {Element} clickedComponent
+ * @param {Object}  options
+ * @param {Object}  parent
  */
-function selectSpace(availableSpaces, clickedComponent, options, parent) {;
+function selectSpace(availableSpaces, clickedComponent, options, parent) {
   references.pane.open([{
     header: 'Choose A Space',
     content: utils.createFilterableList(availableSpaces, {
@@ -193,7 +196,7 @@ function findSpaceLogic(space) {
       if (componentList && componentList.length === 1) {
         return componentList[0];
       } else if (componentList && componentList.length > 1) {
-        throw new Error('A Logic componentList can only have 1 component (for now....)')
+        throw new Error('A Logic componentList can only have 1 component (for now....)');
       }
     });
 }
