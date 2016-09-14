@@ -4,6 +4,7 @@ var _ = require('lodash'),
 
 /**
  * Wrap logic groups in a div
+ *
  * @param  {string} content
  * @return {string}
  */
@@ -23,8 +24,8 @@ function wrapUp(content) {
  * @return {String}
  */
 function createReadout(element, name, value) {
-  var logicIconSet = references.tpl.get('.space-logic-icon-set'),
-    iconSelector = `.${name.replace('logic', '').toLowerCase()}-icon`,
+  var logicIconSet = references.tpl.get('.clay-space-edit-icons'),
+    iconSelector = `.icon-${name.replace('logic', '').toLowerCase()}`,
     icon = dom.find(logicIconSet, iconSelector);
 
   return `<span class="logic-group">${icon.outerHTML} ${value}</span>`;
@@ -33,6 +34,7 @@ function createReadout(element, name, value) {
 /**
  * Iterate over all data attributes and create
  * readouts for any prefixed with 'logic'
+ *
  * @param  {Element} element
  * @return {String}
  */
