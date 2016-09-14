@@ -39,6 +39,7 @@
   <template class="clay-space-edit-icons">
     <span class="readout-icon icon-tags">{% include 'public/media/components/clay-space-edit/icon-tag.svg' %}</span>
     <span class="readout-icon icon-time">{% include 'public/media/components/clay-space-edit/icon-time.svg' %}</span>
+    <span class="readout-icon icon-person">{% include 'public/media/components/clay-space-edit/icon-person.svg' %}</span>
   </template>
 
 </div>
