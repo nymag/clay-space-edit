@@ -1,12 +1,12 @@
 {% if locals.edit %}
 <div data-uri="{{ _ref or _self }}" class="clay-space-edit">
 
-  {# styles #}
+  {# Styles #}
   <style>
   {{ ('node_modules/clay-space-edit/dist/clay-space-edit.css')| includeFile | safe }}
   </style>
 
-  {# scripts #}
+  {# Scripts #}
   <script>
   {{ ('node_modules/clay-space-edit/dist/clay-space-edit.js')| includeFile | safe }}
   </script>
@@ -32,6 +32,13 @@
     <button type="button" class="selector-button space-parent">
       {% include 'public/media/components/clay-kiln/parent.svg' %}
     </button>
+  </template>
+
+  {# Readout Icons #}
+  {# Need more icons? Submit a PR to https://github.com/nymag/clay-space-edit with the icon #}
+  <template class="clay-space-edit-icons">
+    <span class="readout-icon icon-tags">{% include 'public/media/components/clay-space-edit/icon-tag.svg' %}</span>
+    <span class="readout-icon icon-time">{% include 'public/media/components/clay-space-edit/icon-time.svg' %}</span>
   </template>
 
 </div>
