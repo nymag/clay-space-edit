@@ -1,5 +1,4 @@
-var spaceName = 'clay-space',
-  selector = require('./services/selector'),
+var selector = require('./services/selector'),
   SpaceController = require('./controllers/space-controller'),
   utils = require('./services/utils');
 
@@ -7,7 +6,7 @@ var spaceName = 'clay-space',
 require('./styleguide/styles.scss');
 
 function updateSelector(el, options, parent) {
-  var isSpaceComponent = el.classList.contains(spaceName),
+  var isSpaceComponent = utils.checkIfSpace(options.ref),
     availableSpaces = utils.spaceInComponentList(parent);
 
   if (availableSpaces && availableSpaces.length > 0 && !isSpaceComponent) {
