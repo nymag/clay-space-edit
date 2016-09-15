@@ -59,8 +59,18 @@ function createFilterableList(items, callbacks) {
   return references.filterableList.create(items, callbacks);
 }
 
+/**
+ * Checks if a reference is a type of Space.
+ *
+ * @param  {String} ref The uri of a component
+ * @return {Boolean}
+ */
+function checkIfSpace(ref) {
+  return _.includes(ref, references.spacePrefix);
+}
+
 module.exports.makeComponentListAttr = makeComponentListAttr;
 module.exports.spaceInComponentList = spaceInComponentList;
 module.exports.availableSpaces = availableSpaces;
 module.exports.createFilterableList = createFilterableList;
-
+module.exports.checkIfSpace = checkIfSpace;
