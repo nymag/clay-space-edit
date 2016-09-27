@@ -43,7 +43,7 @@ function logicReadouts(element) {
     logicString = '';
 
   _.forIn(dataAttributes, function (value, key) {
-    if (_.startsWith(key, 'logic')) {
+    if (_.startsWith(key, 'logic') && key !== 'logic') {
       logicString += createReadout(element, key, value);
     }
   });

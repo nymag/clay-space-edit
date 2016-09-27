@@ -2,7 +2,7 @@ var dom = require('@nymag/dom'),
   references = require('references');
 
 function selectSpaceParent(el, e) {
-  var spaceParent = dom.closest(el, '.clay-space'),
+  var spaceParent = dom.closest(el, '[data-space]'),
     targetComponent = dom.closest(spaceParent.parentElement, '[data-uri]');
 
   // Stop propagation to make sure the child

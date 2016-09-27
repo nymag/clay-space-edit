@@ -1,6 +1,7 @@
 var dom = require('@nymag/dom'),
   _ = require('lodash'),
-  references = require('references');
+  references = require('references'),
+  statusService = require('./status-service');
 
 /**
  * [removeLogic description]
@@ -57,13 +58,13 @@ function removeIconClick(logic) {
  * @param  {[type]} index [description]
  */
 function findNextActive(index) {
-  this.childrenLogics = dom.findAll(this.el, '.space-logic');
+  this.childrenLogics = dom.findAll(this.el, '[data-logic]');
   this.findLogicCount();
 
   if (this.childrenLogics[index]) {
-    this.childrenLogics[index].classList.add('space-logic-editing');
+    statusService.setEditing(this.childrenLogics[index]);
   } else if (this.childrenLogics[index - 1]) {
-    this.childrenLogics[index - 1].classList.add('space-logic-editing');
+    statusService.setEditing(this.childrenLogics[index - 1]);
   } else {
     if (window.confirm('You are removing the last component in this Space, this will remove the Space entirely from the page, is this ok?')) {
       removeSpace(this.el, this.parent);

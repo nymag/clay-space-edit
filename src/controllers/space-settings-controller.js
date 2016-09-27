@@ -6,6 +6,7 @@ var dom = require('@nymag/dom'),
   removeService = require('../services/remove-service'),
   createService = require('../services/create-service'),
   logicReadoutService = require('../services/logic-readout-service'),
+  statusService = require('../services/status-service'),
   proto = BrowseController.prototype;
 
 /**
@@ -70,7 +71,7 @@ proto.addComponent = function () {
  * @param  {Element} el
  */
 proto.findChildrenMakeList = function (el) {
-  this.childComponents = dom.findAll(el, '.space-logic');
+  this.childComponents = dom.findAll(el, '[data-logic]');
   this.componentList = this.makeList(this.childComponents);
 };
 
@@ -81,7 +82,7 @@ proto.findChildrenMakeList = function (el) {
  */
 proto.markActiveInList = function (listHtml) {
   _.each(this.childComponents, function (logicComponent) {
-    if (logicComponent.classList.contains(references.spaceEditingClass)) {
+    if (statusService.isEditing(logicComponent)) {
       dom.find(listHtml, '[data-item-id="' + logicComponent.getAttribute('data-uri') + '"]').classList.add('active');
     }
   });
@@ -174,7 +175,7 @@ proto.reorder = function (id, newIndex, oldIndex) {
  */
 proto.renderUpdatedSpace = function (resp) {
   var space = this.el,
-    spaceChildren = dom.findAll(this.el, '.space-logic'),
+    spaceChildren = dom.findAll(this.el, '[data-logic]'),
     spaceOnPage = dom.find(document, '[data-uri="' + this.spaceRef + '"]');
 
   _.forEach(spaceChildren, function (child) {
@@ -199,10 +200,10 @@ proto.listItemClick = function (id) {
   var newActive = dom.find(this.el, `[data-uri="${id}"]`);
 
   _.each(this.childComponents, function (el) {
-    el.classList.remove(references.spaceEditingClass);
+    statusService.removeEditing(el);
   });
 
-  newActive.classList.add(references.spaceEditingClass);
+  statusService.setEditing(newActive);
 
   references.pane.close();
 };
