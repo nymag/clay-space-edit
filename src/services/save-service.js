@@ -27,13 +27,18 @@ function onLogicSave(logic, logicComponent) {
 
           addComponentButton.addEventListener('click', selectorService.launchAddComponent.bind(null, newComponent, { ref: this.spaceRef }, this.parent));
 
+          // Add the editing attribute
           statusService.setEditing(newComponent);
+          // Was the original component active? Let's make
+          // sure the updated one is as well
           if (statusService.isActive(html)) {
-            statusService.setActive(newComponent)
+            statusService.setActive(newComponent);
           }
 
+          // Close the pane
           references.pane.close();
 
+          // Relaunch the pane
           selectorService.launchBrowsePane(this.el, {
             add: this.onAddCallback.bind(this),
             remove: this.onRemoveCallback.bind(this)

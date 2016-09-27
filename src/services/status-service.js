@@ -1,5 +1,3 @@
-'use strict';
-
 var dom = require('@nymag/dom'),
   _ = require('lodash'),
   ACTIVE = 'data-logic-active',

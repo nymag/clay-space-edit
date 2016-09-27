@@ -1,6 +1,5 @@
 var dom = require('@nymag/dom'),
   _ = require('lodash'),
-  references = require('references'),
   utils = require('../services/utils'),
   selectorService = require('../services/selector'),
   saveService = require('../services/save-service'),
