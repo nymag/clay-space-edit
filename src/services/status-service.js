@@ -2,8 +2,8 @@
 
 var dom = require('@nymag/dom'),
   _ = require('lodash'),
-  ACTIVE = 'space-logic-active',
-  EDITING = 'space-logic-editing',
+  ACTIVE = 'data-logic-active',
+  EDITING = 'data-logic-editing',
   LOGIC = 'data-logic';
 
 function setActive(el) {
