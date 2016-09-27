@@ -1,9 +1,9 @@
 var dom = require('@nymag/dom'),
   _ = require('lodash'),
-  references = require('references'),
   utils = require('../services/utils'),
   selectorService = require('../services/selector'),
   saveService = require('../services/save-service'),
+  statusService = require('../services/status-service'),
   proto = SpaceController.prototype;
 
 function SpaceController(el, parent) {
@@ -35,8 +35,8 @@ function SpaceController(el, parent) {
       return;
     }
 
-    isLogicElement = componentElement.classList.contains(references.spaceLogicClass);
-    parentIsLogic = componentElement.parentElement.classList.contains(references.spaceLogicClass);
+    isLogicElement = statusService.isLogic(componentElement);
+    parentIsLogic = statusService.isLogic(componentElement.parentElement);
 
     if (!isLogicElement && parentIsLogic) {
       saveService.onLogicWrappedSave.call(this, componentElement);
@@ -61,12 +61,13 @@ proto.init = function () {
  * @returns {SpaceController}
  */
 proto.findFirstActive = function () {
-  var activeChild = dom.find(this.el, '.space-logic-active');
+  var activeChild = statusService.findActive(this.el),
+    lastActive = this.childrenLogics[this.childrenLogics.length - 1];
 
   if (activeChild) {
-    activeChild.classList.add('space-logic-editing');
+    statusService.setEditing(activeChild);
   } else if (!activeChild && this.childrenLogics.length) {
-    this.childrenLogics[this.childrenLogics.length - 1].classList.add('space-logic-active', 'space-logic-editing');
+    statusService.setActiveAndEditing(lastActive);
   }
 
   return this;
@@ -89,7 +90,7 @@ proto.onAddCallback = function (newEl) {
  * @returns {SpaceController}
  */
 proto.updateChildrenCount = function () {
-  this.childrenLogics = dom.findAll(this.el, '.space-logic');
+  this.childrenLogics = utils.findAllLogic(this.el);
   return this;
 };
 
@@ -163,7 +164,7 @@ proto.findLogicCount = function () {
  * @returns {SpaceController}
  */
 proto.updateLogicCount = function (component) {
-  this.el = component ? dom.closest(component, '.clay-space') : this.el;
+  this.el = component ? dom.closest(component, '[data-space]') : this.el;
 
   this.findLogicCount()
     .findFirstActive();
@@ -177,7 +178,7 @@ proto.updateLogicCount = function (component) {
  */
 proto.clearEditing = function () {
   _.each(this.childrenLogics, (logic) => {
-    logic.classList.remove('space-logic-editing');
+    statusService.removeEditing(logic);
   });
 
   return this;

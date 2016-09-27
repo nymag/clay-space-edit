@@ -3,9 +3,17 @@ var dom = require('@nymag/dom'),
   references = require('references'),
   utils = require('../services/utils'),
   createService = require('../services/create-service'),
+  statusService = require('../services/status-service'),
   proto = AddComponent.prototype;
 
-
+/**
+ * Controller which handles adding a component to a Space.
+ * Creates a pane, handles events when clicking an item in
+ * the pane using the `createService`.
+ *
+ * @param {Object}   spaceParent
+ * @param {Function} callback
+ */
 function AddComponent(spaceParent, callback) {
   this.parent = spaceParent;
 
@@ -33,7 +41,11 @@ proto.launchPane = function () {
 };
 
 /**
- * [listItemClick description]
+ * The click handler for an item in the pane.
+ * Creats's a new component wrapped in the proper
+ * Logic and then invokes the callback passed in to
+ * the constructor.
+ *
  * @param  {string} id
  * @return {Promise}
  */
@@ -68,14 +80,20 @@ proto.listItemClick = function (id) {
     });
 };
 
+/**
+ * When a new component is added it should be focused on
+ * so that a user can begin editing it.
+ *
+ * @param  {Element} targetEl
+ */
 proto.makeNewComponentActive = function (targetEl) {
-  var logics = dom.findAll(this.parent, '.space-logic');
+  var logics = utils.findAllLogic(this.parent);
 
   _.forEach(logics, (logic) => {
-    logic.classList.remove(references.spaceEditingClass);
+    statusService.removeEditing(logic);
   });
 
-  targetEl.classList.add(references.spaceEditingClass);
+  statusService.setEditing(targetEl);
 };
 
 module.exports = function (spaceParent, callback) {
