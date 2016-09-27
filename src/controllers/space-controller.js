@@ -91,7 +91,7 @@ proto.onAddCallback = function (newEl) {
  * @returns {SpaceController}
  */
 proto.updateChildrenCount = function () {
-  this.childrenLogics = dom.findAll(this.el, '[data-logic]');
+  this.childrenLogics = utils.findAllLogic(this.el);
   return this;
 };
 

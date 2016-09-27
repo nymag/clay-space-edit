@@ -1,4 +1,5 @@
 var dom = require('@nymag/dom'),
+  utils = require('./utils'),
   _ = require('lodash'),
   references = require('references'),
   statusService = require('./status-service');
@@ -58,7 +59,7 @@ function removeIconClick(logic) {
  * @param  {[type]} index [description]
  */
 function findNextActive(index) {
-  this.childrenLogics = dom.findAll(this.el, '[data-logic]');
+  this.childrenLogics = utils.findAllLogic(this.el);
   this.findLogicCount();
 
   if (this.childrenLogics[index]) {

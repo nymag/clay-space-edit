@@ -71,7 +71,7 @@ proto.addComponent = function () {
  * @param  {Element} el
  */
 proto.findChildrenMakeList = function (el) {
-  this.childComponents = dom.findAll(el, '[data-logic]');
+  this.childComponents = utils.findAllLogic(el);
   this.componentList = this.makeList(this.childComponents);
 };
 
@@ -175,7 +175,7 @@ proto.reorder = function (id, newIndex, oldIndex) {
  */
 proto.renderUpdatedSpace = function (resp) {
   var space = this.el,
-    spaceChildren = dom.findAll(this.el, '[data-logic]'),
+    spaceChildren = utils.findAllLogic(this.el),
     spaceOnPage = dom.find(document, '[data-uri="' + this.spaceRef + '"]');
 
   _.forEach(spaceChildren, function (child) {

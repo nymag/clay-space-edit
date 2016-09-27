@@ -87,7 +87,7 @@ proto.listItemClick = function (id) {
  * @param  {Element} targetEl
  */
 proto.makeNewComponentActive = function (targetEl) {
-  var logics = dom.findAll(this.parent, '[data-logic]');
+  var logics = utils.findAllLogic(this.parent);
 
   _.forEach(logics, (logic) => {
     statusService.removeEditing(logic);

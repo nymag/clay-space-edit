@@ -49,7 +49,7 @@ function launchAddComponent(element, options, parent) {
  * @param {[type]} parent
  */
 function addToComponentList(el, options, parent) {
-  var logics = statusService.isLogic(el) ? [el] : dom.findAll(el, '[data-logic]'),
+  var logics = statusService.isLogic(el) ? [el] : utils.findAllLogic(el),
     bottom,
     addButton;
 
