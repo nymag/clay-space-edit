@@ -43,7 +43,8 @@ function logicReadouts(element) {
     logicString = '';
 
   _.forIn(dataAttributes, function (value, key) {
-    if (_.startsWith(key, 'logic')) {
+    // Check for logic attributes, but that the full key is not just 'logic'
+    if (_.startsWith(key, 'logic') && key !== 'logic') {
       logicString += createReadout(element, key, value);
     }
   });
