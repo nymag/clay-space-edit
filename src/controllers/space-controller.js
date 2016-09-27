@@ -131,7 +131,6 @@ proto.addButtons = function () {
   });
 
   // Get count of logics
-  // TODO: Count on each button
   this.findLogicCount();
 
   return this;
