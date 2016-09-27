@@ -22,7 +22,8 @@ function updateSelector(el, options, parent) {
   }
 }
 
-// Export the init entrypoint
+window.kiln = window.kiln || {};
+window.kiln.plugins = window.kiln.plugins || {};
 window.kiln.plugins['spaces-edit'] = function initSpaces() {
   window.kiln.on('add-selector', updateSelector);
 };
