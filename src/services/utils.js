@@ -1,4 +1,5 @@
-var _ = require('lodash'),
+var dom = require('@nymag/dom'),
+  _ = require('lodash'),
   references = require('references');
 
 /**
@@ -69,8 +70,20 @@ function checkIfSpace(ref) {
   return _.includes(ref, references.spacePrefix);
 }
 
+/**
+ * Return an array of all components with the
+ * `data-logic` attribute
+ *
+ * @param  {Element} el
+ * @return {Array}
+ */
+function findAllLogic(el) {
+  return dom.findAll(el, '[data-logic]');
+}
+
 module.exports.makeComponentListAttr = makeComponentListAttr;
 module.exports.spaceInComponentList = spaceInComponentList;
 module.exports.availableSpaces = availableSpaces;
 module.exports.createFilterableList = createFilterableList;
 module.exports.checkIfSpace = checkIfSpace;
+module.exports.findAllLogic = findAllLogic;

@@ -1,6 +1,11 @@
 var _ = require('lodash'),
   dom = require('@nymag/dom'),
-  references = require('references');
+  references = require('references'),
+  reservedAttributes = [
+    'logic',
+    'logicActive',
+    'logicEditing'
+  ]; // Attributes beginning with `logic` that are reserved for other parts of the application
 
 /**
  * Wrap logic groups in a div
@@ -43,8 +48,8 @@ function logicReadouts(element) {
     logicString = '';
 
   _.forIn(dataAttributes, function (value, key) {
-    // Check for logic attributes, but that the full key is not just 'logic'
-    if (_.startsWith(key, 'logic') && key !== 'logic') {
+    // Check that the attribute is not in the `reservedAttributes` array
+    if (_.startsWith(key, 'logic') && !_.includes(reservedAttributes, key)) {
       logicString += createReadout(element, key, value);
     }
   });

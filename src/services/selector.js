@@ -5,6 +5,8 @@ var _ = require('lodash'),
   createService = require('./create-service'),
   removeService = require('./remove-service'),
   selectSpaceParent = require('./select-space-parent'),
+  statusService = require('./status-service'),
+
   SpaceSettings = require('../controllers/space-settings-controller');
 
 /**
@@ -31,7 +33,7 @@ function addCreateSpaceButton(el, options, parent) {
  * @param  {[type]} parent
  */
 function launchAddComponent(element, options, parent) {
-  var spaceParent = dom.closest(element, '.clay-space'),
+  var spaceParent = dom.closest(element, '[data-space]'),
     availableComponents = spaceParent.getAttribute('data-components').split(','),
     paneContent = utils.createFilterableList(availableComponents, {
       click: createService.fakeAnAddToComponentList.bind(null, options, parent)
@@ -47,7 +49,7 @@ function launchAddComponent(element, options, parent) {
  * @param {[type]} parent
  */
 function addToComponentList(el, options, parent) {
-  var logics = el.classList.contains('space-logic') ? [el] : dom.findAll(el, '.space-logic'),
+  var logics = statusService.isLogic(el) ? [el] : utils.findAllLogic(el),
     bottom,
     addButton;
 
@@ -155,6 +157,8 @@ function addRemoveButton(logic) {
 /**
  * Remove 'clay-space' from a component list
  * @param  {Element} el
+ *
+ * TODO: Make the removal from component lists dynamic
  */
 function stripSpaceFromComponentList(el) {
   var addButton = dom.find(el, '.selected-add'),

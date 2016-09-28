@@ -6,6 +6,7 @@ var dom = require('@nymag/dom'),
   removeService = require('../services/remove-service'),
   createService = require('../services/create-service'),
   logicReadoutService = require('../services/logic-readout-service'),
+  statusService = require('../services/status-service'),
   proto = BrowseController.prototype;
 
 /**
@@ -70,7 +71,7 @@ proto.addComponent = function () {
  * @param  {Element} el
  */
 proto.findChildrenMakeList = function (el) {
-  this.childComponents = dom.findAll(el, '.space-logic');
+  this.childComponents = utils.findAllLogic(el);
   this.componentList = this.makeList(this.childComponents);
 };
 
@@ -81,7 +82,7 @@ proto.findChildrenMakeList = function (el) {
  */
 proto.markActiveInList = function (listHtml) {
   _.each(this.childComponents, function (logicComponent) {
-    if (logicComponent.classList.contains(references.spaceEditingClass)) {
+    if (statusService.isEditing(logicComponent)) {
       dom.find(listHtml, '[data-item-id="' + logicComponent.getAttribute('data-uri') + '"]').classList.add('active');
     }
   });
@@ -174,7 +175,7 @@ proto.reorder = function (id, newIndex, oldIndex) {
  */
 proto.renderUpdatedSpace = function (resp) {
   var space = this.el,
-    spaceChildren = dom.findAll(this.el, '.space-logic'),
+    spaceChildren = utils.findAllLogic(this.el),
     spaceOnPage = dom.find(document, '[data-uri="' + this.spaceRef + '"]');
 
   _.forEach(spaceChildren, function (child) {
@@ -192,22 +193,32 @@ proto.renderUpdatedSpace = function (resp) {
 };
 
 /**
- * [listItemClick description]
+ * When an item in the browse pane is clicked we want to be able
+ * to edit that selected component. Remove the editing attribute
+ * from all Logic's and then add it back to the one that was
+ * selected. Let's then close the pane and focus on that selected
+ * component.
+ *
  * @param {string} id
  */
 proto.listItemClick = function (id) {
   var newActive = dom.find(this.el, `[data-uri="${id}"]`);
 
+  // Remove editing status from each Logic
   _.each(this.childComponents, function (el) {
-    el.classList.remove(references.spaceEditingClass);
+    statusService.removeEditing(el);
   });
-
-  newActive.classList.add(references.spaceEditingClass);
-
+  // Set the selected Logic to active
+  statusService.setEditing(newActive);
+  // Close pane
   references.pane.close();
+  // Focus on the Logic's embedded component
+  references.focus.focus(dom.find(newActive, '[data-uri]'));
 };
 
 /**
+ * Open the settings window for the logic
+ *
  * @param  {string} id
  */
 proto.settings = function (id) {
@@ -217,7 +228,8 @@ proto.settings = function (id) {
 };
 
 /**
- * [spaceSettings description]
+ * Make a new Space Settings instance
+ *
  * @param  {Object} parent
  * @param  {Object} callbacks
  * @return {BrowseController}

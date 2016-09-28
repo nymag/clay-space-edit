@@ -1,7 +1,8 @@
 var dom = require('@nymag/dom'),
   references = require('references'),
   createService = require('./create-service'),
-  selectorService = require('./selector');
+  selectorService = require('./selector'),
+  statusService = require('./status-service');
 
 function onLogicSave(logic, logicComponent) {
   var query = { currentUrl: window.location.href };
@@ -26,13 +27,18 @@ function onLogicSave(logic, logicComponent) {
 
           addComponentButton.addEventListener('click', selectorService.launchAddComponent.bind(null, newComponent, { ref: this.spaceRef }, this.parent));
 
-          newComponent.classList.add(references.spaceEditingClass);
-          if (html.classList.contains(references.spaceActiveClass)) {
-            newComponent.classList.add(references.spaceActiveClass);
+          // Add the editing attribute
+          statusService.setEditing(newComponent);
+          // Was the original component active? Let's make
+          // sure the updated one is as well
+          if (statusService.isActive(html)) {
+            statusService.setActive(newComponent);
           }
 
+          // Close the pane
           references.pane.close();
 
+          // Relaunch the pane
           selectorService.launchBrowsePane(this.el, {
             add: this.onAddCallback.bind(this),
             remove: this.onRemoveCallback.bind(this)

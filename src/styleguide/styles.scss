@@ -1,13 +1,13 @@
 $UI_PRIMARY: #B4A5BC;
 $UI_BUTTON: #694C79;
 
-.clay-space > .component-selector,
-.space-logic > .component-selector,
-.clay-space > .space-logic {
+[data-space] > .component-selector,
+[data-logic] > .component-selector,
+[data-space] > [data-logic] {
   display: none;
 }
 
-.clay-space > .space-logic-editing  {
+[data-space] > [data-logic-editing]  {
   display: block;
 }
 
