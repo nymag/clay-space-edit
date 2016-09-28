@@ -4,9 +4,7 @@ var _ = require('lodash'),
   utils = require('./utils'),
   createService = require('./create-service'),
   removeService = require('./remove-service'),
-  selectSpaceParent = require('./select-space-parent'),
   statusService = require('./status-service'),
-
   SpaceSettings = require('../controllers/space-settings-controller');
 
 /**
