@@ -193,22 +193,32 @@ proto.renderUpdatedSpace = function (resp) {
 };
 
 /**
- * [listItemClick description]
+ * When an item in the browse pane is clicked we want to be able
+ * to edit that selected component. Remove the editing attribute
+ * from all Logic's and then add it back to the one that was
+ * selected. Let's then close the pane and focus on that selected
+ * component.
+ *
  * @param {string} id
  */
 proto.listItemClick = function (id) {
   var newActive = dom.find(this.el, `[data-uri="${id}"]`);
 
+  // Remove editing status from each Logic
   _.each(this.childComponents, function (el) {
     statusService.removeEditing(el);
   });
-
+  // Set the selected Logic to active
   statusService.setEditing(newActive);
-
+  // Close pane
   references.pane.close();
+  // Focus on the Logic's embedded component
+  references.focus.focus(dom.find(newActive, '[data-uri]'));
 };
 
 /**
+ * Open the settings window for the logic
+ *
  * @param  {string} id
  */
 proto.settings = function (id) {
@@ -218,7 +228,8 @@ proto.settings = function (id) {
 };
 
 /**
- * [spaceSettings description]
+ * Make a new Space Settings instance
+ *
  * @param  {Object} parent
  * @param  {Object} callbacks
  * @return {BrowseController}
