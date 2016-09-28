@@ -66,25 +66,6 @@ function addToComponentList(el, options, parent) {
 }
 
 /**
- * [swapSelectParentButton description]
- * @param  {[type]} el
- */
-function swapSelectParentButton(el) {
-  var kilnParentButton = dom.find(el, '.selected-info-parent'),
-    kilnSettingsButton = dom.find(el, '.selected-action-settings'),
-    spaceParentButton = references.tpl.get('.parent-space'),
-    spaceButton;
-
-  // Hide the original parent selector button provided by kiln
-  kilnParentButton.classList.add('kiln-hide');
-  // Insert a button that will mimic the functionality of the kiln parent
-  dom.insertAfter(kilnSettingsButton, spaceParentButton);
-
-  spaceButton = dom.find(el, '.space-parent');
-  spaceButton.addEventListener('click', selectSpaceParent.bind(null, el));
-}
-
-/**
  * [revealAddComponentButton description]
  * @param  {[type]} el
  * @return {[type]}
@@ -185,7 +166,6 @@ function addAvailableSpaces(el, availableSpaces) {
 }
 
 module.exports.addCreateSpaceButton = addCreateSpaceButton;
-module.exports.swapSelectParentButton = swapSelectParentButton;
 module.exports.addToComponentList = addToComponentList;
 module.exports.launchAddComponent = launchAddComponent;
 module.exports.launchBrowsePane = launchBrowsePane;

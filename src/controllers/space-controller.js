@@ -129,7 +129,6 @@ proto.addButtons = function () {
   _.each(this.childrenLogics, (logic) => {
     selectorService.addBrowseButton.call(this, logic);
     selectorService.addRemoveButton.call(this, logic);
-    // selectorService.swapSelectParentButton(dom.find(logic, '[data-uri]'));
   });
 
   // Get count of logics
