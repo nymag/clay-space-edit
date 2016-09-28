@@ -27,13 +27,6 @@
     </button>
   </template>
 
-  {# Select Space Parent #}
-  <template class="parent-space">
-    <button type="button" class="selector-button space-parent">
-      {% include 'public/media/components/clay-kiln/parent.svg' %}
-    </button>
-  </template>
-
   {# Readout Icons #}
   {# Need more icons? Submit a PR to https://github.com/nymag/clay-space-edit with the icon #}
   <template class="clay-space-edit-icons">
