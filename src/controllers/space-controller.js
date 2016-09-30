@@ -43,7 +43,6 @@ function SpaceController(el, parent) {
     } else if (isLogicElement && componentElement) {
       saveService.call(this, component, componentElement);
     }
-
   });
 
 
@@ -91,6 +90,7 @@ proto.onAddCallback = function (newEl) {
  */
 proto.updateChildrenCount = function () {
   this.childrenLogics = utils.findAllLogic(this.el);
+
   return this;
 };
 
@@ -129,11 +129,9 @@ proto.addButtons = function () {
   _.each(this.childrenLogics, (logic) => {
     selectorService.addBrowseButton.call(this, logic);
     selectorService.addRemoveButton.call(this, logic);
-    selectorService.swapSelectParentButton(dom.find(logic, '[data-uri]'));
   });
 
   // Get count of logics
-  // TODO: Count on each button
   this.findLogicCount();
 
   return this;

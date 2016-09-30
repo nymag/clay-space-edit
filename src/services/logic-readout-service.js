@@ -48,6 +48,7 @@ function logicReadouts(element) {
     logicString = '';
 
   _.forIn(dataAttributes, function (value, key) {
+    // Check that the attribute is not in the `reservedAttributes` array
     if (_.startsWith(key, 'logic') && !_.includes(reservedAttributes, key)) {
       logicString += createReadout(element, key, value);
     }
