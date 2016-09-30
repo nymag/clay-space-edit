@@ -13,15 +13,26 @@ var dom = require('@nymag/dom'),
  * @param {Element} el
  * @param {Object} callbacks
  */
-function BrowseController(el, callbacks) {
+function BrowseController(el, callbacks, invisible) {
   /**
-   * The Clay Space component data
-   * @type {Object}
+   * The Space element
+   *
+   * @type {Element}
    */
   this.el = el;
 
-  this.spaceRef = el.getAttribute('data-uri');
+  /**
+   * The ref to the Space element
+   *
+   * @type {String}
+   */
+  this.spaceRef = el.getAttribute(references.referenceAttribute);
 
+  /**
+   * An object of callback functions
+   *
+   * @type {Object}
+   */
   this.callbacks = callbacks;
 
   /**
@@ -37,6 +48,13 @@ function BrowseController(el, callbacks) {
    */
   this.componentList = [];
 
+  /**
+   * Boolean flag for whether or not you're launching
+   * a browse pane for an invisble Space
+   *
+   * @type {Boolean}
+   */
+  this.invisible = invisible;
 
   this.findChildrenMakeList(this.el);
   // Launch the pane
@@ -44,11 +62,11 @@ function BrowseController(el, callbacks) {
 }
 
 /**
- * Open the settins pane
+ * Open the settings pane
  */
 proto.launchPane = function () {
   var paneContent = this.markActiveInList(utils.createFilterableList(this.componentList, {
-    click: this.listItemClick.bind(this),
+    click: this.invisible ? _.noop : this.listItemClick.bind(this),
     reorder: this.reorder.bind(this),
     settings: this.settings.bind(this),
     remove: this.remove.bind(this),
@@ -56,14 +74,77 @@ proto.launchPane = function () {
     addTitle: 'Add Component To Space'
   }));
 
+  if (this.invisible) {
+    this.addInTarget(paneContent);
+  } else {
+    this.swapInTargetIcon(paneContent);
+  }
+
   references.pane.open([{ header: this.el.getAttribute(references.dataPaneTitle) || 'Browse Space', content: paneContent }]);
+};
+
+/**
+ * Add in a separate target button for invisible lists.
+ * This is important because the settings still need
+ * to point to the original component.
+ *
+ * @param {Element} content
+ */
+proto.addInTarget = function (content) {
+  var settingsIcons = dom.findAll(content, '.filtered-item-settings'),
+    targetSpaceBtn = references.tpl.get('.target-space');
+
+  // Whenever you append a document fragment like `targetSpaceBtn` into the DOM
+  // you are taking the content out of the document fragment. If you use `appendChild`
+  // then the HTML of the fragment is returned, but since we want to insert this
+  // icon before another icon we don't get that benefit. For this reason we have
+  // to clone the node (`cloneNode`) so that we can iterate through mutliple and
+  // items and apply the button.
+  _.forEach(settingsIcons, (icon) => {
+    var targetBtn,
+      targetSpaceBtnClone = targetSpaceBtn.cloneNode(true);
+
+    // Add in button
+    dom.insertBefore(icon, targetSpaceBtnClone);
+    // Find the button
+    targetBtn = dom.find(icon.parentElement, '.space-target');
+    // Attach event listeners
+    targetBtn.addEventListener('click', this.targetBtnClick.bind(this));
+  });
+};
+
+/**
+ * Event handler for the target button click event
+ *
+ * @param  {Object} e
+ */
+proto.targetBtnClick = function (e) {
+  var componentUri = dom.closest(e.target, '[data-item-id]').getAttribute('data-item-id'),
+    component = dom.find(`[data-uri="${componentUri}"]`);
+
+  this.settings(component.parentElement.getAttribute(references.referenceAttribute));
+}
+
+/**
+ * Replace the settings icon with the target icon because
+ * accurate iconography is important
+ *
+ * @param  {Element} content
+ */
+proto.swapInTargetIcon = function (content) {
+  var settingsBtnSvgs = dom.findAll(content, '.filtered-item-settings svg'),
+    targetSvg = references.tpl.get('.target-space-svg');
+
+  _.forEach(settingsBtnSvgs, function (icon) {
+    dom.replaceElement(icon, targetSvg.cloneNode(true));
+  });
 };
 
 /**
  * Launch the AddController
  */
 proto.addComponent = function () {
-  AddController(this.el, this.callbacks.add);
+  AddController(this.el, this.callbacks.add, this.invisible);
 };
 
 /**
@@ -76,18 +157,37 @@ proto.findChildrenMakeList = function (el) {
 };
 
 /**
+ * Determine if it's the Logic or the child that should be
+ * used based on whether or not the Space is invisible
+ *
+ * @param  {Element} logic
+ * @return {Element}
+ */
+proto.logicOrEmbedded = function (logic) {
+  return this.invisible ? dom.find(logic, '[data-uri]') : logic;
+};
+
+/**
  * Apply active styling to the proper item in the filterable list
+ *
  * @param  {element} listHtml
  * @returns {element}
  */
 proto.markActiveInList = function (listHtml) {
-  _.each(this.childComponents, function (logicComponent) {
-    if (statusService.isEditing(logicComponent)) {
-      dom.find(listHtml, '[data-item-id="' + logicComponent.getAttribute('data-uri') + '"]').classList.add('active');
-    }
-  });
+  if (!this.invisible) { // An 'active' item isn't a thing when you can't see it...right?
+    _.each(this.childComponents, (logicComponent) => {
+      var targetUri = this.logicOrEmbedded(logicComponent).getAttribute('data-uri');
 
+      if (statusService.isEditing(logicComponent)) {
+        dom.find(listHtml, `[data-item-id="${targetUri}"]`).classList.add('active');
+      }
+    });
+  }
   return listHtml;
+};
+
+proto.logicFromChildRef = function (ref) {
+  return dom.closest(dom.find(`[data-uri="${ref}"]`), '[data-logic]');
 };
 
 /**
@@ -96,7 +196,9 @@ proto.markActiveInList = function (listHtml) {
  * @param  {string} id The `id` value of the item in the filterable list that was clicked
  */
 proto.remove = function (id) {
-  removeService.removeLogic(id, this.el)
+  var logicUri = this.invisible ? this.logicFromChildRef(id).getAttribute('data-uri') : id;
+
+  removeService.removeLogic(logicUri, this.el)
     .then(() => {
       // Make new component list from the returned HTML
       this.findChildrenMakeList(this.el);
@@ -116,17 +218,19 @@ proto.remove = function (id) {
  * @return {Object}
  */
 proto.makeList = function (components) {
-  return _.map(components, function (item) {
-    var childComponent = dom.find(item, '[data-uri]'),
-      componentType = references.getComponentNameFromReference(childComponent.getAttribute('data-uri')),
-      componentTitle = references.label(componentType),
-      readouts = logicReadoutService(item);
+  return _.map(components, (item) => {
+    var childComponentUri = dom.find(item, '[data-uri]').getAttribute('data-uri'), // Get the child of the logic
+      componentType = references.getComponentNameFromReference(childComponentUri), // Get it's name
+      componentTitle = references.label(componentType), // Make the title
+      readouts = logicReadoutService(item), // Get logic readouts
+      returnId = this.invisible ? childComponentUri : item.getAttribute('data-uri');
 
-    componentTitle = readouts ? componentTitle + readouts : componentTitle;
+    componentTitle = readouts ? componentTitle + readouts : componentTitle; // Great the title
 
+    // Return an object representing the Logic and it's child
     return {
       title: componentTitle,
-      id: item.getAttribute('data-uri')
+      id: returnId
     };
   });
 };
@@ -138,9 +242,18 @@ proto.makeList = function (components) {
  * @param  {number} oldIndex
  */
 proto.reorder = function (id, newIndex, oldIndex) {
+
   var data = { _ref: this.spaceRef },
-    content = _.map(this.componentList, function (item) {
-      return { _ref: item.id };
+    content = _.map(this.componentList, (item) => {
+      var id = item.id;
+
+      // If invisible then `item.id` will be the direct component's
+      // uri and not its parent Logic's. Need to fix that.
+      if (this.invisible) {
+        id = this.logicFromChildRef(id).getAttribute('data-uri');
+      }
+
+      return { _ref: id };
     });
 
   content.splice(newIndex, 0, content.splice(oldIndex, 1)[0]); // reorder the array
@@ -230,12 +343,12 @@ proto.settings = function (id) {
 /**
  * Make a new Space Settings instance
  *
- * @param  {Object} parent
+ * @param  {Object} el
  * @param  {Object} callbacks
  * @return {BrowseController}
  */
-function spaceSettings(parent, callbacks) {
-  return new BrowseController(parent, callbacks);
+function spaceSettings(el, callbacks = {}, invisible = false) {
+  return new BrowseController(el, callbacks, invisible);
 };
 
 module.exports = spaceSettings;
