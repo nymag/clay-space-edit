@@ -9,7 +9,6 @@ kilnServices = window.kiln.services;
 referencesObj = _.assign({
   spaceEdit: 'clay-space-edit',
   spacePrefix: 'clay-space',
-  spaceClass: 'clay-space',
   dataAvailableSpaces: 'data-spaces-available',
   dataPaneTitle: 'data-space-browse-title',
   render: kilnServices.render,

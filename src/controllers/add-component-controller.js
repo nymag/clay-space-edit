@@ -13,13 +13,16 @@ var dom = require('@nymag/dom'),
  *
  * @param {Object}   spaceParent
  * @param {Function} callback
+ * @param {Boolean}  invisible
  */
-function AddComponent(spaceParent, callback) {
+function AddComponent(spaceParent, callback, invisible) {
   this.parent = spaceParent;
 
   this.parentRef = spaceParent.getAttribute('data-uri');
 
-  this.callback = callback;
+  this.callback = callback ? callback : _.noop;
+
+  this.invisible = invisible;
 
   this.launchPane();
 }
@@ -93,9 +96,9 @@ proto.makeNewComponentActive = function (targetEl) {
     statusService.removeEditing(logic);
   });
 
-  statusService.setEditing(targetEl);
+  this.invisible ? _.noop() : statusService.setEditing(targetEl);
 };
 
-module.exports = function (spaceParent, callback) {
-  return new AddComponent(spaceParent, callback);
+module.exports = function (spaceParent, callback, invisible = false) {
+  return new AddComponent(spaceParent, callback, invisible);
 };

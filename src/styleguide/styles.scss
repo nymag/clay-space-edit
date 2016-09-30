@@ -20,19 +20,38 @@ $UI_BUTTON: #694C79;
   border-left: 1px solid $UI_PRIMARY;
 }
 
+.logic-count {
+  position: absolute;
+}
+
 .space-browse {
   border-left: 1px solid $UI_PRIMARY;
   position: relative;
 
   .logic-count {
     bottom: 13px;
-    position: absolute;
     right: 7px;
   }
 }
 
 
 // Readouts inside the logic browse pane
+.filtered-list-button {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  flex: 0 0 auto;
+  margin-left: 10px;
+  outline: none;
+  padding: 0;
+  position: relative;
+
+  .logic-count {
+    bottom: -5px;
+    right: -8px;
+  }
+}
+
 .filtered-item-title-logic-readout {
   display: flex;
   flex-wrap: wrap;
@@ -46,9 +65,9 @@ $UI_BUTTON: #694C79;
   margin-right: 8px;
 
   & svg {
-    width: 12px;
     height: 12px;
     vertical-align: text-top;
+    width: 12px;
   }
 
   & > .readout-icon {
