@@ -121,7 +121,7 @@ function addBrowseButton(logicComponent) {
  * @param  {Object} callbacks    [description]
  */
 function launchBrowsePane(spaceElement, callbacks) {
-  SpaceSettings(spaceElement, callbacks);
+  SpaceSettings(spaceElement, callbacks, false);
 }
 
 function addRemoveButton(logic) {
@@ -142,7 +142,7 @@ function addRemoveButton(logic) {
 function stripSpaceFromComponentList(el) {
   var addButton = dom.find(el, '.selected-add'),
     components = addButton.getAttribute('data-components').split(','),
-    componentsSansSpace = _.pull(components, references.spaceClass);
+    componentsSansSpace = _.pull(components, references.spacePrefix);
 
   addButton.setAttribute('data-components', componentsSansSpace);
 }
