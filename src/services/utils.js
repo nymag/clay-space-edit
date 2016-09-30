@@ -71,6 +71,16 @@ function checkIfSpace(ref) {
 }
 
 /**
+ * Checks if a reference is the Space Edit component.
+ *
+ * @param  {String} ref The uri of a component
+ * @return {Boolean}
+ */
+function checkIfSpaceEdit(ref) {
+  return _.includes(ref, references.spaceEdit);
+}
+
+/**
  * Return an array of all components with the
  * `data-logic` attribute
  *
@@ -86,4 +96,5 @@ module.exports.spaceInComponentList = spaceInComponentList;
 module.exports.availableSpaces = availableSpaces;
 module.exports.createFilterableList = createFilterableList;
 module.exports.checkIfSpace = checkIfSpace;
+module.exports.checkIfSpaceEdit = checkIfSpaceEdit;
 module.exports.findAllLogic = findAllLogic;
