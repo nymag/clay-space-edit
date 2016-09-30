@@ -1,8 +1,7 @@
 var selector = require('./services/selector'),
   SpaceController = require('./controllers/space-controller'),
   invisibleLists = require('./services/invisible-lists'),
-  utils = require('./services/utils'),
-  dom = require('@nymag/dom');
+  utils = require('./services/utils');
 
 // Load styles
 require('./styleguide/styles.scss');

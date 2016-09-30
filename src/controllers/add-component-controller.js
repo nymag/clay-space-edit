@@ -13,6 +13,7 @@ var dom = require('@nymag/dom'),
  *
  * @param {Object}   spaceParent
  * @param {Function} callback
+ * @param {Boolean}  invisible
  */
 function AddComponent(spaceParent, callback, invisible) {
   this.parent = spaceParent;

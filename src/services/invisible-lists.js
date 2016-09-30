@@ -134,7 +134,7 @@ function removeCallback(space) {
     references.edit.getLayout()
       .then(function (data) {
         references.pane.close();
-        return removeService.removeSpace(space, { ref: data, path: parentPath })
+        return removeService.removeSpace(space, { ref: data, path: parentPath });
       });
   }
 }

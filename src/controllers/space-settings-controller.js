@@ -10,8 +10,11 @@ var dom = require('@nymag/dom'),
   proto = BrowseController.prototype;
 
 /**
+ * Launch the controller to browse a Space.
+ *
  * @param {Element} el
- * @param {Object} callbacks
+ * @param {Object}  callbacks
+ * @param {Boolean} invisible
  */
 function BrowseController(el, callbacks, invisible) {
   /**
@@ -123,7 +126,7 @@ proto.targetBtnClick = function (e) {
     component = dom.find(`[data-uri="${componentUri}"]`);
 
   this.settings(component.parentElement.getAttribute(references.referenceAttribute));
-}
+};
 
 /**
  * Replace the settings icon with the target icon because
@@ -343,8 +346,9 @@ proto.settings = function (id) {
 /**
  * Make a new Space Settings instance
  *
- * @param  {Object} el
- * @param  {Object} callbacks
+ * @param  {Object}  el
+ * @param  {Object}  callbacks
+ * @param  {Boolean} invisible
  * @return {BrowseController}
  */
 function spaceSettings(el, callbacks = {}, invisible = false) {
