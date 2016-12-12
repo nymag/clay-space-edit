@@ -1,6 +1,6 @@
 {
   "name": "clay-space-edit",
-  "version": "0.9.2-0",
+  "version": "0.9.3-0",
   "description": "The editing experience for Clay Space",
   "main": "index.js",
   "repository": {
