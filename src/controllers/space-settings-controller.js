@@ -83,7 +83,6 @@ proto.launchPane = function () {
     this.swapInTargetIcon(paneContent);
   }
 
-  debugger;
   references.pane.open([{ header: this.el.getAttribute(references.dataPaneTitle) || 'Browse Space', content: paneContent }]);
 };
 
