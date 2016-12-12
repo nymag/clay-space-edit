@@ -7,14 +7,14 @@ var dom = require('@nymag/dom'),
   proto = SpaceController.prototype;
 
 function SpaceController(el, parent) {
-  if (!Object.keys(parent).length) {
-    // Whenever a new space is first created, Kiln does not
-    // have reference to its parent's schema/component list
-    // information. Because of this we can't add new components
-    // properly. To fix this, trigger a reload if this
-    // is a brand new Space component.
-    window.location.reload();
-  }
+  // if (!Object.keys(parent).length) {
+  //   // Whenever a new space is first created, Kiln does not
+  //   // have reference to its parent's schema/component list
+  //   // information. Because of this we can't add new components
+  //   // properly. To fix this, trigger a reload if this
+  //   // is a brand new Space component.
+  //   window.location.reload();
+  // }
 
   this.el = el;
 
