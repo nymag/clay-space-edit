@@ -27,7 +27,6 @@ function updateSelector(el, options, parent) {
     selector.addAvailableSpaces(el, availableSpaces);
     SpaceController(el, parent);
     selector.addToComponentList(el, options, parent);
-
   }
 }
 
