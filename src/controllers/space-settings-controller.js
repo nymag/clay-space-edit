@@ -123,7 +123,7 @@ proto.addInTarget = function (content) {
  */
 proto.targetBtnClick = function (e) {
   var componentUri = dom.closest(e.target, '[data-item-id]').getAttribute('data-item-id'),
-    component = dom.find(`[data-uri="${componentUri}"]`);
+    component = dom.find(`[${references.referenceAttribute}="${componentUri}"]`);
 
   this.settings(component.parentElement.getAttribute(references.referenceAttribute));
 };
@@ -167,7 +167,7 @@ proto.findChildrenMakeList = function (el) {
  * @return {Element}
  */
 proto.logicOrEmbedded = function (logic) {
-  return this.invisible ? dom.find(logic, '[data-uri]') : logic;
+  return this.invisible ? dom.find(logic, `[${references.referenceAttribute}]`) : logic;
 };
 
 /**
@@ -179,7 +179,7 @@ proto.logicOrEmbedded = function (logic) {
 proto.markActiveInList = function (listHtml) {
   if (!this.invisible) { // An 'active' item isn't a thing when you can't see it...right?
     _.each(this.childComponents, (logicComponent) => {
-      var targetUri = this.logicOrEmbedded(logicComponent).getAttribute('data-uri');
+      var targetUri = this.logicOrEmbedded(logicComponent).getAttribute(references.referenceAttribute);
 
       if (statusService.isEditing(logicComponent)) {
         dom.find(listHtml, `[data-item-id="${targetUri}"]`).classList.add('active');
@@ -190,7 +190,7 @@ proto.markActiveInList = function (listHtml) {
 };
 
 proto.logicFromChildRef = function (ref) {
-  return dom.closest(dom.find(`[data-uri="${ref}"]`), '[data-logic]');
+  return dom.closest(dom.find(`[${references.referenceAttribute}="${ref}"]`), '[data-logic]');
 };
 
 /**
@@ -199,7 +199,7 @@ proto.logicFromChildRef = function (ref) {
  * @param  {string} id The `id` value of the item in the filterable list that was clicked
  */
 proto.remove = function (id) {
-  var logicUri = this.invisible ? this.logicFromChildRef(id).getAttribute('data-uri') : id;
+  var logicUri = this.invisible ? this.logicFromChildRef(id).getAttribute(references.referenceAttribute) : id;
 
   removeService.removeLogic(logicUri, this.el)
     .then(() => {
@@ -222,11 +222,11 @@ proto.remove = function (id) {
  */
 proto.makeList = function (components) {
   return _.map(components, (item) => {
-    var childComponentUri = dom.find(item, '[data-uri]').getAttribute('data-uri'), // Get the child of the logic
+    var childComponentUri = dom.find(item, `[${references.referenceAttribute}]`).getAttribute(references.referenceAttribute), // Get the child of the logic
       componentType = references.getComponentNameFromReference(childComponentUri), // Get it's name
       componentTitle = references.label(componentType), // Make the title
       readouts = logicReadoutService(item), // Get logic readouts
-      returnId = this.invisible ? childComponentUri : item.getAttribute('data-uri');
+      returnId = this.invisible ? childComponentUri : item.getAttribute(references.referenceAttribute);
 
     componentTitle = readouts ? componentTitle + readouts : componentTitle; // Great the title
 
@@ -253,7 +253,7 @@ proto.reorder = function (id, newIndex, oldIndex) {
       // If invisible then `item.id` will be the direct component's
       // uri and not its parent Logic's. Need to fix that.
       if (this.invisible) {
-        id = this.logicFromChildRef(id).getAttribute('data-uri');
+        id = this.logicFromChildRef(id).getAttribute(references.referenceAttribute);
       }
 
       return { _ref: id };
@@ -274,7 +274,7 @@ proto.reorder = function (id, newIndex, oldIndex) {
       newChildHtmlPromises = _.map(this.childComponents, function (logicComponent) {
         var query = { currentUrl: window.location.href };
 
-        return references.edit.getHTMLWithQuery(logicComponent.getAttribute('data-uri'), query);
+        return references.edit.getHTMLWithQuery(logicComponent.getAttribute(references.referenceAttribute), query);
       });
 
       return Promise.all(newChildHtmlPromises)
@@ -292,7 +292,7 @@ proto.reorder = function (id, newIndex, oldIndex) {
 proto.renderUpdatedSpace = function (resp) {
   var space = this.el,
     spaceChildren = utils.findAllLogic(this.el),
-    spaceOnPage = dom.find(document, '[data-uri="' + this.spaceRef + '"]');
+    spaceOnPage = dom.find(document, `[${references.referenceAttribute}="${this.spaceRef}"]`);
 
   _.forEach(spaceChildren, function (child) {
     child.parentNode.removeChild(child);
@@ -318,7 +318,7 @@ proto.renderUpdatedSpace = function (resp) {
  * @param {string} id
  */
 proto.listItemClick = function (id) {
-  var newActive = dom.find(this.el, `[data-uri="${id}"]`);
+  var newActive = dom.find(this.el, `[${references.referenceAttribute}="${id}"]`);
 
   // Remove editing status from each Logic
   _.each(this.childComponents, function (el) {
@@ -329,7 +329,7 @@ proto.listItemClick = function (id) {
   // Close pane
   references.pane.close();
   // Focus on the Logic's embedded component
-  references.focus.focus(dom.find(newActive, '[data-uri]'));
+  references.focus.focus(dom.find(newActive, `[${references.referenceAttribute}]`));
 };
 
 /**
