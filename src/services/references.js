@@ -26,5 +26,4 @@ referencesObj = _.assign({
   site: kilnServices.site
 }, kilnServices.references);
 
-
 module.exports = referencesObj;

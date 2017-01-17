@@ -26,7 +26,7 @@ function makeComponentListAttr(parent) {
  * from specific Spaces.
  *
  * @param  {Object} parent  The parent component which contains a componentList
- * @return {Array}
+ * @return {String[]}  The names of available space components, e.g. "clay-space" or "clay-space-ads"
  */
 function spaceInComponentList(parent) {
   var include = _.get(parent, 'list.include', '') || _.get(parent, 'prop.include', ''),

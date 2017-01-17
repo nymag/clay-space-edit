@@ -5,21 +5,15 @@ var _ = require('lodash'),
   createService = require('./create-service'),
   removeService = require('./remove-service'),
   statusService = require('./status-service'),
-  SpaceSettings = require('../controllers/space-settings-controller');
+  SpaceSettings = require('../controllers/space-settings-controller'),
+  SpaceController = require('./../controllers/space-controller');
 
-/**
- * [addCreateSpaceButton description]
- * @param {[type]} el
- * @param {[type]} options
- * @param {[type]} parent
- */
 function addCreateSpaceButton(el, options, parent) {
   var parentButton = dom.find(el, '.selected-actions'),
     createSpaceButton = references.tpl.get('.create-space'),
     createButton;
 
   parentButton.appendChild(createSpaceButton);
-
   createButton = dom.find(el, '.space-create');
   createButton.addEventListener('click', createService.createSpace.bind(null, options, parent));
 }
@@ -100,8 +94,12 @@ function addBrowseButton(logicComponent) {
   }
 
   if (embeddedComponent && embeddedComponentParentButton) {
+
     // Insert the button
-    embeddedComponentParentButton.appendChild(browseSpaceButton);
+    if (!targetButton) {
+      embeddedComponentParentButton.appendChild(browseSpaceButton);
+    }
+
     // Assign the proper reference to `browseButton`
     browseButton = targetButton ? targetButton : dom.find(logicComponent, '.space-browse');
     // Add an event listener
@@ -163,6 +161,40 @@ function addAvailableSpaces(el, availableSpaces) {
   el.setAttribute(references.dataAvailableSpaces, availableSpaces.join(','));
 }
 
+/**
+ * If the component of a given element is a space component or
+ * is in a component list that allows space components,
+ * add buttons to its selector allowing the space to be
+ * updated or a new space to be added.
+ * @param  {Element} el component instance element
+ * @param  {object} options
+ * @param  {object} options.data - component instance data
+ * @param  {string} options.ref - component instance ref
+ * @param  {object} parent - data of the containing component
+ */
+function updateSelector(el, options, parent) {
+  var availableSpaces;
+
+  console.log('-----------------------');
+  console.log('updating selector: ', el, options, parent);
+
+  if (utils.checkIfSpaceEdit(options.ref)) return; // ignore space-edit component
+
+  availableSpaces = utils.spaceInComponentList(parent);
+  console.log('available spaces: ', availableSpaces);
+
+  if (utils.checkIfSpace(options.ref)) { // if element is space component
+    addAvailableSpaces(el, availableSpaces);
+    SpaceController(el, parent);
+    addToComponentList(el, options, parent);
+  } else if (!_.isEmpty(availableSpaces)) { // if element is space sibling
+    addAvailableSpaces(el, availableSpaces);
+    addCreateSpaceButton(el, options, parent);
+    stripSpaceFromComponentList(el);
+  }
+}
+
+
 module.exports.addCreateSpaceButton = addCreateSpaceButton;
 module.exports.addToComponentList = addToComponentList;
 module.exports.launchAddComponent = launchAddComponent;
@@ -172,3 +204,4 @@ module.exports.addBrowseButton = addBrowseButton;
 module.exports.addRemoveButton = addRemoveButton;
 module.exports.stripSpaceFromComponentList = stripSpaceFromComponentList;
 module.exports.addAvailableSpaces = addAvailableSpaces;
+module.exports.updateSelector = updateSelector;
