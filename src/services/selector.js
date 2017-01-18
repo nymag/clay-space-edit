@@ -175,13 +175,9 @@ function addAvailableSpaces(el, availableSpaces) {
 function updateSelector(el, options, parent) {
   var availableSpaces;
 
-  console.log('-----------------------');
-  console.log('updating selector: ', el, options, parent);
-
   if (utils.checkIfSpaceEdit(options.ref)) return; // ignore space-edit component
 
   availableSpaces = utils.spaceInComponentList(parent);
-  console.log('available spaces: ', availableSpaces);
 
   if (utils.checkIfSpace(options.ref)) { // if element is space component
     addAvailableSpaces(el, availableSpaces);
