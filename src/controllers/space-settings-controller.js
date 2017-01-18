@@ -338,9 +338,8 @@ proto.listItemClick = function (id) {
  * @param  {string} id
  */
 proto.settings = function (id) {
-  references.focus.unfocus().then(function () {
-    return references.forms.open(id, document.body);
-  }).catch(_.noop);
+  references.pane.close();
+  references.forms.open(id, document.body);
 };
 
 /**
