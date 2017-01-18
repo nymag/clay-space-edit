@@ -48,21 +48,19 @@ function onLogicSave(logic, logicComponent) {
 }
 
 /**
- * TODO: Investigate a way around this hack. Whenever a form closes
- * it fires the `form:close` event which then refreshes a component's content.
- * This is cool unless you want that component to have buttons on the selector
- * AND you need it to retain a reference to a controller. Because of that we
- * use `setTimeout` to throw this function to the end of the event queue so that
- * it will run after the `form:close` event is fired and keep all our references.
- * So yeah, this might cause a memory leak....?
- * @param  {Element} element
+ * Runs when a component INSIDE a space-logic component is saved.
+ * Once the save is complete, Kiln will add a new selector to that component,
+ * which will replace the space selector. So this function re-initializes
+ * the space selector.
  */
-function onLogicWrappedSave(element) {
-  setTimeout(function () {
-    var onPageElement = dom.find(`[data-uri="${element.getAttribute('data-uri')}"]`);
+function onLogicWrappedSave() {
+  var handler = () => {
+    // "this" is the pre-existing SpaceController instance
+    selectorService.updateSelector(this.el, { ref: this.el.getAttribute('data-uri') }, this.parent);
+    window.kiln.off('add-selector', handler);
+  };
 
-    dom.replaceElement(onPageElement, element);
-  }, 0);
+  window.kiln.on('add-selector', handler);
 }
 
 module.exports = onLogicSave;

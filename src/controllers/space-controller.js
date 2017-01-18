@@ -39,7 +39,7 @@ function SpaceController(el, parent) {
     parentIsLogic = statusService.isLogic(componentElement.parentElement);
 
     if (!isLogicElement && parentIsLogic) {
-      saveService.onLogicWrappedSave.call(this, componentElement);
+      saveService.onLogicWrappedSave.call(this);
     } else if (isLogicElement && componentElement) {
       saveService.call(this, component, componentElement);
     }
