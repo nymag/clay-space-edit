@@ -7,28 +7,15 @@ var dom = require('@nymag/dom'),
   proto = SpaceController.prototype;
 
 function SpaceController(el, parent) {
-  // if (!Object.keys(parent).length) {
-  //   // Whenever a new space is first created, Kiln does not
-  //   // have reference to its parent's schema/component list
-  //   // information. Because of this we can't add new components
-  //   // properly. To fix this, trigger a reload if this
-  //   // is a brand new Space component.
-  //   window.location.reload();
-  // }
-  var self = this,
-    reinitialize = _.debounce(function () {
-      self.init();
-    }, 100);
+  const reinitialize = _.debounce(this.init.bind(this), 100);
 
   this.el = el;
 
   this.parent = parent;
 
-  this.childrenLogics;
+  this.childrenLogics = {};
 
   this.el.setAttribute('data-components', utils.makeComponentListAttr(this.parent));
-
-  this.spaceRef = this.el.getAttribute('data-uri');
 
   window.kiln.on('save', (component) => {
     var componentElement = dom.find(this.el, '[data-uri="' + component._ref + '"]'),
@@ -50,8 +37,8 @@ function SpaceController(el, parent) {
   });
 
   // Reinitialize space when selectors are added to its children.
-  window.kiln.on('add-selector', function (childEl) {
-    if (self.ownsComponent(childEl)) {
+  window.kiln.on('add-selector', (childEl) => {
+    if (this.ownsComponent(childEl)) {
       reinitialize();
     }
   });
