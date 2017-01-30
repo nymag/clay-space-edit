@@ -15,6 +15,7 @@ function SpaceController(el, parent) {
   //   // is a brand new Space component.
   //   window.location.reload();
   // }
+  var self = this;
 
   this.el = el;
 
@@ -45,6 +46,12 @@ function SpaceController(el, parent) {
     }
   });
 
+  // Reinitialize space when selectors are added to its children.
+  window.kiln.on('add-selector', function (childEl) {
+    if (self.ownsComponent(childEl)) {
+      self.init();
+    }
+  });
 
   this.init();
 }
@@ -73,7 +80,7 @@ proto.findFirstActive = function () {
 };
 
 /**
- * Called after a componet is added to a space
+ * Called after a component is added to a space
  * @param {Element} newEl [description]
  */
 proto.onAddCallback = function (newEl) {
@@ -126,6 +133,7 @@ proto.onRemoveCallback = function (component) {
  * @returns {SpaceController}
  */
 proto.addButtons = function () {
+
   _.each(this.childrenLogics, (logic) => {
     selectorService.addBrowseButton.call(this, logic);
     selectorService.addRemoveButton.call(this, logic);
@@ -180,6 +188,15 @@ proto.clearEditing = function () {
   });
 
   return this;
+};
+
+/**
+ * Returns true if this cmptEl belongs to this space.
+ * @param  {Element} cmptEl
+ * @return {Boolean}
+ */
+proto.ownsComponent = function (cmptEl) {
+  return _.get(cmptEl, 'parentNode.parentNode') === this.el;
 };
 
 module.exports = function (el, parent) {
