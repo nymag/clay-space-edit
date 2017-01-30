@@ -76,7 +76,7 @@ function revealAddComponentButton(el) {
 
 /**
  * [addBrowseButton description]
- * @param {[type]} logicComponent
+ * @param {Element} logicComponent
  * @return {SpaceController}
  */
 function addBrowseButton(logicComponent) {
