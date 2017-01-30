@@ -15,7 +15,10 @@ function SpaceController(el, parent) {
   //   // is a brand new Space component.
   //   window.location.reload();
   // }
-  var self = this;
+  var self = this,
+    reinitialize = _.debounce(function () {
+      self.init();
+    }, 100);
 
   this.el = el;
 
@@ -49,7 +52,7 @@ function SpaceController(el, parent) {
   // Reinitialize space when selectors are added to its children.
   window.kiln.on('add-selector', function (childEl) {
     if (self.ownsComponent(childEl)) {
-      self.init();
+      reinitialize();
     }
   });
 
