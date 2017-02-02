@@ -339,6 +339,8 @@ proto.listItemClick = function (id) {
  */
 proto.settings = function (id) {
   references.pane.close();
+  // close any open forms so that space edit form can open
+  references.forms.close();
   references.forms.open(id, document.body);
 };
 
