@@ -27,7 +27,7 @@
   "files": [
     "dist",
     "media",
-    "template.nunjucks",
+    "template.handlebars",
     "schema.yml",
     "bootstrap.yml"
   ],
