@@ -1,6 +1,6 @@
 var _ = require('lodash'),
   dom = require('@nymag/dom'),
-  references = require('references'),
+  references = require('./references'),
   utils = require('./utils'),
   createService = require('./create-service'),
   removeService = require('./remove-service'),
@@ -9,13 +9,11 @@ var _ = require('lodash'),
   SpaceController = require('./../controllers/space-controller');
 
 function addCreateSpaceButton(el, options, parent) {
-  var parentButton = dom.find(el, '.selected-actions'),
-    createSpaceButton = references.tpl.get('.create-space'),
-    createButton;
+  const parentButton = dom.find(el, '.selected-actions'),
+    createSpaceButton = references.getFromTemplate('.create-space');
 
   parentButton.appendChild(createSpaceButton);
-  createButton = dom.find(el, '.space-create');
-  createButton.addEventListener('click', createService.createSpace.bind(null, options, parent));
+  createSpaceButton.addEventListener('click', createService.createSpace.bind(null, options, parent));
 }
 
 /**
@@ -176,7 +174,6 @@ function updateSelector(el, options, parent) {
   var availableSpaces;
 
   if (utils.checkIfSpaceEdit(options.ref)) return; // ignore space-edit component
-
   availableSpaces = utils.spaceInComponentList(parent);
 
   if (utils.checkIfSpace(options.ref)) { // if element is space component
@@ -184,9 +181,11 @@ function updateSelector(el, options, parent) {
     SpaceController(el, parent);
     addToComponentList(el, options, parent);
   } else if (!_.isEmpty(availableSpaces)) { // if element is space sibling
-    addAvailableSpaces(el, availableSpaces);
+    // addAvailableSpaces(el, availableSpaces);
     addCreateSpaceButton(el, options, parent);
-    stripSpaceFromComponentList(el);
+    // TODO: figure this out, now that we're using Vuex
+    // we don't want it to be possible to add a space directly
+    // stripSpaceFromComponentList(el);
   }
 }
 
