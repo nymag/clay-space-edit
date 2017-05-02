@@ -1,6 +1,6 @@
 var dom = require('@nymag/dom'),
   _ = require('lodash'),
-  references = require('references');
+  references = require('./references');
 
 /**
  * Return an array of components available in a
@@ -29,11 +29,11 @@ function makeComponentListAttr(parent) {
  * @return {String[]}  The names of available space components, e.g. "clay-space" or "clay-space-ads"
  */
 function spaceInComponentList(parent) {
-  var include = _.get(parent, 'list.include', '') || _.get(parent, 'prop.include', ''),
-    exclude = _.get(parent, 'list.exclude', '') || _.get(parent, 'prop.exclude', '');
+  const possibleComponents = _.get(parent, '_componentList.include', []),
+    exclude = _.get(parent, '_componentList.exclude', []);
 
   // Filter out components that are not Space components nor the Edit component
-  return _.filter(references.availableComponents(include, exclude), function (item) {
+  return _.filter(references.availableComponents(possibleComponents, exclude), function (item) {
     return _.startsWith(item, references.spacePrefix) && item !== references.spaceEdit;
   });
 }
