@@ -8,20 +8,29 @@ module.exports = {
     path: './dist'
   },
   module: {
-    loaders: [{
-      test: /\.js$/,
-      exclude: /node_modules/,
-      loader: 'babel',
-      query: {
-        presets: ['es2015'],
-      }
-    }, {
-      test: /\.scss$/,
-      loader: ExtractTextPlugin.extract(
-        'style', // backup loader when not building .css file
-        'css!sass' // loaders to preprocess CSS
-      )
-    }]
+    loaders: [
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader',
+        options: {
+          extractCSS: process.env.NODE_ENV === 'production',
+          preserveWhitespace: !process.env.NODE_ENV === 'production'
+        }
+      },
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: 'babel',
+        query: {
+          presets: ['es2015'],
+        }
+      }, {
+        test: /\.scss$/,
+        loader: ExtractTextPlugin.extract(
+          'style', // backup loader when not building .css file
+          'css!sass' // loaders to preprocess CSS
+        )
+      }]
   },
   resolve: {
     alias: {
