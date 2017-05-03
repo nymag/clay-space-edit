@@ -5,32 +5,45 @@ module.exports = {
   entry: './src/index.js',
   output: {
     filename: 'clay-space-edit.js',
-    path: './dist'
+    path: path.resolve(__dirname, './dist')
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.vue$/,
-        loader: 'vue-loader',
-        options: {
-          extractCSS: process.env.NODE_ENV === 'production',
-          preserveWhitespace: !process.env.NODE_ENV === 'production'
-        }
+        use: [
+          {
+            loader: 'vue-loader',
+            options: {
+              extractCSS: process.env.NODE_ENV === 'production',
+              preserveWhitespace: !process.env.NODE_ENV === 'production'
+            }
+          }
+        ]
       },
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'babel',
-        query: {
-          presets: ['es2015'],
-        }
-      }, {
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: ['es2015']
+            }
+          }
+        ]
+      },
+      {
         test: /\.scss$/,
-        loader: ExtractTextPlugin.extract(
-          'style', // backup loader when not building .css file
-          'css!sass' // loaders to preprocess CSS
-        )
-      }]
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader', // backup loader when not building .css file
+          use: [
+            'css-loader',
+            'sass-loader'
+          ]
+        })
+      }
+    ]
   },
   resolve: {
     alias: {
