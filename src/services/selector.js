@@ -19,6 +19,11 @@ const addCreateSpaceButtonToPanel = clickHandler => panelEl => {
 /**
  * TODO: swap this out with call to
  * Kiln API for adding buttons when that API exists
+ *
+ * @param {Object} el
+ * @param {Object} options
+ * @param {Object} parent
+ *
  */
 function addCreateSpaceButton(el, options, parent) {
   const clickHandler = createService.createSpace.bind(null, options, parent);

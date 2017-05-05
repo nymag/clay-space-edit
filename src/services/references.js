@@ -8,7 +8,7 @@ const kilnUtils = window.kiln.utils;
  * the template (from template.hbs) to create a DOM element.
  * If the template is not found, returns `null`.
  * @return {Object | null}
- * @param {String} templateSelector
+ * @param {String} selector
  */
 function getFromTemplate(selector) {
   const el = document.querySelector(selector);
