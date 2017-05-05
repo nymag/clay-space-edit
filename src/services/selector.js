@@ -8,12 +8,30 @@ var _ = require('lodash'),
   SpaceSettings = require('../controllers/space-settings-controller'),
   SpaceController = require('./../controllers/space-controller');
 
-function addCreateSpaceButton(el, options, parent) {
-  const parentButton = dom.find(el, '.selected-actions'),
-    createSpaceButton = references.getFromTemplate('.create-space');
+/* helper, will go away when API changes */
+const addCreateSpaceButtonToPanel = clickHandler => panelEl => {
+  const createSpaceButton = references.getFromTemplate('.create-space');
 
-  parentButton.appendChild(createSpaceButton);
-  createSpaceButton.addEventListener('click', createService.createSpace.bind(null, options, parent));
+  panelEl.appendChild(createSpaceButton);
+  createSpaceButton.addEventListener('click', clickHandler);
+};
+
+/**
+ * TODO: swap this out with call to
+ * Kiln API for adding buttons when that API exists
+ */
+function addCreateSpaceButton(el, options, parent) {
+  const clickHandler = createService.createSpace.bind(null, options, parent);
+
+  // we need to find the component settings panels (there are two) in the DOM,
+  // and we wait for a bit because the panel doesn't display
+  // right away
+  window.requestAnimationFrame(() => {
+    const settingsButtons = dom.findAll(document, '[title="Component Settings"]'),
+      panelEls = [].map.call(settingsButtons, el => el.parentElement);
+
+    panelEls.forEach(addCreateSpaceButtonToPanel(clickHandler));
+  });
 }
 
 /**
@@ -181,7 +199,7 @@ function updateSelector(el, options, parent) {
     SpaceController(el, parent);
     addToComponentList(el, options, parent);
   } else if (!_.isEmpty(availableSpaces)) { // if element is space sibling
-    // addAvailableSpaces(el, availableSpaces);
+    addAvailableSpaces(el, availableSpaces);
     addCreateSpaceButton(el, options, parent);
     // TODO: figure this out, now that we're using Vuex
     // we don't want it to be possible to add a space directly
