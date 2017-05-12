@@ -4,11 +4,11 @@ $UI_BUTTON: #694C79;
 [data-space] > .component-selector,
 [data-logic] > .component-selector,
 [data-space] > [data-logic] {
-  display: none;
+  // display: none;
 }
 
 [data-space] > [data-logic-editing]  {
-  display: block;
+  //display: block;
 }
 
 .filtered-item-title-sub {

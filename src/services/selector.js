@@ -10,10 +10,11 @@ var _ = require('lodash'),
 
 /* helper, will go away when API changes */
 const addCreateSpaceButtonToPanel = clickHandler => panelEl => {
-  const createSpaceButton = references.getFromTemplate('.create-space');
+  const createSpaceButtonFragment = references.getFromTemplate('.create-space');
 
-  panelEl.appendChild(createSpaceButton);
-  createSpaceButton.addEventListener('click', clickHandler);
+  panelEl.appendChild(createSpaceButtonFragment);
+  const button = dom.find(panelEl, '.space-create');
+  button.addEventListener('click', clickHandler);
 };
 
 /**
@@ -26,7 +27,7 @@ const addCreateSpaceButtonToPanel = clickHandler => panelEl => {
  *
  */
 function addCreateSpaceButton(el, options, parent) {
-  const clickHandler = createService.createSpace.bind(null, options, parent);
+  const clickHandler = () => createService.createSpace.bind(null, options, parent);
 
   // we need to find the component settings panels (there are two) in the DOM,
   // and we wait for a bit because the panel doesn't display

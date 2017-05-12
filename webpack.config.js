@@ -42,6 +42,10 @@ module.exports = {
             'sass-loader'
           ]
         })
+      },
+      {
+        test: /\.svg$/,
+        use: 'raw-loader'
       }
     ]
   },

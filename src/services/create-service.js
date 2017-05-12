@@ -1,7 +1,7 @@
-var dom = require('@nymag/dom'),
-  _ = require('lodash'),
-  references = require('references'),
-  utils = require('./utils');
+import dom from '@nymag/dom';
+import _ from 'lodash';
+import references from './references';
+import utils from './utils';
 
 /**
  * Take the name of the Space and the desired component to be created
@@ -19,7 +19,7 @@ function newComponentInLogic(spaceName, componentName) {
       return references.edit.createComponent(componentName)
         .then(function (component) {
           return references.edit.createComponent(logicComponent, {
-            embededComponent: {
+            embeddedComponent: {
               ref: component._ref,
               data: {
                 _ref: component._ref
@@ -42,7 +42,7 @@ function newComponentInLogic(spaceName, componentName) {
  */
 function wrapInLogic(logicComponent, clickedComponent, options, parent) {
   return Promise.all([
-    references.edit.createComponent(logicComponent, { embededComponent: options }),
+    references.edit.createComponent(logicComponent, { embeddedComponent: options }),
     references.edit.removeFromParentList({ el: clickedComponent, ref: options.ref, parentField: parent.path, parentRef: parent.ref })
   ]).then(function (resp) {
     return resp[0];
@@ -50,6 +50,7 @@ function wrapInLogic(logicComponent, clickedComponent, options, parent) {
 }
 
 /**
+ * // TODO: remove when we're sure we don't need it
  * [findPrevRef description]
  * @param  {[type]} targetComponent [description]
  * @return {[type]}                 [description]
@@ -119,17 +120,13 @@ function addInSpace(space, options, parent, position, logicComponent) {
  * @param  {Object} parent
  * @return {Promise}
  */
-function createSpace(options, parent) {
-  var clickedComponent = dom.find(parent.el, '[data-uri="' + options.ref + '"]'),
-    availableSpaces = utils.availableSpaces(clickedComponent);
-
+function createSpace(store, ref, parentRef, availableSpaces) {
   if (availableSpaces.length > 1) {
-    selectSpace(availableSpaces, clickedComponent, options, parent);
+    // TODO: implement
+    throw new Error('create space with multiple spaces available NOT YET IMPLEMENTED');
+    // selectSpace(availableSpaces, clickedComponent, options, parent);
   } else {
-    if (!confirmMakeSpace()) {
-      return;
-    }
-    return componentToSpace(clickedComponent, options, parent, availableSpaces[0]);
+    return componentToSpace(store, ref, parentRef, availableSpaces[0]);
   }
 }
 
@@ -185,40 +182,84 @@ function spaceSelectCallback(clickedComponent, options, parent, id) {
  * Grab the schema for whatever Space component is selected and
  * find the Logic component available to it.
  *
- * @param  {String} space  The component name
- * @return {Promise}
+ * @param {Object} store Vuex store
+ * @param  {String} space  name of the space
+ * @return {String} logicRef
  */
-function findSpaceLogic(space) {
-  return references.edit.getSchema(`${references.site.get('prefix')}/components/${space}`)
-    .then(function (resp) {
-      var componentList = _.get(resp, 'content._componentList.include', '') || _.get(resp, 'prop._componentList.include', '');
+function findSpaceLogic(store, space) {
+  const schema = store.state.schemas[space];
 
-      if (componentList && componentList.length === 1) {
-        return componentList[0];
-      } else if (componentList && componentList.length > 1) {
-        throw new Error('A Logic componentList can only have 1 component (for now....)');
-      }
-    });
+  if (!schema) {
+    throw new Error(`Schema not found for space: ${space}`);
+  }
+  if (!schema.content
+      || !schema.content._componentList
+      || !schema.content._componentList.include
+      || schema.content._componentList.include.length !== 1
+      || !schema.content._componentList.include[0].includes('space-logic')
+    ) {
+    throw new Error( 'The `content` field for a space must be a `_componentList` that contains exactly 1 Logic.'
+                     + ` Check the schema.yml for ${space}, it should be like this:\n`
+                     + 'content:\n  _componentList:\n    include:\n      space-logic-ads');
+  }
+
+  return schema.content._componentList.include[0];
+}
+
+/**
+ * thin wrapper around Kiln Vuex API
+ * for `addComponents` action
+ *
+ * @param {Object} store
+ * @param {addComponentsPayload} // see Kiln docs
+ * @return {Promise} // promise for new component DOM element
+ *
+ */
+function addComponents(store, { currentURI, parentURI, path, replace, components }) {
+  return store.dispatch('addComponents', {
+    currentURI,
+    parentURI,
+    path,
+    components,
+    replace
+  });
 }
 
 /**
  * Create a componenet wrapped in a Logic which is inside of a
  * component list in a Space
  *
- * @param  {Element} clickedComponent
- * @param  {Object}  options
- * @param  {Object}  parent
- * @param  {String}  space
- * @return {Promise}
  */
-function componentToSpace(clickedComponent, options, parent, space) {
-  var position = findPrevRef(clickedComponent);
+function componentToSpace(store, ref, parentRef, spaceName) {
+   // TODO: break this function up into pieces
+  const logicName = findSpaceLogic(store, spaceName);
 
-  return findSpaceLogic(space)
-    .then(function (logicComponent) {
-      return wrapInLogic(logicComponent, clickedComponent, options, parent)
-        .then(addInSpace.bind(null, space, options, parent, position));
+  // replace selected component with a new space instance
+  addComponents(store, {
+    currentURI: ref, // so Kiln knows what to replace
+    replace: true,
+    parentURI: parentRef,
+    path: store.state.ui.currentSelection.parentField.path,
+    components: [{ name: spaceName }]
+  })
+  .then(spaceEl => {
+    if (!spaceEl) {
+      throw new Error(`error creating space for ${ref}`);
+    }
+    // add a new instance of the logic to the space
+    const spaceRef = spaceEl.dataset.uri;
+    console.log('spaceRef: ', store.state.components[spaceRef]);
+
+    return addComponents(store, {
+      parentURI: spaceRef,
+      path: 'content',
+      components: [{ name: logicName, data: {
+        embeddedComponent: {
+          _ref: ref
+        }
+      } }],
     });
+  });
 }
 
 /**
