@@ -8,38 +8,6 @@ var _ = require('lodash'),
   SpaceSettings = require('../controllers/space-settings-controller'),
   SpaceController = require('./../controllers/space-controller');
 
-/* helper, will go away when API changes */
-const addCreateSpaceButtonToPanel = clickHandler => panelEl => {
-  const createSpaceButtonFragment = references.getFromTemplate('.create-space');
-
-  panelEl.appendChild(createSpaceButtonFragment);
-  const button = dom.find(panelEl, '.space-create');
-  button.addEventListener('click', clickHandler);
-};
-
-/**
- * TODO: swap this out with call to
- * Kiln API for adding buttons when that API exists
- *
- * @param {Object} el
- * @param {Object} options
- * @param {Object} parent
- *
- */
-function addCreateSpaceButton(el, options, parent) {
-  const clickHandler = () => createService.createSpace.bind(null, options, parent);
-
-  // we need to find the component settings panels (there are two) in the DOM,
-  // and we wait for a bit because the panel doesn't display
-  // right away
-  window.requestAnimationFrame(() => {
-    const settingsButtons = dom.findAll(document, '[title="Component Settings"]'),
-      panelEls = [].map.call(settingsButtons, el => el.parentElement);
-
-    panelEls.forEach(addCreateSpaceButtonToPanel(clickHandler));
-  });
-}
-
 /**
  * [launchAddComponent description]
  * @param  {[type]} element
