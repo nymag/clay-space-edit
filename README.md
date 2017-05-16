@@ -6,3 +6,9 @@ The concept of a Space in Clay is very useful, but the standard edit experience 
 ## Getting Started
 
 All the information you need for setting up a Space can be found in [the wiki of this repository](https://github.com/nymag/clay-space-edit/wiki). If you're unfamiliar with everything that goes into making your own Space, you might want to step through the [Introduction](https://github.com/nymag/clay-space-edit/wiki/Introduction). If you're already familiar with the core concepts then skip straight to the [API Reference](https://github.com/nymag/clay-space-edit/wiki/API-Reference).
+
+## Developing Clay-Space-Edit
+
+- Get coding: `nvm use && npm run watch`
+- Use [npm link](https://docs.npmjs.com/cli/link) to run your Clay implementation against your dev build of Clay-Space-Edit.
+- To test and lint, do `npm test`
