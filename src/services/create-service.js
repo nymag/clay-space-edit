@@ -17,7 +17,10 @@ export function createSpace(store, ref, parentRef, availableSpaces) {
     // selectSpace(availableSpaces, clickedComponent, options, parent);
   } else {
     try {
-      return componentToSpace(store, ref, parentRef, availableSpaces[0]);
+      return componentToSpace(store, ref, parentRef, availableSpaces[0])
+        .then(function () {
+          window.location.reload();
+        });
     } catch (err) {
       return Promise.reject(err);
     }
@@ -37,8 +40,7 @@ function findSpaceLogic(store, space) {
 
   if (!schema) {
     throw new Error(`Schema not found for space: ${space}`);
-  }
-  try {
+  } try {
     const componentList = schema.content._componentList.include,
       spaceLogic = componentList.find(componentName => componentName.includes('space-logic'));
 
@@ -47,7 +49,6 @@ function findSpaceLogic(store, space) {
     }
 
     return spaceLogic;
-
   } catch (err) {
     throw new Error( 'The `content` field for a space must be a `_componentList` that contains exactly 1 Logic.'
                      + ` Check the schema.yml for ${space}, it should be like this:\n`
@@ -86,9 +87,6 @@ function addComponents(store, { currentURI, parentURI, path, replace, components
  *
  */
 function componentToSpace(store, ref, parentRef, spaceName) {
-   // TODO: break this function up into pieces
-  const logicName = findSpaceLogic(store, spaceName);
-
   // replace selected component with a new space instance
   return addComponents(store, {
     currentURI: ref, // so Kiln knows what to replace
@@ -102,18 +100,17 @@ function componentToSpace(store, ref, parentRef, spaceName) {
       throw new Error(`error creating space for ${ref}`);
     }
     // add a new instance of the logic to the space
-    const spaceRef = spaceEl.dataset.uri;
+    const spaceRef = spaceEl.dataset.uri,
+      logicName = findSpaceLogic(store, spaceName);
 
     return addComponents(store, {
       parentURI: spaceRef,
       path: 'content',
       components: [{ name: logicName, data: {
-        embeddedComponent: {
+        component: {
           _ref: ref
         }
       } }],
-    })
-    // just returning a promise for completion, not a value (yet)
-    .then(() => Promise.resolve());
+    });
   });
 }

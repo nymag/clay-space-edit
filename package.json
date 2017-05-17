@@ -9,7 +9,6 @@
   },
   "scripts": {
     "lint": "eslint src",
-    "test": "NODE_ENV=testing webpack test.js -d --target node && node --require source-map-support/register test-bundle.js #; npm run lint",
     "watch": "NODE_ENV=development webpack -w -d",
     "prepublish": "NODE_ENV=production webpack -p"
   },

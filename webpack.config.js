@@ -3,6 +3,8 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin'),
   path = require('path'),
   nodeEnv = process.env.NODE_ENV || 'production';
 
+
+// TODO: Add in test function: `"test": "NODE_ENV=testing webpack test.js -d --target node && node --require source-map-support/register test-bundle.js #; npm run lint",`
 module.exports = {
   entry: nodeEnv === 'testing' ? './test.js' : './src/index.js',
   output: {

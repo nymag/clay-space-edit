@@ -1,16 +1,10 @@
 {{#if @root.locals.edit }}
 <div data-uri="{{ default _ref _self }}" class="clay-space-edit">
 
-  {{! Styles }}
-  <style>
-  {{{ read 'node_modules/clay-space-edit/dist/clay-space-edit.css' }}}
-  </style>
-
   {{! Scripts }}
   <script>
   {{{ read 'node_modules/clay-space-edit/dist/clay-space-edit.js' }}}
   </script>
-
 
   {{! Browse Space Button }}
   <template class="browse-space">
