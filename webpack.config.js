@@ -1,11 +1,21 @@
 var ExtractTextPlugin = require('extract-text-webpack-plugin'),
-  path = require('path');
+  webpack = require('webpack'),
+  path = require('path'),
+  nodeEnv = process.env.NODE_ENV || 'production';
 
+
+// TODO: Add in test function: `"test": "NODE_ENV=testing webpack test.js -d --target node && node --require source-map-support/register test-bundle.js #; npm run lint",`
 module.exports = {
-  entry: './src/index.js',
+  entry: nodeEnv === 'testing' ? './test.js' : './src/index.js',
   output: {
-    filename: 'clay-space-edit.js',
-    path: path.resolve(__dirname, './dist')
+    filename: nodeEnv === 'testing' ? 'test-bundle.js' : 'clay-space-edit.js',
+    path: path.resolve(__dirname, nodeEnv === 'testing' ? '.' : './dist'),
+  },
+  // sub in empty modules for Node built-ins
+  // so webpack doesn't complain about not being able to find the modules
+  // https://github.com/pugjs/pug-loader/issues/8
+  node: {
+    fs: 'empty'
   },
   module: {
     rules: [
@@ -35,13 +45,20 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader', // backup loader when not building .css file
-          use: [
-            'css-loader',
-            'sass-loader'
-          ]
-        })
+        // don't inject styles when we don't have a window
+        use: nodeEnv === 'testing'
+            ? 'null-loader'
+            : ExtractTextPlugin.extract({
+              fallback: 'style-loader', // backup loader when not building .css file
+              use: [
+                'css-loader',
+                'sass-loader'
+              ]
+            })
+      },
+      {
+        test: /\.svg$/,
+        use: 'raw-loader'
       }
     ]
   },
@@ -51,6 +68,10 @@ module.exports = {
     }
   },
   plugins: [
-    new ExtractTextPlugin('clay-space-edit.css')
-  ]
+    new webpack.EnvironmentPlugin(['NODE_ENV'])
+  ].concat(
+    nodeEnv === 'testing'
+      ? []
+      : [new ExtractTextPlugin('clay-space-edit.css')]
+  )
 };
