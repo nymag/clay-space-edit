@@ -16,7 +16,17 @@ test('create-service', t => {
     t.test('throws on schemas that don\'t meet Spaces API', t => {
       const space = 'my-clay-space',
         store = {
+          dispatch() {
+            return Promise.resolve({wtf: 'i am a fake dom element', dataset: 'new-ref'});
+          },
           state: {
+            ui: {
+              currentSelection: {
+                parentField: {
+                  path: 'path'
+                }
+              }
+            },
             schemas: {
               [space]: {
                 content: {
@@ -32,7 +42,7 @@ test('create-service', t => {
       createSpace(store, '', '', [space])
       .catch(err => {
         // un-comment to see what the error message is
-        // t.comment(err.message);
+        // t.comment(JSON.stringify(err.stack));
         t.true(err.message.includes('Check the schema.yml'));
         t.end();
         return true;
