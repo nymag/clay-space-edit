@@ -10,6 +10,7 @@
   "scripts": {
     "lint": "eslint src",
     "watch": "NODE_ENV=development webpack -w -d",
+    "test": "NODE_ENV=testing webpack test.js -d --target node && node --require source-map-support/register test-bundle.js #; npm run lint",
     "prepublish": "NODE_ENV=production webpack -p"
   },
   "keywords": [
