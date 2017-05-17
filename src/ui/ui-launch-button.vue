@@ -17,16 +17,31 @@ export default {
     icon() {
       return spaceListIcon;
     },
+    /**
+     * Grab the ref (data-uri) from the closest Space.
+     *
+     * @return {String}
+     */
     spaceParentRef() {
       const spaceEl = dom.closest(this.$store.state.ui.currentSelection.el, `[data-uri^="${this.$store.state.site.prefix}/components/clay-space"]`);
 
       return spaceEl.getAttribute('data-uri');
     },
+    /**
+     * Count the number of items in the `content` array
+     *
+     * @return {Number}
+     */
     spaceLogicCount() {
       const spaceContent = this.$store.state.components[this.spaceParentRef].content;
 
       return spaceContent.length
     },
+    /**
+     * Test if the button should be displayed or not.
+     *
+     * @return {Boolean}
+     */
     shouldDisplay() {
       const ref = this.$store.state.ui.currentSelection.parentURI;
 
@@ -35,6 +50,13 @@ export default {
     }
   },
   methods: {
+    /**
+     * Handle button click. Should launch the pane and
+     * put the component's Space parent in the store so
+     * that the pane can grab data.
+     *
+     * @return {Promise} [description]
+     */
     handleClick() {
       const paneOptions = {
         position: 'center',
