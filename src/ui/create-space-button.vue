@@ -1,5 +1,5 @@
 <template>
-  <button v-if="shouldDisplay" class="create-space-button yo" v-on:click="handleClick" v-html="icon"></button>
+  <button v-if="shouldDisplay" class="create-space-button" v-on:click="handleClick" v-html="icon"></button>
 </template>
 
 <script>
