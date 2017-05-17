@@ -36,19 +36,16 @@ export default {
   },
   methods: {
     handleClick() {
-      const spaceEl = dom.closest(this.$store.state.ui.currentSelection.el, `[data-uri^="${this.$store.state.site.prefix}/components/clay-space"]`),
-        spaceRef = spaceEl.getAttribute('data-uri'),
-        spaceData = this.$store.state.components[spaceRef],
-        paneOptions = {
-          position: 'center',
-          size: 'large',
-          content: {
-            component: 'spaces-ui',
-            spaceRef
-          },
-          name: 'spaces-ui',
-          title: 'Some Space Title',
-        };
+      const paneOptions = {
+        position: 'center',
+        size: 'large',
+        content: {
+          component: 'spaces-ui',
+          spaceRef: this.spaceParentRef
+        },
+        name: 'spaces-ui',
+        title: 'Some Space Title', // Fill in from Space schema
+      };
 
       return this.$store.dispatch('openPane', paneOptions);
     }
