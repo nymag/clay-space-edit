@@ -1,40 +1,3 @@
-import dom from '@nymag/dom';
-import _ from 'lodash';
-import references from './references';
-import utils from './utils';
-
-/**
- * At this stage the component has already been wrapped in newly created
- * Logic component. This function then creats a Space per the user's
- * selection and adds that Logic to the Space and adds the Space to the
- * componentList of the original component.
- *
- * @param {String} space
- * @param {Object} options
- * @param {Object} parent
- * @param {Object} position
- * @param {Object} logicComponent
- * @return {Promise}
- */
-function addInSpace(space, options, parent, position, logicComponent) {
-  return Promise.all([references.edit.createComponent(space, { content: [{ _ref: logicComponent[references.referenceProperty] }] }), references.edit.getData(parent.ref)])
-    .then(function (promises) {
-      var res = promises[0],
-        newRef = res._ref,
-        args = {
-          ref: newRef,
-          parentField: parent.path,
-          parentRef: parent.ref,
-          prevRef: position.prevRef,
-          above: position.above
-        };
-
-      return references.edit.addToParentList(args)
-        .then(function (newEl) {
-          return attachHandlersAndFocus(newEl);
-        });
-    });
-}
 
 /**
  * Find the component to convert to a Space, find the Spaces available
@@ -50,31 +13,15 @@ function addInSpace(space, options, parent, position, logicComponent) {
 export function createSpace(store, ref, parentRef, availableSpaces) {
   if (availableSpaces.length > 1) {
     // TODO: implement
-    throw new Error('create space with multiple spaces available NOT YET IMPLEMENTED');
+    return Promise.reject(new Error('create space with multiple spaces available NOT YET IMPLEMENTED'));
     // selectSpace(availableSpaces, clickedComponent, options, parent);
   } else {
-    return componentToSpace(store, ref, parentRef, availableSpaces[0]);
+    try {
+      return componentToSpace(store, ref, parentRef, availableSpaces[0]);
+    } catch (err) {
+      return Promise.reject(err);
+    }
   }
-}
-
-
-/**
- * If there is more than one type of Space available in a
- * component list then open a pane to allow the user to choose
- * which Space they want
- *
- * @param {Array}   availableSpaces
- * @param {Element} clickedComponent
- * @param {Object}  options
- * @param {Object}  parent
- */
-function selectSpace(availableSpaces, clickedComponent, options, parent) {
-  references.pane.open([{
-    header: 'Choose A Space',
-    content: utils.createFilterableList(availableSpaces, {
-      click: spaceSelectCallback.bind(null, clickedComponent, options, parent)
-    })
-  }]);
 }
 
 /**
@@ -143,7 +90,7 @@ function componentToSpace(store, ref, parentRef, spaceName) {
   const logicName = findSpaceLogic(store, spaceName);
 
   // replace selected component with a new space instance
-  addComponents(store, {
+  return addComponents(store, {
     currentURI: ref, // so Kiln knows what to replace
     replace: true,
     parentURI: parentRef,
@@ -167,6 +114,6 @@ function componentToSpace(store, ref, parentRef, spaceName) {
       } }],
     })
     // just returning a promise for completion, not a value (yet)
-    .then(() => {});
+    .then(() => Promise.resolve());
   });
 }
