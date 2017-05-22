@@ -19,6 +19,7 @@ export default {
       const currentSelection = this.$store.state.ui.currentSelection,
         componentListName = currentSelection.parentField.path;
 
+      // TODO: This is going to break
       return this.$store.state.schemas.layout[componentListName];
     },
     availableSpaces() {

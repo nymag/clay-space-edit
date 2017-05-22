@@ -26,7 +26,11 @@ module.exports = {
             loader: 'vue-loader',
             options: {
               extractCSS: process.env.NODE_ENV === 'production',
-              preserveWhitespace: !process.env.NODE_ENV === 'production'
+              preserveWhitespace: !process.env.NODE_ENV === 'production',
+              loaders: {
+                css: 'vue-style-loader!css-loader!postcss-loader',
+                sass: 'vue-style-loader!css-loader!postcss-loader!sass-loader'
+              }
             }
           }
         ]

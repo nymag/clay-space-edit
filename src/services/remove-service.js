@@ -1,78 +1,33 @@
-var dom = require('@nymag/dom'),
-  utils = require('./utils'),
-  _ = require('lodash'),
-  references = require('references'),
-  statusService = require('./status-service');
-
-/**
- * [removeLogic description]
- * @param  {[type]} ref    [description]
- * @param  {[type]} parent [description]
- * @return {[type]}        [description]
- */
-function removeLogic(ref, parent) {
-  var targetEl = dom.find(parent, '[data-uri="' + ref + '"]'),
-    removeOpts = {
-      el: targetEl,
-      ref: ref,
-      parentField: 'content',
-      parentRef: parent.getAttribute('data-uri')
-    };
-
-  return references.edit.removeFromParentList(removeOpts);
-}
+import dom from '@nymag/dom';
 
 /**
  * [removeSpace description]
- * @param {Element} space
- * @param {Object} parent
- * @return {Promise}
+ * @param  {[type]} store    [description]
+ * @param  {[type]} logicUri [description]
+ * @return {[type]}          [description]
  */
-function removeSpace(space, parent) {
-  var removeOpts = {
-    el: space,
-    ref: space.getAttribute('data-uri'),
-    parentField: parent.path,
-    parentRef: parent.ref
-  };
+export function removeSpace(store, logicUri) {
+  const parent = dom.find(`[data-uri="${logicUri}"]`).parentElement;
 
-  return references.edit.removeFromParentList(removeOpts);
-}
-
-
-/**
- * [removeIconClick description]
- * @param {Element} logic
- */
-function removeIconClick(logic) {
-  var logicRef = logic.getAttribute('data-uri'),
-    index = _.findIndex(this.childrenLogics, function (logicComponent) {
-      return logicRef === logicComponent.getAttribute('data-uri');
-    });
-
-  removeLogic(logicRef, logic.parentElement)
-    .then(findNextActive.bind(this, index));
-}
-
-/**
- * [findNextActive description]
- * @param  {[type]} index [description]
- */
-function findNextActive(index) {
-  this.childrenLogics = utils.findAllLogic(this.el);
-  this.findLogicCount();
-
-  if (this.childrenLogics[index]) {
-    statusService.setEditing(this.childrenLogics[index]);
-  } else if (this.childrenLogics[index - 1]) {
-    statusService.setEditing(this.childrenLogics[index - 1]);
-  } else {
-    if (window.confirm('You are removing the last component in this Space, this will remove the Space entirely from the page, is this ok?')) {
-      removeSpace(this.el, this.parent);
-    }
+  if (parent) {
+    remove(store, parent.getAttribute('data-uri'));
   }
 }
 
-module.exports.removeLogic = removeLogic;
-module.exports.removeSpace = removeSpace;
-module.exports.removeIconClick = removeIconClick;
+/**
+ * NOT AN ACTION, COMMIT IT
+ * @param  {[type]} store [description]
+ * @param  {[type]} el    [description]
+ * @return {[type]}       [description]
+ */
+export function remove(store, uri) {
+  // const el = this.currentComponent.el;
+
+
+  return store.dispatch('unselect').then(() => {
+    store.commit('REMOVE_COMPONENT', { uri });
+    store.commit('RENDER_COMPONENT', {});
+  });
+  // return store.dispatch('unfocus').then(() => store.dispatch('removeComponent', el));
+
+}

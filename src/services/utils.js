@@ -2,10 +2,73 @@ var dom = require('@nymag/dom'),
   _ = require('lodash'),
   references = require('./references');
 
+
+// TODO: Collapse into global references
+const kilnUtils = window.kiln.utils,
+  getComponentName = kilnUtils.references.getComponentName,
+  filterAvailable = kilnUtils.getAvailableComponents;
+
+
+/**
+ * TODO: Fill in
+ * @param  {[type]} spaceRef [description]
+ * @return {[type]}          [description]
+ */
+export function findSpaceParentUriAndList(spaceRef) {
+  var spaceEl = dom.find(`[data-uri="${spaceRef}"]`),
+    parentList = dom.closest(spaceEl, '[data-editable]'),
+    parentEl = dom.closest(parentList, '[data-uri]'),
+    parentUri = parentEl.getAttribute('data-uri'),
+    parentListName = parentList.getAttribute('data-editable');
+
+  if (parentUri.indexOf('/pages/') > -1) {
+    parentUri = parentEl.getAttribute('data-layout-uri');
+  }
+
+  return {
+    el: parentEl,
+    uri: parentUri,
+    list: parentListName
+  };
+}
+
+/**
+ * Return a list of components included in a component list. Requires
+ * a component's uri and a list from that component's schema.
+ *
+ * TODO: Just pass in Parent object?
+ *
+ *
+ * @param  {Object}  store
+ * @param  {Element} parentUri
+ * @param  {String}  list
+ * @return {Array}
+ */
+function getAvailableComponents(store, parentEl, list) {
+  var parentUri = parentEl.getAttribute('data-uri'),
+    parentName, componentList, include, exclude;
+
+  if (parentUri.indexOf('/pages/') > -1) {
+    parentUri = parentEl.getAttribute('data-layout-uri');
+  }
+
+  parentName = getComponentName(parentUri);
+
+  componentList = store.state.schemas[parentName][list]._componentList;
+  include = _.get(componentList, 'include', '');
+  exclude = _.get(componentList, 'exclude', '');
+
+  return _.remove(filterAvailable(include, exclude), function (component) {
+    return component === references.spaceEdit || !_.startsWith(component, references.spacePrefix);
+  });
+}
+
 /**
  * Return an array of components available in a
  * component list that are not prefixed with `clay-space`,
  * but include the `clay-space-edit` component
+ *
+ * TODO: Fix this documentation and make this function more generic. Deprecate for above function
  *
  * @param  {Object} parent  The parent component which contains a componentList
  * @return {Array}
@@ -98,3 +161,4 @@ module.exports.createFilterableList = createFilterableList;
 module.exports.checkIfSpace = checkIfSpace;
 module.exports.checkIfSpaceEdit = checkIfSpaceEdit;
 module.exports.findAllLogic = findAllLogic;
+module.exports.getAvailableComponents = getAvailableComponents;

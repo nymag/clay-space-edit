@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import { openUI } from '../services/ui-service';
 import spaceListIcon from '../../media/list-space.svg';
 import dom from '@nymag/dom';
 
@@ -58,18 +59,7 @@ export default {
      * @return {Promise} [description]
      */
     handleClick() {
-      const paneOptions = {
-        position: 'center',
-        size: 'large',
-        content: {
-          component: 'spaces-ui',
-          spaceRef: this.spaceParentRef
-        },
-        name: 'spaces-ui',
-        title: 'Some Space Title', // Fill in from Space schema
-      };
-
-      return this.$store.dispatch('openPane', paneOptions);
+      openUI(this.$store, this.spaceParentRef);
     }
   }
 }
