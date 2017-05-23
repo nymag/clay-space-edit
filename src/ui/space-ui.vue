@@ -52,7 +52,7 @@
 
 <script>
 import { map, assign, filter, findIndex } from 'lodash';
-import { remove, removeSpace } from '../services/remove-service';
+import { removeLogic, removeSpace } from '../services/remove-service';
 import { openAddComponent } from '../services/ui-service';
 import targetIcon from '../../media/target.svg';
 import removeIcon from '../../media/remove.svg';
@@ -182,13 +182,8 @@ export default {
      * @return {Promise}
      */
     removeFromSpace(uri) {
-      var spaceContent = this.$store.state.components[this.spaceRef].content,
-        filteredSpace = filter(spaceContent, (item) => {
-          return item._ref !== uri;
-        });
-
-      return this.$store.dispatch('saveComponent', { uri: this.spaceRef, data: { content: filteredSpace }})
-        .then(() => this.updateItems())
+      removeLogic(this.$store, uri, this.items.length)
+        .then(() => this.updateItems());
     },
     /**
      * Open the settings pane for a Logic

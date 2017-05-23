@@ -174,13 +174,35 @@ function componentNameFromURI(uri) {
   return window.kiln.utils.references.getComponentName(uri);
 }
 
+/**
+ * TODO: Write this
+ * @param  {String} uri
+ * @return {Boolean}
+ */
+function checkIfLogic(uri) {
+  return uri.indexOf('/space-logic') > -1;
+}
+
+/**
+ *  Grab the ancesto Space element closes to
+ *  the Logic element passed in.
+ *
+ * @param  {Object} prefix
+ * @param  {Element} logicEl
+ * @return {Element}
+ */
+function getSpaceElFromLogic(prefix, logicEl) {
+  return dom.closest(logicEl, `[data-uri^="${prefix}/components/clay-space"]`);
+}
+
 module.exports.componentNameFromURI = componentNameFromURI;
 module.exports.makeComponentListAttr = makeComponentListAttr;
 module.exports.spaceInComponentList = spaceInComponentList;
 module.exports.availableSpaces = availableSpaces;
 module.exports.createFilterableList = createFilterableList;
 module.exports.checkIfSpace = checkIfSpace;
+module.exports.checkIfLogic = checkIfLogic;
 module.exports.checkIfSpaceEdit = checkIfSpaceEdit;
-module.exports.findAllLogic = findAllLogic;
 module.exports.getAvailableComponents = getAvailableComponents;
 module.exports.checkIfSpaceOrLogic = checkIfSpaceOrLogic;
+module.exports.getSpaceElFromLogic = getSpaceElFromLogic;

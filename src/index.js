@@ -8,6 +8,7 @@ import { includes } from 'lodash';
 // Vue Components
 import createSpaceButton from './ui/create-space-button.vue';
 import UILaunchButton from './ui/ui-launch-button.vue';
+import logicRemoveButton from './ui/remove-button.vue';
 import spaceUI from './ui/space-ui.vue';
 import addToSpace from './ui/add-to-space.vue';
 
@@ -17,6 +18,7 @@ import { openUI, spaceElFromLogicUri } from './services/ui-service';
 // Selector Buttons
 window.kiln.selectorButtons.createSpaceButton = createSpaceButton;
 window.kiln.selectorButtons.UILaunchButton = UILaunchButton;
+window.kiln.selectorButtons.logicRemoveButton = logicRemoveButton;
 
 // Register Kiln Panes
 window.kiln.panes['spaces-ui'] = spaceUI;

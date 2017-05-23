@@ -45,8 +45,7 @@ export default {
      * of a component beginning with `clay-space` in the schema for the
      * component
      *
-     * // TODO: Return value check
-     * @return {[type]} [description]
+     * @return {Array}
      */
     availableSpaces() {
       return spaceInComponentList(this.componentList);
@@ -60,10 +59,10 @@ export default {
       const ref = this.$store.state.ui.currentSelection.uri;
 
       // Check to make sure we:
-      // 1) Have components in the component list
+      // 1) Have Spaces available in the component list
       // 2) we're not dealing with the `clay-space-edit` module
       // 3) Check if we're dealing with a Space component
-      return !_.isEmpty(this.componentList) && !checkIfSpaceEdit(ref) && !checkIfSpace(ref);
+      return this.availableSpaces.length && !checkIfSpaceEdit(ref) && !checkIfSpace(ref);
     }
   },
   methods: {
