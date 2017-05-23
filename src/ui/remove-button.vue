@@ -6,6 +6,8 @@
 import { openUI } from '../services/ui-service';
 import { checkIfLogic } from '../services/utils';
 import removeIcon from '../../media/remove.svg';
+import { getSpaceElFromLogic } from '../services/utils';
+import { removeLogic } from '../services/remove-service';
 
 export default {
   data() {
@@ -14,6 +16,17 @@ export default {
   computed: {
     icon() {
       return removeIcon;
+    },
+    /**
+     * Grab the length of the content for the Space parent.
+     *
+     *  @return {Number}
+     */
+    spaceContentLength() {
+      const state = this.$store.state,
+        parentRef = getSpaceElFromLogic(state.site.prefix, state.ui.currentSelection.el).getAttribute('data-uri');
+
+      return state.components[parentRef].content.length;
     },
     /**
      * Test if the button should be displayed or not.
@@ -33,7 +46,10 @@ export default {
      * @return {Promise} [description]
      */
     handleClick() {
-      console.log(`womp`);
+      const logicUri = this.$store.state.ui.currentSelection.parentURI;
+
+      removeLogic(this.$store, logicUri, this.spaceContentLength)
+        .then(() => this.$store.dispatch('unselect'));
     }
   }
 }

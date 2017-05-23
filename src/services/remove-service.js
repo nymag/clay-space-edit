@@ -1,33 +1,58 @@
 import dom from '@nymag/dom';
+import { filter } from 'lodash';
+import { getSpaceElFromLogic } from './utils';
 
 /**
- * [removeSpace description]
- * @param  {[type]} store    [description]
- * @param  {[type]} logicUri [description]
- * @return {[type]}          [description]
+ * Given a Logic URI, remove the Space
+ * in which it resides.
+ *
+ * @param  {Object} store
+ * @param  {String} logicUri
+ * @return {Promise}
  */
 export function removeSpace(store, logicUri) {
-  const parent = dom.find(`[data-uri="${logicUri}"]`).parentElement;
+  const logicEl = dom.find(`[data-uri="${logicUri}"]`),
+    spaceEl = getSpaceElFromLogic(store.state.site.prefix, logicEl);
 
-  if (parent) {
-    remove(store, parent.getAttribute('data-uri'));
-  }
+  return store.dispatch('remoceComponent', spaceEl);
 }
 
 /**
- * NOT AN ACTION, COMMIT IT
- * @param  {[type]} store [description]
- * @param  {[type]} el    [description]
- * @return {[type]}       [description]
+ * Given a Space URI and a Logic URI, remove the
+ * Logic URI from the Space.
+ *
+ * @param  {Object} store
+ * @param  {String} spaceRef
+ * @param  {String} logicUri
+ * @return {Promise}
  */
-export function remove(store, uri) {
-  // const el = this.currentComponent.el;
+export function remove(store, spaceRef, logicUri) {
+  var spaceContent = store.state.components[spaceRef].content,
+    filteredSpace = filter(spaceContent, (item) => {
+      return item._ref !== logicUri;
+    });
 
+  return store.dispatch('saveComponent', { uri: spaceRef, data: { content: filteredSpace }});
+}
 
-  return store.dispatch('unselect').then(() => {
-    store.commit('REMOVE_COMPONENT', { uri });
-    store.commit('RENDER_COMPONENT', {});
-  });
-  // return store.dispatch('unfocus').then(() => store.dispatch('removeComponent', el));
+/**
+ * Given the URI for a Logic component, find the parent Space
+ * and remove the Logic
+ *
+ * @param  {Object}  store
+ * @param  {String}  logicUri
+ * @param  {Number}  itemsLength
+ * @return {Promise}
+ */
+export function removeLogic(store, logicUri, itemsLength) {
+  var logicEl, spaceEl;
 
+  if (itemsLength && !itemsLength === 1) {
+    return removeSpace(store, logicUri)
+  }
+
+  logicEl = dom.find(`[data-uri="${logicUri}"]`);
+  spaceEl = getSpaceElFromLogic(store.state.site.prefix, logicEl);
+
+  return remove(store, spaceEl.getAttribute('data-uri'), logicUri);
 }

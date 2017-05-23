@@ -8,6 +8,7 @@
 <script>
 import { openUI } from '../services/ui-service';
 import spaceListIcon from '../../media/list-space.svg';
+import { getSpaceElFromLogic } from '../services/utils';
 import dom from '@nymag/dom';
 
 export default {
@@ -24,9 +25,7 @@ export default {
      * @return {String}
      */
     spaceParentRef() {
-      const spaceEl = dom.closest(this.$store.state.ui.currentSelection.el, `[data-uri^="${this.$store.state.site.prefix}/components/clay-space"]`);
-
-      return spaceEl.getAttribute('data-uri');
+      return getSpaceElFromLogic(this.$store.state.site.prefix, this.$store.state.ui.currentSelection.el).getAttribute('data-uri');
     },
     /**
      * Count the number of items in the `content` array
