@@ -134,6 +134,16 @@ function checkIfSpace(ref) {
 }
 
 /**
+ * Checks if a reference is a type of Space.
+ *
+ * @param  {String} ref The uri of a component
+ * @return {Boolean}
+ */
+function checkIfSpaceOrLogic(ref) {
+  return _.includes(ref, 'space-logic') || _.includes(ref, references.spacePrefix);
+}
+
+/**
  * Checks if a reference is the Space Edit component.
  *
  * @param  {String} ref The uri of a component
@@ -154,6 +164,17 @@ function findAllLogic(el) {
   return dom.findAll(el, '[data-logic]');
 }
 
+/**
+ * TODO: Document. Move to references? Let's decide.
+ * What harm can ANOTHER closure do?
+ * @param  {String} uri
+ * @return {String}
+ */
+function componentNameFromURI(uri) {
+  return window.kiln.utils.references.getComponentName(uri);
+}
+
+module.exports.componentNameFromURI = componentNameFromURI;
 module.exports.makeComponentListAttr = makeComponentListAttr;
 module.exports.spaceInComponentList = spaceInComponentList;
 module.exports.availableSpaces = availableSpaces;
@@ -162,3 +183,4 @@ module.exports.checkIfSpace = checkIfSpace;
 module.exports.checkIfSpaceEdit = checkIfSpaceEdit;
 module.exports.findAllLogic = findAllLogic;
 module.exports.getAvailableComponents = getAvailableComponents;
+module.exports.checkIfSpaceOrLogic = checkIfSpaceOrLogic;

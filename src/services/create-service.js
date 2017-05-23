@@ -19,7 +19,8 @@ export function createSpace(store, ref, parentRef, availableSpaces) {
     try {
       return componentToSpace(store, ref, parentRef, availableSpaces[0])
         .then(function () {
-          window.location.reload();
+          console.log('reload');
+          // window.location.reload();
         });
     } catch (err) {
       return Promise.reject(err);
