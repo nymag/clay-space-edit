@@ -174,13 +174,22 @@ function componentNameFromURI(uri) {
   return window.kiln.utils.references.getComponentName(uri);
 }
 
+/**
+ * TODO: Write this
+ * @param  {String} uri
+ * @return {Boolean}
+ */
+function checkIfLogic(uri) {
+  return uri.indexOf('/space-logic') > -1;
+}
+
 module.exports.componentNameFromURI = componentNameFromURI;
 module.exports.makeComponentListAttr = makeComponentListAttr;
 module.exports.spaceInComponentList = spaceInComponentList;
 module.exports.availableSpaces = availableSpaces;
 module.exports.createFilterableList = createFilterableList;
 module.exports.checkIfSpace = checkIfSpace;
+module.exports.checkIfLogic = checkIfLogic;
 module.exports.checkIfSpaceEdit = checkIfSpaceEdit;
-module.exports.findAllLogic = findAllLogic;
 module.exports.getAvailableComponents = getAvailableComponents;
 module.exports.checkIfSpaceOrLogic = checkIfSpaceOrLogic;
