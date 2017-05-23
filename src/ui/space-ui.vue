@@ -53,6 +53,7 @@
 <script>
 import { map, assign, filter, findIndex } from 'lodash';
 import { remove, removeSpace } from '../services/remove-service';
+import { openAddComponent } from '../services/ui-service';
 import targetIcon from '../../media/target.svg';
 import removeIcon from '../../media/remove.svg';
 import dragIcon from '../../media/drag.svg';
@@ -226,11 +227,17 @@ export default {
       var components = findAvailableComponents(this.$store, this.spaceRef);
 
       if (components.length > 1) {
-        // TODO: launch pane to pick
-        console.log('more than one!');
+        var componentList = map(components, (cmp) => {
+          return {
+            id: cmp,
+            title: utils.label(cmp)
+          };
+        });
+
+        openAddComponent(this.$store, this.spaceRef, componentList);
       } else {
         addToSpace(this.$store, this.spaceRef, components[0])
-          .then(() => this.updateItems())
+          .then(() => this.updateItems());
       }
     },
     render() {

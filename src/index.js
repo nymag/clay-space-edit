@@ -9,6 +9,7 @@ import { includes } from 'lodash';
 import createSpaceButton from './ui/create-space-button.vue';
 import UILaunchButton from './ui/ui-launch-button.vue';
 import spaceUI from './ui/space-ui.vue';
+import addToSpace from './ui/add-to-space.vue';
 
 // Internal Services
 import { openUI, spaceElFromLogicUri } from './services/ui-service';
@@ -19,6 +20,7 @@ window.kiln.selectorButtons.UILaunchButton = UILaunchButton;
 
 // Register Kiln Panes
 window.kiln.panes['spaces-ui'] = spaceUI;
+window.kiln.panes['add-to-space'] = addToSpace;
 
 /// Main process
 

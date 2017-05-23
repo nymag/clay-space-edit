@@ -38,3 +38,26 @@ export function openUI(store, spaceRef) {
 
   return store.dispatch('openPane', paneOptions);
 }
+
+/**
+ * TODO: Make work
+ * @param  {[type]} store      [description]
+ * @param  {[type]} components [description]
+ * @return {[type]}            [description]
+ */
+export function openAddComponent(store, spaceRef, components) {
+  const spaceName = getComponentName(spaceRef),
+    paneOptions = {
+      position: 'center',
+      size: 'medium',
+      content: {
+        component: 'add-to-space',
+        components,
+        spaceRef
+      },
+      name: 'add-to-space',
+      title: 'Add Component To Space'
+    };
+
+  return store.dispatch('openPane', paneOptions);
+}
