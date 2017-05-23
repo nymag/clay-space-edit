@@ -1,2 +1,3 @@
 /* eslint-disable one-var */
-export const SELECT = 'SELECT';
+export const CLOSE_FORM = 'CLOSE_FORM';
+export const FOCUS = 'FOCUS';

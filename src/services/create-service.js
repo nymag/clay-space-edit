@@ -35,7 +35,7 @@ export function createSpace(store, ref, parentRef, availableSpaces) {
  * @param  {String} space  name of the space
  * @return {String} logicRef
  */
-function findSpaceLogic(store, space) {
+export function findSpaceLogic(store, space) {
   const schema = store.state.schemas[space];
 
   if (!schema) {
