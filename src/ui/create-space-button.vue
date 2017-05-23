@@ -3,7 +3,8 @@
 </template>
 
 <script>
-import { checkIfSpaceEdit, checkIfSpace, spaceInComponentList } from '../services/utils';
+import { get } from 'lodash';
+import { checkIfSpaceEdit, checkIfSpace, spaceInComponentList, componentNameFromURI, checkIfSpaceOrLogic } from '../services/utils';
 import { createSpace } from '../services/create-service';
 import createSpaceIconRaw from '../../media/add-to-space.svg'
 
@@ -12,27 +13,57 @@ export default {
     return {}
   },
   computed: {
+    /**
+     * Return the icon HTML
+     *
+     * @return {String}
+     */
     icon() {
       return createSpaceIconRaw;
     },
+    /**
+     * Get the component list for a componentList
+     *
+     * @return {Object|Undefined}
+     */
     componentList() {
-      const currentSelection = this.$store.state.ui.currentSelection,
-        componentListName = currentSelection.parentField.path;
+      var currentSelection = this.$store.state.ui.currentSelection,
+        parentComponentName, componentListName;
 
-      // TODO: This is going to break
-      return this.$store.state.schemas.layout[componentListName];
+      // Is the parent a Logic or a Space? Get out. Run. Get away, fast.
+      if (checkIfSpaceOrLogic(currentSelection.parentURI)) {
+        return;
+      }
+
+      parentComponentName = componentNameFromURI(currentSelection.parentURI);
+      componentListName = currentSelection.parentField.path;
+
+      return get(this.$store.state.schemas, `[${parentComponentName}][${componentListName}]`);
     },
+    /**
+     * Gran the available Spaces. Availability determined by the presence
+     * of a component beginning with `clay-space` in the schema for the
+     * component
+     *
+     * // TODO: Return value check
+     * @return {[type]} [description]
+     */
     availableSpaces() {
       return spaceInComponentList(this.componentList);
     },
+    /**
+     * Determine if the button should be displayed
+     *
+     * @return {Boolean}
+     */
     shouldDisplay() {
       const ref = this.$store.state.ui.currentSelection.uri;
-      return !_.isEmpty(this.componentList)
-        // TODO: understand why doing this
-        // just imitating the logic from before
-        &&
-        !checkIfSpaceEdit(ref) &&
-        !checkIfSpace(ref);
+
+      // Check to make sure we:
+      // 1) Have components in the component list
+      // 2) we're not dealing with the `clay-space-edit` module
+      // 3) Check if we're dealing with a Space component
+      return !_.isEmpty(this.componentList) && !checkIfSpaceEdit(ref) && !checkIfSpace(ref);
     }
   },
   methods: {
