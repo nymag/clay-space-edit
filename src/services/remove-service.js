@@ -14,7 +14,7 @@ export function removeSpace(store, logicUri) {
   const logicEl = dom.find(`[data-uri="${logicUri}"]`),
     spaceEl = getSpaceElFromLogic(store.state.site.prefix, logicEl);
 
-  return store.dispatch('remoceComponent', spaceEl);
+  return store.dispatch('removeComponent', spaceEl);
 }
 
 /**
