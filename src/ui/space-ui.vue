@@ -104,16 +104,18 @@ function addDragula(el, reorder) {
 
 export default {
   data() {
-    const state = this.$store.state,
-      spaceRef = state.ui.currentPane.content.spaceRef;
-
-    return {
-      spaceName: state.ui.currentPane.content.spaceName,
-      spaceRef,
-      items: state.components[spaceRef].content
-    }
+    return {};
   },
   computed: {
+    spaceName() {
+      return this.$store.state.ui.currentPane.content.spaceName;
+    },
+    spaceRef() {
+      return this.$store.state.ui.currentPane.content.spaceRef;
+    },
+    items() {
+      return this.$store.state.components[this.spaceRef].content;
+    },
     /**
      * The icon for the target button
      * @return {String}
@@ -183,7 +185,6 @@ export default {
      */
     removeFromSpace(uri) {
       removeLogic(this.$store, uri, this.items.length)
-        .then(() => this.updateItems());
     },
     /**
      * Open the settings pane for a Logic
@@ -207,13 +208,6 @@ export default {
       spaceContent.splice(oldIndex, 1); // remove at the old index
       spaceContent.splice(index, 0, { _ref: id }); // add at the new index
       this.$store.dispatch('saveComponent', { uri: this.spaceRef, data: { content: spaceContent }})
-        .then(() => this.updateItems());
-    },
-    /**
-     * Update the items array from values in the store;
-     */
-    updateItems() {
-      this.items = this.$store.state.components[this.spaceRef].content;
     },
     /**
      * TODO: fill in
@@ -232,7 +226,6 @@ export default {
         openAddComponent(this.$store, this.spaceRef, componentList);
       } else {
         addToSpace(this.$store, this.spaceRef, components[0])
-          .then(() => this.updateItems());
       }
     },
     render() {
