@@ -15,6 +15,11 @@
         &-name {
           flex-grow: 1;
           flex-shrink: 0;
+
+          &.active {
+            border-bottom: 2px solid #229ed3;
+          }
+
         }
       }
     }
@@ -39,7 +44,7 @@
       <ul class="spaceUI-list" ref="list">
         <li v-for="(item, index) in spaceContent" class="spaceUI-list-item" :data-item-id="item.logicRef">
           <button v-html="drag"></button>
-          <span class="spaceUI-list-item-name">{{ componentName(item) }} -- {{index}}</span>
+          <span class="spaceUI-list-item-name" :class="{ active: item.isActive }">{{ componentName(item) }} -- {{index}}</span>
           <button v-html="target" v-on:click="openTarget(item.logicRef)"></button>
           <button v-html="remove" v-on:click="removeFromSpace(item.logicRef)"></button>
         </li>
@@ -104,16 +109,18 @@ function addDragula(el, reorder) {
 
 export default {
   data() {
-    const state = this.$store.state,
-      spaceRef = state.ui.currentPane.content.spaceRef;
-
-    return {
-      spaceName: state.ui.currentPane.content.spaceName,
-      spaceRef,
-      items: state.components[spaceRef].content
-    }
+    return {};
   },
   computed: {
+    spaceName() {
+      return this.$store.state.ui.currentPane.content.spaceName;
+    },
+    spaceRef() {
+      return this.$store.state.ui.currentPane.content.spaceRef;
+    },
+    items() {
+      return this.$store.state.components[this.spaceRef].content;
+    },
     /**
      * The icon for the target button
      * @return {String}
@@ -149,16 +156,27 @@ export default {
      * @return {Array}
      */
     spaceContent() {
-      const components = this.$store.state.components;
+      const components = this.$store.state.components,
+        contents = map(this.items, (item, index) => {
+          const logicData = components[item._ref];
 
-      return map(this.items, (item) => {
-        const logicData = components[item._ref];
+          return {
+            logicData,
+            logicRef: item._ref,
+            isActive: false
+          };
+        });
 
-        return {
-          logicData,
-          logicRef: item._ref
-        };
-      });
+      // active content item is either the first visible item (matching component)
+      // or, if no component matches, the first item.
+      // The active component is highlighted in the UI
+      const activeContent = contents.find(content => content.display)
+                            || (contents.length ? contents[0] : null);
+
+      activeContent.isActive = true;
+
+      return contents;
+
     }
   },
   mounted() {
@@ -183,7 +201,6 @@ export default {
      */
     removeFromSpace(uri) {
       removeLogic(this.$store, uri, this.items.length)
-        .then(() => this.updateItems());
     },
     /**
      * Open the settings pane for a Logic
@@ -207,13 +224,6 @@ export default {
       spaceContent.splice(oldIndex, 1); // remove at the old index
       spaceContent.splice(index, 0, { _ref: id }); // add at the new index
       this.$store.dispatch('saveComponent', { uri: this.spaceRef, data: { content: spaceContent }})
-        .then(() => this.updateItems());
-    },
-    /**
-     * Update the items array from values in the store;
-     */
-    updateItems() {
-      this.items = this.$store.state.components[this.spaceRef].content;
     },
     /**
      * TODO: fill in
@@ -232,7 +242,6 @@ export default {
         openAddComponent(this.$store, this.spaceRef, componentList);
       } else {
         addToSpace(this.$store, this.spaceRef, components[0])
-          .then(() => this.updateItems());
       }
     },
     render() {
