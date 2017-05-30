@@ -15,6 +15,11 @@
         &-name {
           flex-grow: 1;
           flex-shrink: 0;
+
+          &.active {
+            border-bottom: 2px solid #229ed3;
+          }
+
         }
       }
     }
@@ -39,7 +44,7 @@
       <ul class="spaceUI-list" ref="list">
         <li v-for="(item, index) in spaceContent" class="spaceUI-list-item" :data-item-id="item.logicRef">
           <button v-html="drag"></button>
-          <span class="spaceUI-list-item-name">{{ componentName(item) }} -- {{index}}</span>
+          <span class="spaceUI-list-item-name" :class="{ active: item.isActive }">{{ componentName(item) }} -- {{index}}</span>
           <button v-html="target" v-on:click="openTarget(item.logicRef)"></button>
           <button v-html="remove" v-on:click="removeFromSpace(item.logicRef)"></button>
         </li>
@@ -151,16 +156,27 @@ export default {
      * @return {Array}
      */
     spaceContent() {
-      const components = this.$store.state.components;
+      const components = this.$store.state.components,
+        contents = map(this.items, (item, index) => {
+          const logicData = components[item._ref];
 
-      return map(this.items, (item) => {
-        const logicData = components[item._ref];
+          return {
+            logicData,
+            logicRef: item._ref,
+            isActive: false
+          };
+        });
 
-        return {
-          logicData,
-          logicRef: item._ref
-        };
-      });
+      // active content item is either the first visible item (matching component)
+      // or, if no component matches, the first item.
+      // The active component is highlighted in the UI
+      const activeContent = contents.find(content => content.display)
+                            || (contents.length ? contents[0] : null);
+
+      activeContent.isActive = true;
+
+      return contents;
+
     }
   },
   mounted() {
