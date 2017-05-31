@@ -100,8 +100,8 @@ import { getComponentName } from '../services/references'
 import { getComponentData, getComponentSchema } from '../services/components-service'
 import { findAvailableComponents, addToSpace } from '../services/add-service';
 
-
-const utils = window.kiln.utils;
+const MAX_PROPERTIES_FOR_READOUT_LABEL = 2,
+  utils = window.kiln.utils;
 
 
 // Placeholder for Dragula instance
@@ -239,6 +239,16 @@ export default {
     componentNameFromLogic(logicData) {
       return utils.label(utils.references.getComponentName(logicData.component._ref));
     },
+    createReadoutLabel(componentData, property) {
+      return Array.isArray(property)
+              ? property
+                  .slice(0, MAX_PROPERTIES_FOR_READOUT_LABEL)
+                  .map(prop => componentData[prop])
+                  .join(' — ')
+              : '' + componentData[prop]
+    },
+
+
     /**
      * Creates readouts for a component. These are shown in the
      * UI to distinguish component instances based on properties
@@ -250,10 +260,11 @@ export default {
      *
      */
     createReadouts(componentData, componentSchema) {
-      const targets = componentSchema['_targeting'] || [];
-      return targets
+      const targets = componentSchema['_targeting'] || [],
+        createLabel = (componentData, property) => 
+          targets
               .map(target => ({
-                  label: componentData[target.property],
+                  label: createLabel(componentData, target.property),
                   icon: target.icon
                 }))
                 // only show label if component has data for the target property
