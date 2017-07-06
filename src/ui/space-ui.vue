@@ -65,7 +65,9 @@
     <div class="spaceUI-readout">
       <ul class="spaceUI-list" ref="list">
         <li v-for="(item, index) in spaceContent" class="spaceUI-list-item" :data-item-id="item.logicRef">
-          <button v-html="drag"></button>
+          <button>
+            <icon name="drag"></icon>
+          </button>
           <div class="spaceUI-list-item-main" :class="{ active: item.isActive }">
             <span>{{ item.componentLabel }} -- {{index}}</span>
             <ul class="readouts">
@@ -75,8 +77,12 @@
               </li>
             </ul>
           </div>
-          <button v-html="target" v-on:click="openTarget(item.logicRef)"></button>
-          <button v-html="remove" v-on:click="removeFromSpace(item.logicRef)"></button>
+          <button v-on:click="openTarget(item.logicRef)">
+            <icon name="target"></icon>
+          </button>
+          <button v-on:click="removeFromSpace(item.logicRef)">
+            <icon name="remove"></icon>
+          </button>
         </li>
       </ul>
       <button type="button" v-on:click="addComponent">Add Component To Space</button>
@@ -89,9 +95,7 @@
 import { map, assign, filter, findIndex } from 'lodash';
 import { removeLogic, removeSpace } from '../services/remove-service';
 import { openAddComponent } from '../services/ui-service';
-import targetIcon from '../../media/target.svg';
-import removeIcon from '../../media/remove.svg';
-import dragIcon from '../../media/drag.svg';
+import icon from './icon.vue';
 import personIcon from '../../media/icon-person.svg'
 import tagIcon from '../../media/icon-tag.svg'
 import clockIcon from '../../media/icon-clock.svg'
@@ -156,27 +160,6 @@ export default {
     },
     items() {
       return this.$store.state.components[this.spaceRef].content;
-    },
-    /**
-     * The icon for the target button
-     * @return {String}
-     */
-    target() {
-      return targetIcon;
-    },
-    /**
-     * The icon for the remove button
-     * @return {String}
-     */
-    remove() {
-      return removeIcon;
-    },
-    /**
-     * The icon for the drag button
-     * @return {String}
-     */
-    drag() {
-      return dragIcon;
     },
     /**
      * Grab the description from the schema for the space
@@ -261,7 +244,7 @@ export default {
      */
     createReadouts(componentData, componentSchema) {
       const targets = componentSchema['_targeting'] || [],
-        createLabel = (componentData, property) => 
+        createLabel = (componentData, property) =>
           targets
               .map(target => ({
                   label: createLabel(componentData, target.property),
@@ -342,6 +325,9 @@ export default {
         data: {content: test}
       });
     }
+  },
+  components: {
+    icon
   }
 }
 </script>

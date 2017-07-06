@@ -1,11 +1,13 @@
 <template>
-  <button v-if="shouldDisplay" class="space-remove-button" v-on:click="handleClick" v-html="icon"></button>
+  <button v-if="shouldDisplay" class="space-remove-button" v-on:click="handleClick">
+    <icon name="remove"></icon>
+  </button>
 </template>
 
 <script>
 import { openUI } from '../services/ui-service';
 import { checkIfLogic } from '../services/utils';
-import removeIcon from '../../media/remove.svg';
+import icon from './icon.vue';
 import { getSpaceElFromLogic } from '../services/utils';
 import { removeLogic } from '../services/remove-service';
 
@@ -14,9 +16,6 @@ export default {
     return {}
   },
   computed: {
-    icon() {
-      return removeIcon;
-    },
     /**
      * Grab the length of the content for the Space parent.
      *
@@ -51,6 +50,9 @@ export default {
       removeLogic(this.$store, logicUri, this.spaceContentLength)
         .then(() => this.$store.dispatch('unselect'));
     }
+  },
+  components: {
+    icon
   }
 }
 </script>

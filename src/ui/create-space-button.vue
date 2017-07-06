@@ -1,26 +1,20 @@
 <template>
-  <button v-if="shouldDisplay" class="create-space-button" v-on:click="handleClick" v-html="icon"></button>
+  <button v-if="shouldDisplay" class="create-space-button" v-on:click="handleClick">
+    <icon name="add-to-space"></icon>
+  </button>
 </template>
 
 <script>
 import { get } from 'lodash';
 import { checkIfSpaceEdit, checkIfSpace, spaceInComponentList, componentNameFromURI, checkIfSpaceOrLogic } from '../services/utils';
 import { createSpace } from '../services/create-service';
-import createSpaceIconRaw from '../../media/add-to-space.svg'
+import icon from './icon.vue';
 
 export default {
   data() {
     return {}
   },
   computed: {
-    /**
-     * Return the icon HTML
-     *
-     * @return {String}
-     */
-    icon() {
-      return createSpaceIconRaw;
-    },
     /**
      * Get the component list for a componentList
      *
@@ -80,6 +74,9 @@ export default {
       }
       createSpace(store, ref, parentRef, this.availableSpaces);
     }
+  },
+  components: {
+    icon
   }
 }
 </script>
