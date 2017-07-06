@@ -100,8 +100,7 @@ import { openAddComponent } from '../services/ui-service';
 import icon from './icon.vue';
 import allIcons from '../services/icons';
 import dragula from 'dragula';
-import { getComponentName } from '../services/references'
-import { getComponentData, getComponentSchema } from '../services/components-service'
+import { getComponentName } from '../services/references';
 import { findAvailableComponents, addToSpace } from '../services/add-service';
 
 const MAX_PROPERTIES_FOR_READOUT_LABEL = 2,
