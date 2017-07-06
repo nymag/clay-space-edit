@@ -27,7 +27,7 @@ window.kiln.panes['add-to-space'] = addToSpace;
 /// Main process
 
 // Tracking variables
-var activeLogic = undefined
+var activeLogic = undefined;
 
 window.kiln.plugins = window.kiln.plugins || {};
 window.kiln.plugins['clay-space-edit'] = function spaceEdit(store) {

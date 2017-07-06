@@ -3,23 +3,45 @@
     padding: 17px;
     min-height: 420px; // Resisting a joke.
 
+    .readout-icon {
+      display: inline-block;
+      min-width: 15px;
+      max-height: 15px;
+      margin-right: 7px;
+    }
+
+    .readout-label {
+      vertical-align: top;
+    }
+
     .spaceUI-list {
       list-style: none;
       padding: 0;
       margin: 0;
 
       .spaceUI-list-item {
-        align-items: center;
+        align-items: flex-start;
         display: flex;
 
-        &-name {
+        &-main {
           flex-grow: 1;
           flex-shrink: 0;
+          padding-top: 10px;
+          padding-bottom: 2px;
 
           &.active {
             border-bottom: 2px solid #229ed3;
           }
+        }
 
+        ul.readouts {
+          list-style-type: none;
+          padding-left: 4px;
+          li {
+            display: block;
+            margin-top: 10px;
+            margin-bottom: 10px;
+          }
         }
       }
     }
@@ -43,10 +65,26 @@
     <div class="spaceUI-readout">
       <ul class="spaceUI-list" ref="list">
         <li v-for="(item, index) in spaceContent" class="spaceUI-list-item" :data-item-id="item.logicRef">
-          <button v-html="drag"></button>
-          <span class="spaceUI-list-item-name" :class="{ active: item.isActive }">{{ componentName(item) }} -- {{index}}</span>
-          <button v-html="target" v-on:click="openTarget(item.logicRef)"></button>
-          <button v-html="remove" v-on:click="removeFromSpace(item.logicRef)"></button>
+          <button>
+            <icon name="drag"></icon>
+          </button>
+          <div class="spaceUI-list-item-main" :class="{ active: item.isActive }">
+            <span>{{ item.componentLabel }}</span>
+            <ul class="readouts">
+              <li v-for="readout in item.readouts">
+                <div class="readout-icon">
+                  <icon :name="validateReadoutIcon(`icon-${readout.icon}`)"></icon>
+                </div>
+                <span class="readout-label">{{ readout.label }}</span>
+              </li>
+            </ul>
+          </div>
+          <button v-on:click="openTarget(item.logicRef)">
+            <icon name="target"></icon>
+          </button>
+          <button v-on:click="removeFromSpace(item.logicRef)">
+            <icon name="remove"></icon>
+          </button>
         </li>
       </ul>
       <button type="button" v-on:click="addComponent">Add Component To Space</button>
@@ -56,17 +94,20 @@
 </template>
 
 <script>
-import { map, assign, filter, findIndex } from 'lodash';
+import { map, assign, filter, findIndex, compact } from 'lodash';
 import { removeLogic, removeSpace } from '../services/remove-service';
 import { openAddComponent } from '../services/ui-service';
-import targetIcon from '../../media/target.svg';
-import removeIcon from '../../media/remove.svg';
-import dragIcon from '../../media/drag.svg';
+import icon from './icon.vue';
+import allIcons from '../services/icons';
 import dragula from 'dragula';
+import { getComponentName } from '../services/references';
 import { findAvailableComponents, addToSpace } from '../services/add-service';
 
-const utils = window.kiln.utils;
-
+const MAX_PROPERTIES_FOR_READOUT_LABEL = 2,
+  utils = window.kiln.utils,
+  acceptedIcons = compact(map(allIcons, function (icon, key) {
+    return key.indexOf('icon-') === 0 ? key : null;
+  }));
 
 // Placeholder for Dragula instance
 var drag;
@@ -122,27 +163,6 @@ export default {
       return this.$store.state.components[this.spaceRef].content;
     },
     /**
-     * The icon for the target button
-     * @return {String}
-     */
-    target() {
-      return targetIcon;
-    },
-    /**
-     * The icon for the remove button
-     * @return {String}
-     */
-    remove() {
-      return removeIcon;
-    },
-    /**
-     * The icon for the drag button
-     * @return {String}
-     */
-    drag() {
-      return dragIcon;
-    },
-    /**
      * Grab the description from the schema for the space
      *
      * @return {String}
@@ -156,14 +176,21 @@ export default {
      * @return {Array}
      */
     spaceContent() {
-      const components = this.$store.state.components,
+      const { state } = this.$store,
+        components = state.components,
         contents = map(this.items, (item, index) => {
-          const logicData = components[item._ref];
+          const logicData = components[item._ref],
+            logicName = utils.references.getComponentName(item._ref),
+            logicSchema = this.$store.state.schemas[logicName],
+            componentLabel = this.componentNameFromLogic(logicData),
+            readouts = this.createReadouts(logicData, logicSchema);
 
           return {
             logicData,
             logicRef: item._ref,
-            isActive: false
+            isActive: false,
+            componentLabel,
+            readouts
           };
         });
 
@@ -176,7 +203,6 @@ export default {
       activeContent.isActive = true;
 
       return contents;
-
     }
   },
   mounted() {
@@ -191,8 +217,38 @@ export default {
      * @param  {String} item
      * @return {String}
      */
-    componentName(item) {
-      return utils.label(utils.references.getComponentName(item.logicData.component._ref));
+    componentNameFromLogic(logicData) {
+      return utils.label(utils.references.getComponentName(logicData.component._ref));
+    },
+    /**
+     * Creates readouts for a component. These are shown in the
+     * UI to distinguish component instances based on properties
+     * identified in the `_targeting` field of the Logic's schema
+     *
+     * @param {Object} logicData has data for each property in schema `_targeting` field
+     * @param {Object} logicSchema with an optional _targeting field
+     * @return {Array<Object<String, String>>} {label, icon} for each target
+     *
+     */
+    createReadouts(logicData, logicSchema) {
+      const targets = logicSchema['_targeting'] || [];
+
+      return compact(map(targets, function ({ icon, property }) {
+        return logicData[property] ? { icon, label: logicData[property] } : null
+      }));
+    },
+    /**
+     * Validate that the icon requested is available.
+     *
+     * @param  {String} iconName
+     * @return {String}
+     */
+    validateReadoutIcon(iconName) {
+      if (acceptedIcons.indexOf(iconName) > -1) {
+        return iconName;
+      } else {
+        console.error(`Clay Space Logic: icon ${iconName} not found, no icon will be displayed`);
+      }
     },
     /**
      * Remove a Logic from a Space
@@ -253,6 +309,9 @@ export default {
         data: {content: test}
       });
     }
+  },
+  components: {
+    icon
   }
 }
 </script>

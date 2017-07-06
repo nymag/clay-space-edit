@@ -1,13 +1,13 @@
 <template>
   <button v-if="shouldDisplay" class="launch-ui-button" v-on:click="handleClick">
-    <span v-html="icon"></span>
+    <icon name="list-space"></icon>
     <span>{{ spaceLogicCount }}</span>
   </button>
 </template>
 
 <script>
 import { openUI } from '../services/ui-service';
-import spaceListIcon from '../../media/list-space.svg';
+import icon from './icon.vue';
 import { getSpaceElFromLogic } from '../services/utils';
 import dom from '@nymag/dom';
 
@@ -16,9 +16,6 @@ export default {
     return {}
   },
   computed: {
-    icon() {
-      return spaceListIcon;
-    },
     /**
      * Grab the ref (data-uri) from the closest Space.
      *
@@ -60,6 +57,9 @@ export default {
     handleClick() {
       openUI(this.$store, this.spaceParentRef);
     }
+  },
+  components: {
+    icon
   }
 }
 </script>
