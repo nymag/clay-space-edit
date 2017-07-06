@@ -1,60 +1,7 @@
 {{#if @root.locals.edit }}
 <div data-uri="{{ default _ref _self }}" class="clay-space-edit">
-
-  {{! Scripts }}
   <script>
   {{{ read 'node_modules/clay-space-edit/dist/clay-space-edit.js' }}}
   </script>
-
-  {{! Browse Space Button }}
-  <template class="browse-space">
-    <button type="button" class="selector-button space-browse">
-      {{{ read 'public/media/components/clay-space-edit/list-space.svg' }}}
-      <span class="logic-count"></span>
-    </button>
-  </template>
-
-  {{! Create Space Button }}
-  <template class="create-space">
-    <button type="button" class="selector-button space-create">
-      {{{ read 'public/media/components/clay-space-edit/add-to-space.svg' }}}
-    </button>
-  </template>
-
-  {{! Filter List Create Space Button }}
-  <template class="create-space-list">
-    <button type="button" class="filtered-list-button space-create">
-      {{{ read 'public/media/components/clay-space-edit/add-to-space.svg' }}}
-    </button>
-  </template>
-
-  {{! Filter List Browse Button }}
-  <template class="browse-space-list">
-    <button type="button" class="filtered-list-button space-browse">
-      {{{ read 'public/media/components/clay-space-edit/list-space.svg' }}}
-      <span class="logic-count"></span>
-    </button>
-  </template>
-
-  {{! Target Space Button }}
-  <template class="target-space">
-    <button type="button" class="filtered-list-button space-target">
-      {{{ read 'public/media/components/clay-space-edit/target.svg' }}}
-    </button>
-  </template>
-
-  {{! Target SVG }}
-  <template class="target-space-svg">
-    {{{ read 'public/media/components/clay-space-edit/target.svg' }}}
-  </template>
-
-  {{! Readout Icons }}
-  {{! Need more icons? Submit a PR to https://github.com/nymag/clay-space-edit with the icon }}
-  <template class="clay-space-edit-icons">
-    <span class="readout-icon icon-tags">{{{ read 'public/media/components/clay-space-edit/icon-tag.svg' }}}</span>
-    <span class="readout-icon icon-time">{{{ read 'public/media/components/clay-space-edit/icon-time.svg' }}}</span>
-    <span class="readout-icon icon-person">{{{ read 'public/media/components/clay-space-edit/icon-person.svg' }}}</span>
-  </template>
-
 </div>
 {{/if}}
