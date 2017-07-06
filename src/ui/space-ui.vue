@@ -69,10 +69,12 @@
             <icon name="drag"></icon>
           </button>
           <div class="spaceUI-list-item-main" :class="{ active: item.isActive }">
-            <span>{{ item.componentLabel }} -- {{index}}</span>
+            <span>{{ item.componentLabel }}</span>
             <ul class="readouts">
               <li v-for="readout in item.readouts">
-                <div class="readout-icon" v-html="getReadoutIcon(readout.icon)"></div>
+                <div class="readout-icon">
+                  <icon :name="validateReadoutIcon(`icon-${readout.icon}`)"></icon>
+                </div>
                 <span class="readout-label">{{ readout.label }}</span>
               </li>
             </ul>
@@ -92,21 +94,21 @@
 </template>
 
 <script>
-import { map, assign, filter, findIndex } from 'lodash';
+import { map, assign, filter, findIndex, compact } from 'lodash';
 import { removeLogic, removeSpace } from '../services/remove-service';
 import { openAddComponent } from '../services/ui-service';
 import icon from './icon.vue';
-import personIcon from '../../media/icon-person.svg'
-import tagIcon from '../../media/icon-tag.svg'
-import clockIcon from '../../media/icon-clock.svg'
+import allIcons from '../services/icons';
 import dragula from 'dragula';
 import { getComponentName } from '../services/references'
 import { getComponentData, getComponentSchema } from '../services/components-service'
 import { findAvailableComponents, addToSpace } from '../services/add-service';
 
 const MAX_PROPERTIES_FOR_READOUT_LABEL = 2,
-  utils = window.kiln.utils;
-
+  utils = window.kiln.utils,
+  acceptedIcons = compact(map(allIcons, function (icon, key) {
+    return key.indexOf('icon-') === 0 ? key : null;
+  }));
 
 // Placeholder for Dragula instance
 var drag;
@@ -179,11 +181,10 @@ export default {
         components = state.components,
         contents = map(this.items, (item, index) => {
           const logicData = components[item._ref],
+            logicName = utils.references.getComponentName(item._ref),
+            logicSchema = this.$store.state.schemas[logicName],
             componentLabel = this.componentNameFromLogic(logicData),
-            componentName = utils.references.getComponentName(logicData.component._ref),
-            componentSchema = getComponentSchema(state, componentName),
-            componentData = getComponentData(state, logicData.component._ref),
-            readouts = this.createReadouts(componentData, componentSchema);
+            readouts = this.createReadouts(logicData, logicSchema);
 
           return {
             logicData,
@@ -194,7 +195,6 @@ export default {
           };
         });
 
-
       // active content item is either the first visible item (matching component)
       // or, if no component matches, the first item.
       // The active component is highlighted in the UI
@@ -204,7 +204,6 @@ export default {
       activeContent.isActive = true;
 
       return contents;
-
     }
   },
   mounted() {
@@ -222,48 +221,34 @@ export default {
     componentNameFromLogic(logicData) {
       return utils.label(utils.references.getComponentName(logicData.component._ref));
     },
-    createReadoutLabel(componentData, property) {
-      return Array.isArray(property)
-              ? property
-                  .slice(0, MAX_PROPERTIES_FOR_READOUT_LABEL)
-                  .map(prop => componentData[prop])
-                  .join(' — ')
-              : '' + componentData[prop]
-    },
-
-
     /**
      * Creates readouts for a component. These are shown in the
      * UI to distinguish component instances based on properties
-     * identified in the `_targeting` field of the component's schema
+     * identified in the `_targeting` field of the Logic's schema
      *
-     * @param {Object} componentData has data for each property in schema `_targeting` field
-     * @param {Object} componentSchema with an optional _targeting field
+     * @param {Object} logicData has data for each property in schema `_targeting` field
+     * @param {Object} logicSchema with an optional _targeting field
      * @return {Array<Object<String, String>>} {label, icon} for each target
      *
      */
-    createReadouts(componentData, componentSchema) {
-      const targets = componentSchema['_targeting'] || [],
-        createLabel = (componentData, property) =>
-          targets
-              .map(target => ({
-                  label: createLabel(componentData, target.property),
-                  icon: target.icon
-                }))
-                // only show label if component has data for the target property
-                .filter(readout => !!readout.label);
+    createReadouts(logicData, logicSchema) {
+      const targets = logicSchema['_targeting'] || [];
+
+      return compact(map(targets, function ({ icon, property }) {
+        return logicData[property] ? { icon, label: logicData[property] } : null
+      }));
     },
-    getReadoutIcon(iconName) {
-      switch(iconName) {
-        case 'person':
-          return personIcon;
-        case 'tag':
-          return tagIcon;
-        case 'clock':
-          return clockIcon;
-        default:
-          console.error(`icon ${iconName} not found, falling back to tagIcon`);
-          return tagIcon;
+    /**
+     * Validate that the icon requested is available.
+     *
+     * @param  {String} iconName
+     * @return {String}
+     */
+    validateReadoutIcon(iconName) {
+      if (acceptedIcons.indexOf(iconName) > -1) {
+        return iconName;
+      } else {
+        console.error(`Clay Space Logic: icon ${iconName} not found, no icon will be displayed`);
       }
     },
     /**
