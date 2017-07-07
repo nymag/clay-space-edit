@@ -200,7 +200,9 @@ export default {
       const activeContent = contents.find(content => content.display)
                             || (contents.length ? contents[0] : null);
 
-      activeContent.isActive = true;
+      if (activeContent) {
+        activeContent.isActive = true;
+      }
 
       return contents;
     }
