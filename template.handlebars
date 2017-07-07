@@ -1,5 +1,9 @@
 {{#if @root.locals.edit }}
 <div data-uri="{{ default _ref _self }}" class="clay-space-edit">
+  <style>
+    {{{ read 'node_modules/clay-space-edit/dist/clay-space-edit.css' }}}
+  </style>
+
   <script>
   {{{ read 'node_modules/clay-space-edit/dist/clay-space-edit.js' }}}
   </script>

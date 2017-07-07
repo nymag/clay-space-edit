@@ -1,3 +1,18 @@
+<style lang="sass">
+  @import '../styles/_mixins';
+
+  .launch-ui-button {
+    @include button();
+    position: relative;
+    padding: 14px 8px;
+
+    .icon {
+      position: relative;
+      top: -2px;
+    }
+  }
+</style>
+
 <template>
   <button v-if="shouldDisplay" class="launch-ui-button" v-on:click="handleClick">
     <icon name="list-space"></icon>
@@ -56,6 +71,7 @@ export default {
      */
     handleClick() {
       openUI(this.$store, this.spaceParentRef);
+      this.$store.dispatch('unselect');
     }
   },
   components: {
