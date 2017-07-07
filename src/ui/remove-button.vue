@@ -1,3 +1,12 @@
+<style lang="sass">
+  @import '../styles/_mixins';
+
+  .space-remove-button {
+    @include button();
+  }
+</style>
+
+
 <template>
   <button v-if="shouldDisplay" class="space-remove-button" v-on:click="handleClick">
     <icon name="remove"></icon>

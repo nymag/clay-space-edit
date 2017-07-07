@@ -1,17 +1,38 @@
 <style lang="sass">
+  @import '../styles/_mixins';
+
   .spaceUI {
     padding: 17px;
-    min-height: 420px; // Resisting a joke.
+    min-height: 420px;
 
-    .readout-icon {
-      display: inline-block;
-      min-width: 15px;
-      max-height: 15px;
-      margin-right: 7px;
+    .spaceUI-desc {
+      border-bottom: 1px solid #c3c3c3;
+      padding-bottom: 20px;
+      margin-bottom: 12px;
     }
 
-    .readout-label {
-      vertical-align: top;
+    .readouts {
+      list-style-type: none;
+      padding-left: 4px;
+      margin: 8px 0 4px;
+      font-size: 12px;
+      display: flex;
+
+      > .readouts-item + .readouts-item {
+        margin-left: 8px;
+      }
+
+
+      .readouts-item {
+        align-items: center;
+        display: flex;
+      }
+
+      .readouts-item-icon {
+        min-width: 15px;
+        max-height: 15px;
+        margin-right: 7px;
+      }
     }
 
     .spaceUI-list {
@@ -19,76 +40,80 @@
       padding: 0;
       margin: 0;
 
-      .spaceUI-list-item {
+      > .listItem + .listItem {
+        margin-top: 15px;
+      }
+
+      .listItem {
         align-items: flex-start;
         display: flex;
 
-        &-main {
-          flex-grow: 1;
-          flex-shrink: 0;
-          padding-top: 10px;
-          padding-bottom: 2px;
-
-          &.active {
-            border-bottom: 2px solid #229ed3;
-          }
+        &.active {
+          border-bottom: 2px solid #229ed3;
         }
 
-        ul.readouts {
-          list-style-type: none;
-          padding-left: 4px;
-          li {
-            display: block;
-            margin-top: 10px;
-            margin-bottom: 10px;
+        &-main {
+          align-items: center;
+          appearance: none;
+          background: transparent;
+          border: none;
+          cursor: pointer;
+          display: flex;
+          flex-grow: 1;
+          flex-shrink: 0;
+          padding: 0;
+
+          &-right {
+            text-align: left;
+
+            &-name {
+              font-size: 14px;
+              margin: 10px 0;
+            }
           }
         }
       }
     }
 
-    button {
-      appearance: none;
-      border: none;
-      background: transparent;
-      cursor: pointer;
-      padding: 14px;
-      margin: 0;
+    .uiButton {
+      @include button();
     }
   }
 </style>
 
 <template>
   <div class="spaceUI">
-    <div class="spaceUI-desc">
-        {{ spaceDescription}}
+    <div class="spaceUI-desc" v-html="spaceDescription">
+      <!-- Description is populated here -->
     </div>
     <div class="spaceUI-readout">
       <ul class="spaceUI-list" ref="list">
-        <li v-for="(item, index) in spaceContent" class="spaceUI-list-item" :data-item-id="item.logicRef">
-          <button>
-            <icon name="drag"></icon>
+        <li v-for="(item, index) in spaceContent" class="listItem" :data-item-id="item.logicRef" :class="{ active: item.isActive }">
+          <button class="listItem-main" v-on:click="itemClick(item.logicRef)">
+            <div class="listItem-main-left uiButton" v-if="items.length > 1">
+              <icon name="drag"></icon>
+            </div>
+            <div class="listItem-main-right">
+              <span class="listItem-main-right-name">{{ item.componentLabel }}</span>
+              <ul class="readouts">
+                <li v-for="readout in item.readouts" class="readouts-item">
+                  <div class="readouts-item-icon">
+                    <icon :name="validateReadoutIcon(`icon-${readout.icon}`)"></icon>
+                  </div>
+                  <span class="readout-item-label">{{ readout.label }}</span>
+                </li>
+              </ul>
+            </div>
           </button>
-          <div class="spaceUI-list-item-main" :class="{ active: item.isActive }">
-            <span>{{ item.componentLabel }}</span>
-            <ul class="readouts">
-              <li v-for="readout in item.readouts">
-                <div class="readout-icon">
-                  <icon :name="validateReadoutIcon(`icon-${readout.icon}`)"></icon>
-                </div>
-                <span class="readout-label">{{ readout.label }}</span>
-              </li>
-            </ul>
-          </div>
-          <button v-on:click="openTarget(item.logicRef)">
+          <button class="listItem-target uiButton" v-on:click="openTarget(item.logicRef)">
             <icon name="target"></icon>
           </button>
-          <button v-on:click="removeFromSpace(item.logicRef)">
+          <button class="listItem-remove uiButton" v-on:click="removeFromSpace(item.logicRef)">
             <icon name="remove"></icon>
           </button>
         </li>
       </ul>
       <button type="button" v-on:click="addComponent">Add Component To Space</button>
-      <button type="button" v-on:click="render">Render</button>
     </div>
   </div>
 </template>
@@ -97,6 +122,7 @@
 import { map, assign, filter, findIndex, compact } from 'lodash';
 import { removeLogic, removeSpace } from '../services/remove-service';
 import { openAddComponent } from '../services/ui-service';
+import { toggle, getActive } from '../services/toggle-service';
 import icon from './icon.vue';
 import allIcons from '../services/icons';
 import dragula from 'dragula';
@@ -150,7 +176,9 @@ function addDragula(el, reorder) {
 
 export default {
   data() {
-    return {};
+    return {
+      active: null
+    };
   },
   computed: {
     spaceName() {
@@ -188,22 +216,17 @@ export default {
           return {
             logicData,
             logicRef: item._ref,
-            isActive: false,
+            isActive: this.active === item._ref,
             componentLabel,
             readouts
           };
         });
 
-      // active content item is either the first visible item (matching component)
-      // or, if no component matches, the first item.
-      // The active component is highlighted in the UI
-      const activeContent = contents.find(content => content.display)
-                            || (contents.length ? contents[0] : null);
-
-      activeContent.isActive = true;
-
       return contents;
     }
+  },
+  created() {
+    this.active = getActive(this.$store, this.spaceRef);
   },
   mounted() {
     // Add dragula
@@ -212,6 +235,9 @@ export default {
     }
   },
   methods: {
+    itemClick(logicRef) {
+      this.active = toggle(this.active, logicRef);
+    },
     /**
      * Pretty format a component's name
      * @param  {String} item
@@ -299,15 +325,6 @@ export default {
       } else {
         addToSpace(this.$store, this.spaceRef, components[0])
       }
-    },
-    render() {
-      var test = this.$store.state.components[this.spaceRef].content;
-
-      this.$store.commit('RENDER_COMPONENT', {
-        uri: this.spaceRef,
-        paths: ['content'],
-        data: {content: test}
-      });
     }
   },
   components: {
