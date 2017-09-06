@@ -244,7 +244,7 @@ export default {
      * @return {String}
      */
     componentNameFromLogic(logicData) {
-      return utils.label(utils.references.getComponentName(logicData.component._ref));
+      return utils.label(utils.references.getComponentName(logicData.embededComponent.ref));
     },
     /**
      * Creates readouts for a component. These are shown in the
