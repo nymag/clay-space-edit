@@ -5,6 +5,9 @@ import { findSpaceLogic } from './create-service';
 const getComponentName = window.kiln.utils.references.getComponentName;
 
 
+const getComponentName = window.kiln.utils.references.getComponentName,
+  // why do I need to refer to `.default`?
+  createComponent = window.kiln.utils.create.default;
 
 export function findAvailableComponents(store, spaceRef) {
   const parent = findSpaceParentUriAndList(spaceRef);
@@ -12,40 +15,60 @@ export function findAvailableComponents(store, spaceRef) {
   return getAvailableComponents(store, parent.el, parent.list);
 }
 
-
 export function addToSpace(store, spaceRef, componentName) {
   var parent =  findSpaceParentUriAndList(spaceRef),
-    logic = findSpaceLogic(store, getComponentName(spaceRef));
+    logic = findSpaceLogic(store, getComponentName(spaceRef)),
+    lastSpaceLogic = _.last(store.state.components[spaceRef].content)._ref,
+    _components = [{name: logic}],
+    embeddedComponent = createComponent([{name:componentName}]);
 
 
-  return addComponent(store, {
-    parentURI: spaceRef,
-    path: 'content',
-    replace: false,
-    components: [{ name: componentName }]
-  }).then((resp) => {
-    // TODO: Why is this not returning the logic uri?
-    const createdComponent = _.last(store.state.components[spaceRef].content)._ref;
+    /*
+      TODO:
+      - use arrow syntax?
+      - remove ref from first-runs
+    */
 
-    return addComponent(store, {
-      parentURI: spaceRef,
-      currentURI: createdComponent,
-      path: 'content',
-      components: [{ name: logic, data: {
-          component: { _ref: createdComponent }
+    embeddedComponent.then(function (res) {
+      var embededComponent = _.last(res),
+      newSpaceLogicData = {
+        embededComponent: {
+          data: embededComponent
         }
-      }],
-      replace: true
-    });
-  });
-}
+      };
+      console.log("component:", embededComponent);
+      console.log("newSpaceLogicData:", newSpaceLogicData);
+      debugger;
 
-function addComponent(store, { currentURI, parentURI, path, components, replace }) {
-  return store.dispatch('addComponents', {
-    currentURI,
-    parentURI,
-    path,
-    components,
-    replace
-  });
+      return store.dispatch('addComponents', {
+        parentURI: spaceRef,
+        currentURI: lastSpaceLogic,
+        path: 'content',
+        replace: false,
+        components: [
+          {
+            name: logic,
+            data: newSpaceLogicData
+          }
+        ]
+      });
+
+    });
+    // REFERENCE:
+    // var createdComponent = _.last(store.state.components[spaceRef].content)._ref;
+
+    /*
+      TODO:
+      - create embedded component
+      - dispatch `addComponents` event
+
+    */
+
+  // return store.dispatch('addComponents', {
+  //   parentURI: spaceRef,
+  //   currentURI: lastSpaceLogic,
+  //   path: 'content',
+  //   replace: false,
+  //   components: [{ name: logic }]
+  // });
 }
