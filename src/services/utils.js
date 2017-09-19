@@ -36,9 +36,6 @@ export function findSpaceParentUriAndList(spaceRef) {
  * Return a list of components included in a component list. Requires
  * a component's uri and a list from that component's schema.
  *
- * TODO: Just pass in Parent object?
- *
- *
  * @param  {Object}  store
  * @param  {Element} parentUri
  * @param  {String}  list
@@ -55,7 +52,27 @@ function getAvailableComponents(store, parentEl, list) {
   parentName = getComponentName(parentUri);
 
   componentList = store.state.schemas[parentName][list]._componentList;
-  include = _.get(componentList, 'include', '');
+  include = _.map(_.get(componentList, 'include', ''), function (value) {
+    // for site-specific components check that the component is available for
+    // the current site
+    const currentSlug = _.get(store, 'state.site.slug'),
+      parens = /\(([^)]+)\)/;
+    let includedSites;
+
+    if (value.includes('(')) {
+      includedSites = value.match(parens)[1];
+      if (includedSites.includes(currentSlug)) {
+        // sanitize the name of the component. in schemas, the name of
+        // site-specific components also includes the sites that the component
+        // is available for
+        return value.split('(')[0].trim();
+      }
+    } else {
+      return value;
+    }
+
+  });
+
   exclude = _.get(componentList, 'exclude', '');
 
   return _.remove(filterAvailable(include, exclude), function (component) {
