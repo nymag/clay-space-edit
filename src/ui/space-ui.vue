@@ -307,9 +307,6 @@ export default {
       spaceContent.splice(index, 0, { _ref: id }); // add at the new index
       this.$store.dispatch('saveComponent', { uri: this.spaceRef, data: { content: spaceContent }})
     },
-    /**
-     * TODO: fill in
-     */
     addComponent() {
       var components = findAvailableComponents(this.$store, this.spaceRef);
 
