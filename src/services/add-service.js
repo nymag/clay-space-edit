@@ -19,53 +19,26 @@ export function addToSpace(store, spaceRef, componentName) {
     _components = [{name: logic}],
     embeddedComponent = createComponent([{name:componentName}]);
 
-
-    /*
-      TODO:
-      - use arrow syntax?
-      - remove ref from first-runs
-    */
-
-    embeddedComponent.then(function (res) {
-      var embededComponent = _.last(res),
+  return embeddedComponent.then(function (res) {
+    var embededComponent = _.last(res),
       newSpaceLogicData = {
         embededComponent: {
           data: embededComponent
         }
       };
-      console.log("component:", embededComponent);
-      console.log("newSpaceLogicData:", newSpaceLogicData);
-      debugger;
 
-      return store.dispatch('addComponents', {
-        parentURI: spaceRef,
-        currentURI: lastSpaceLogic,
-        path: 'content',
-        replace: false,
-        components: [
-          {
-            name: logic,
-            data: newSpaceLogicData
-          }
-        ]
-      });
-
+    return store.dispatch('addComponents', {
+      parentURI: spaceRef,
+      currentURI: lastSpaceLogic,
+      path: 'content',
+      replace: false,
+      components: [
+        {
+          name: logic,
+          data: newSpaceLogicData
+        }
+      ]
     });
-    // REFERENCE:
-    // var createdComponent = _.last(store.state.components[spaceRef].content)._ref;
 
-    /*
-      TODO:
-      - create embedded component
-      - dispatch `addComponents` event
-
-    */
-
-  // return store.dispatch('addComponents', {
-  //   parentURI: spaceRef,
-  //   currentURI: lastSpaceLogic,
-  //   path: 'content',
-  //   replace: false,
-  //   components: [{ name: logic }]
-  // });
+  });
 }
