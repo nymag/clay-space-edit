@@ -50,14 +50,14 @@ export default {
       return spaceContent.length
     },
     /**
-     * Test if the button should be displayed or not.
+     * Test if the button should be displayed or not. Makes the assumption that
+     * the all components related to space-logic are prefixed with 'space-logic'
      *
      * @return {Boolean}
      */
     shouldDisplay() {
       const ref = this.$store.state.ui.currentSelection.parentURI;
 
-      // TODO: Decide if we want to make all components called `space-logic-*`
       return _.includes(ref, 'space-logic');
     }
   },

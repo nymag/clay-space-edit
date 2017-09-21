@@ -307,8 +307,16 @@ export default {
       spaceContent.splice(index, 0, { _ref: id }); // add at the new index
       this.$store.dispatch('saveComponent', { uri: this.spaceRef, data: { content: spaceContent }})
     },
+    /**
+    * Add a component to the Space
+    */
     addComponent() {
       var components = findAvailableComponents(this.$store, this.spaceRef);
+
+      if (components.length === 0) {
+        throw new Error(`No components available to add for space:
+          ${spaceRef}`)
+      }
 
       if (components.length > 1) {
         var componentList = map(components, (cmp) => {

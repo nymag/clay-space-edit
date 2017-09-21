@@ -10,9 +10,9 @@ const kilnUtils = window.kiln.utils,
 
 
 /**
- * TODO: Fill in
- * @param  {[type]} spaceRef [description]
- * @return {[type]}          [description]
+ * Return information about the parent space logic
+ * @param  {string} spaceRef reference to the space components
+ * @return {Object}
  */
 export function findSpaceParentUriAndList(spaceRef) {
   var spaceEl = dom.find(`[data-uri="${spaceRef}"]`),
@@ -76,25 +76,6 @@ function getAvailableComponents(store, parentEl, list) {
   exclude = _.get(componentList, 'exclude', '');
 
   return _.remove(filterAvailable(include, exclude), function (component) {
-    return component === references.spaceEdit || !_.startsWith(component, references.spacePrefix);
-  });
-}
-
-/**
- * Return an array of components available in a
- * component list that are not prefixed with `clay-space`,
- * but include the `clay-space-edit` component
- *
- * TODO: Fix this documentation and make this function more generic. Deprecate for above function
- *
- * @param  {Object} parent  The parent component which contains a componentList
- * @return {Array}
- */
-function makeComponentListAttr(parent) {
-  var include = _.get(parent, 'list.include', '') || _.get(parent, 'prop.include', ''),
-    exclude = _.get(parent, 'list.exclude', '') || _.get(parent, 'prop.exclude', '');
-
-  return _.remove(references.availableComponents(include, exclude), function (component) {
     return component === references.spaceEdit || !_.startsWith(component, references.spacePrefix);
   });
 }
@@ -201,7 +182,7 @@ function checkIfLogic(uri) {
 }
 
 /**
- *  Grab the ancesto Space element closes to
+ *  Grab the ancestor Space element closes to
  *  the Logic element passed in.
  *
  * @param  {Object} prefix
@@ -214,7 +195,6 @@ function getSpaceElFromLogic(prefix, logicEl) {
 
 module.exports.componentNameFromURI = componentNameFromURI;
 module.exports.makeComponentListAttr = makeComponentListAttr;
-module.exports.spaceInComponentList = spaceInComponentList;
 module.exports.availableSpaces = availableSpaces;
 module.exports.createFilterableList = createFilterableList;
 module.exports.checkIfSpace = checkIfSpace;
