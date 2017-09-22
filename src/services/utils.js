@@ -194,7 +194,7 @@ function getSpaceElFromLogic(prefix, logicEl) {
 }
 
 module.exports.componentNameFromURI = componentNameFromURI;
-module.exports.makeComponentListAttr = makeComponentListAttr;
+module.exports.spaceInComponentList = spaceInComponentList;
 module.exports.availableSpaces = availableSpaces;
 module.exports.createFilterableList = createFilterableList;
 module.exports.checkIfSpace = checkIfSpace;
