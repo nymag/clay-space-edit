@@ -39,5 +39,6 @@ module.exports = {
   availableComponents: kilnUtils.getAvailableComponents,
   getFromTemplate,
   filterableList: kilnUtils['filterable-list'],
-  site: kilnUtils.site
+  site: kilnUtils.site,
+  getComponentName: kilnUtils.references.getComponentName
 };

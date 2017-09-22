@@ -2,13 +2,6 @@ var dom = require('@nymag/dom'),
   _ = require('lodash'),
   references = require('./references');
 
-
-// TODO: Collapse into global references
-const kilnUtils = window.kiln.utils,
-  getComponentName = kilnUtils.references.getComponentName,
-  filterAvailable = kilnUtils.getAvailableComponents;
-
-
 /**
  * Return information about the parent space logic
  * @param  {string} spaceRef reference to the space components
@@ -49,7 +42,7 @@ function getAvailableComponents(store, parentEl, list) {
     parentUri = parentEl.getAttribute('data-layout-uri');
   }
 
-  parentName = getComponentName(parentUri);
+  parentName = references.getComponentName(parentUri);
 
   componentList = store.state.schemas[parentName][list]._componentList;
   include = _.map(_.get(componentList, 'include', ''), function (value) {
@@ -75,7 +68,7 @@ function getAvailableComponents(store, parentEl, list) {
 
   exclude = _.get(componentList, 'exclude', '');
 
-  return _.remove(filterAvailable(include, exclude), function (component) {
+  return _.remove(references.availableComponents(include, exclude), function (component) {
     return component === references.spaceEdit || !_.startsWith(component, references.spacePrefix);
   });
 }
@@ -163,17 +156,7 @@ function findAllLogic(el) {
 }
 
 /**
- * TODO: Document. Move to references? Let's decide.
- * What harm can ANOTHER closure do?
- * @param  {String} uri
- * @return {String}
- */
-function componentNameFromURI(uri) {
-  return window.kiln.utils.references.getComponentName(uri);
-}
-
-/**
- * TODO: Write this
+ * Check if the component uri is that of a space-logic component
  * @param  {String} uri
  * @return {Boolean}
  */
@@ -193,7 +176,6 @@ function getSpaceElFromLogic(prefix, logicEl) {
   return dom.closest(logicEl, `[data-uri^="${prefix}/components/clay-space"]`);
 }
 
-module.exports.componentNameFromURI = componentNameFromURI;
 module.exports.spaceInComponentList = spaceInComponentList;
 module.exports.availableSpaces = availableSpaces;
 module.exports.createFilterableList = createFilterableList;
