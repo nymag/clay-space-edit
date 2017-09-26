@@ -6,9 +6,10 @@
 
 <script>
 import { get } from 'lodash';
-import { checkIfSpaceEdit, checkIfSpace, spaceInComponentList, componentNameFromURI, checkIfSpaceOrLogic } from '../services/utils';
+import { checkIfSpaceEdit, checkIfSpace, spaceInComponentList, checkIfSpaceOrLogic } from '../services/utils';
 import { createSpace } from '../services/create-service';
 import icon from './icon.vue';
+import { getComponentName } from '../services/references';
 
 export default {
   data() {
@@ -29,7 +30,7 @@ export default {
         return;
       }
 
-      parentComponentName = componentNameFromURI(currentSelection.parentURI);
+      parentComponentName = getComponentName(currentSelection.parentURI);
       componentListName = currentSelection.parentField.path;
 
       return get(this.$store.state.schemas, `[${parentComponentName}][${componentListName}]`);
