@@ -40,5 +40,7 @@ module.exports = {
   getFromTemplate,
   filterableList: kilnUtils['filterable-list'],
   site: kilnUtils.site,
-  getComponentName: kilnUtils.references.getComponentName
+  getComponentName: kilnUtils.references.getComponentName,
+  // TODO: why do I need to refere to `.default`?
+  createComponent: kilnUtils.create.default
 };

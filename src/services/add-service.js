@@ -1,10 +1,7 @@
 import dom from '@nymag/dom';
 import { getAvailableComponents, findSpaceParentUriAndList } from './utils';
 import { findSpaceLogic } from './create-service';
-
-const getComponentName = window.kiln.utils.references.getComponentName,
-  // why do I need to refer to `.default`?
-  createComponent = window.kiln.utils.create.default;
+import { getComponentName, createComponent } from './references';
 
 export function findAvailableComponents(store, spaceRef) {
   const parent = findSpaceParentUriAndList(spaceRef);
