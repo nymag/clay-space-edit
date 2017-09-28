@@ -1,5 +1,5 @@
 import { createComponent } from './references';
-
+import { findSpaceParentUriAndList } from './utils';
 /**
  * Find the component to convert to a Space, find the Spaces available
  * in the parent's component list, figure out which Space needs to be
@@ -84,7 +84,7 @@ function addComponents(store, { currentURI, parentURI, path, replace, components
  * @param {String} ref
  * @param {String} parentRef
  * @param {String} spaceName
- *
+ * @return {Promise} // promise for new space component
  */
 function componentToSpace(store, ref, parentRef, spaceName) {
   const newSpaceLogicData = {
@@ -94,68 +94,37 @@ function componentToSpace(store, ref, parentRef, spaceName) {
         }
       }
     },
+    // create a space logic component with the target component
     newSpaceLogicCmpt = createComponent([{name:'space-logic', data: newSpaceLogicData}]),
-    parentData = _.get(store.state.components, parentRef);
+    // find the area/componentList/etc where the component resides
+    parentData = _.get(store.state.components, parentRef),
+    parentList = findSpaceParentUriAndList(ref).list,
+    parentListData = parentData[parentList];
 
-  // create a space logic
-  newSpaceLogicCmpt
-    //TODO: use arrow syntax?
-    .then(function (res) {
-      return _.last(res);
-    })
+  return newSpaceLogicCmpt
+    .then((res)=>_.last(res))
     .then(function (newSpaceLogic) {
       const newSpaceData = {
-        content: [ {_ref: newSpaceLogic._ref }]
+        content: [
+          newSpaceLogic
+        ]
       };
 
-      return createComponent([{name: spaceName, data: newSpaceData}]);
-    })
-    .then(function (res) {
-      const newSpaceCmpt = _.last(res);
-      // TODO: find path of the parentRef, search through parentData
+      // create space component with the newly created space logic component
       return store.dispatch('addComponents', {
         parentURI: parentRef,
         currentURI: ref,
-        path: 'content', // TODO: find path of the parentRef, search through parentData
+        path: parentList,
         replace: true,
         components: [
           {
             name: spaceName,
-            data: newSpaceCmpt
+            data: newSpaceData
           }
         ]
       });
-      debugger;
     })
     .catch(function (e) {
-      console.log(e);
       throw new Error(`error creating space for ${ref}`);
     });
-
-  // replace selected component with a new space instance
-  // return addComponents(store, {
-  //   currentURI: ref, // so Kiln knows what to replace
-  //   replace: true,
-  //   parentURI: parentRef,
-  //   path: store.state.ui.currentSelection.parentField.path,
-  //   components: [{ name: spaceName }]
-  // })
-  // .then(spaceEl => {
-  //   if (!spaceEl) {
-  //     throw new Error(`error creating space for ${ref}`);
-  //   }
-  //   // add a new instance of the logic to the space
-  //   const spaceRef = spaceEl.dataset.uri,
-  //     logicName = findSpaceLogic(store, spaceName);
-
-  //   return addComponents(store, {
-  //     parentURI: spaceRef,
-  //     path: 'content',
-  //     components: [{ name: logicName, data: {
-  //       component: {
-  //         _ref: ref
-  //       }
-  //     } }],
-  //   });
-  // });
 }
