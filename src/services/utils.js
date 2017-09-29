@@ -45,7 +45,7 @@ function getAvailableComponents(store, parentEl, list) {
   parentName = references.getComponentName(parentUri);
 
   componentList = store.state.schemas[parentName][list]._componentList;
-  include = _.map(_.get(componentList, 'include', ''), function (value) {
+  include = _.filter(_.get(componentList, 'include', ''), function (value) {
     // for site-specific components check that the component is available for
     // the current site
     const currentSlug = _.get(store, 'state.site.slug'),
@@ -54,7 +54,9 @@ function getAvailableComponents(store, parentEl, list) {
 
     if (value.includes('(')) {
       includedSites = value.match(parens)[1];
-      if (includedSites.includes(currentSlug)) {
+
+      // check that the site is included OR not excluded
+      if (includedSites.includes(currentSlug) || !includedSites.includes('not:' + currentSlug)) {
         // sanitize the name of the component. in schemas, the name of
         // site-specific components also includes the sites that the component
         // is available for
