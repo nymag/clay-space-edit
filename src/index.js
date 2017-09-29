@@ -1,3 +1,7 @@
+// Tracking variables
+let activeLogic = undefined,
+  spaceEl;
+
 // Kiln Mutations
 import {
   FOCUS,
@@ -30,10 +34,7 @@ window.kiln.selectorButtons.logicRemoveButton = logicRemoveButton;
 window.kiln.panes['spaces-ui'] = spaceUI;
 window.kiln.panes['add-to-space'] = addToSpace;
 
-/// Main process
-
-// Tracking variables
-var activeLogic = undefined;
+// Main process
 
 window.kiln.plugins = window.kiln.plugins || {};
 window.kiln.plugins['clay-space-edit'] = function spaceEdit(store) {
@@ -51,7 +52,7 @@ window.kiln.plugins['clay-space-edit'] = function spaceEdit(store) {
         case CLOSE_FORM:
           if (activeLogic) {
             // Select the Space element
-            var spaceEl = spaceElFromLogicUri(activeLogic);
+            spaceEl = spaceElFromLogicUri(activeLogic);
 
             // Make sure the component that was active is displayed
             setAttr(dom.find(`[data-uri="${activeLogic}"]`));
