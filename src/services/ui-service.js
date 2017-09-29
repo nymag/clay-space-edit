@@ -40,10 +40,12 @@ export function openUI(store, spaceRef) {
 }
 
 /**
- * TODO: Make work
- * @param  {[type]} store      [description]
- * @param  {[type]} components [description]
- * @return {[type]}            [description]
+ * Opens pane with components available to add to a Space
+ *
+ * @param  {Object} store
+ * @param  {String} spaceRef
+ * @param  {Array} components
+ * @return {Promise}
  */
 export function openAddComponent(store, spaceRef, components) {
   const spaceName = getComponentName(spaceRef),

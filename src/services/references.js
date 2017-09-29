@@ -21,7 +21,6 @@ function getFromTemplate(selector) {
 };
 
 
-// TODO: use ES2015`export`
 module.exports = {
   spaceEdit: 'clay-space-edit',
   spacePrefix: 'clay-space',
@@ -41,6 +40,5 @@ module.exports = {
   filterableList: kilnUtils['filterable-list'],
   site: kilnUtils.site,
   getComponentName: kilnUtils.references.getComponentName,
-  // TODO: why do I need to refere to `.default`?
   createComponent: kilnUtils.create.default
 };
