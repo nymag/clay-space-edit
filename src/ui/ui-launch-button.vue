@@ -45,9 +45,12 @@ export default {
      * @return {Number}
      */
     spaceLogicCount() {
-      const spaceContent = this.$store.state.components[this.spaceParentRef].content;
+      const space = _.get(this.$store.state.components, this.spaceParentRef),
+        spaceContent = _.get(space, 'content');
 
-      return spaceContent.length
+      if (_.has(space,'content')) {
+        return _.get(space, 'content').length;
+      }
     },
     /**
      * Test if the button should be displayed or not. Makes the assumption that

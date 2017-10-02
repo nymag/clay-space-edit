@@ -45,14 +45,13 @@ export function remove(store, spaceRef, logicUri) {
  * @return {Promise}
  */
 export function removeLogic(store, logicUri, itemsLength) {
-  var logicEl, spaceEl;
+  const logicEl = dom.find(`[data-uri="${logicUri}"]`),
+    spaceEl = getSpaceElFromLogic(store.state.site.prefix, logicEl);
+  let removalPromise = remove(store, spaceEl.getAttribute('data-uri'), logicUri);
 
-  if (itemsLength && !itemsLength === 1) {
-    return removeSpace(store, logicUri)
+  if (itemsLength && itemsLength === 1) {
+    removalPromise.then(removeSpace(store, logicUri));
   }
 
-  logicEl = dom.find(`[data-uri="${logicUri}"]`);
-  spaceEl = getSpaceElFromLogic(store.state.site.prefix, logicEl);
-
-  return remove(store, spaceEl.getAttribute('data-uri'), logicUri);
+  return removalPromise;
 }
