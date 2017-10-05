@@ -27,6 +27,7 @@ import { getSpaceElFromLogic } from '../services/utils';
 import dom from '@nymag/dom';
 
 export default {
+  name: 'UiLaunchButton',
   data() {
     return {}
   },

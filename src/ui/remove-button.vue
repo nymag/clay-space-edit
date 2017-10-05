@@ -21,6 +21,7 @@ import { getSpaceElFromLogic } from '../services/utils';
 import { removeLogic } from '../services/remove-service';
 
 export default {
+  name: 'logicRemoveButton',
   data() {
     return {}
   },

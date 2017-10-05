@@ -12,6 +12,7 @@ import icon from './icon.vue';
 import { getComponentName } from '../services/references';
 
 export default {
+  name: 'createSpaceButton',
   data() {
     return {}
   },
