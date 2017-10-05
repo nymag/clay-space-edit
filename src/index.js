@@ -27,7 +27,7 @@ require('./styles/defaults.scss');
 
 // Selector Buttons
 window.kiln.selectorButtons.createSpaceButton = createSpaceButton;
-window.kiln.selectorButtons.UILaunchButton = UiLaunchButton;
+window.kiln.selectorButtons.UiLaunchButton = UILaunchButton;
 window.kiln.selectorButtons.logicRemoveButton = logicRemoveButton;
 
 // Register Kiln Panes
