@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { get } from 'lodash';
+import { get, isUndefined } from 'lodash';
 import { checkIfSpaceEdit, checkIfSpace, spaceInComponentList, checkIfSpaceOrLogic } from '../services/utils';
 import { createSpace } from '../services/create-service';
 import icon from './icon.vue';
@@ -52,13 +52,18 @@ export default {
      * @return {Boolean}
      */
     shouldDisplay() {
-      const ref = this.$store.state.ui.currentSelection.uri;
+      const isSelected = !isUndefined(get(this.$store,'state.ui.currentSelection.uri'));
+      var ref;
+      if (isSelected) {
+        ref = this.$store.state.ui.currentSelection.uri;
 
       // Check to make sure we:
       // 1) Have Spaces available in the component list
       // 2) we're not dealing with the `clay-space-edit` module
       // 3) Check if we're dealing with a Space component
-      return this.availableSpaces.length && !checkIfSpaceEdit(ref) && !checkIfSpace(ref);
+        return this.availableSpaces.length && !checkIfSpaceEdit(ref) && !checkIfSpace(ref);
+      }
+      return false;
     }
   },
   methods: {
