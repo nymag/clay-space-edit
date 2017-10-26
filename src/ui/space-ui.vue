@@ -126,7 +126,6 @@ import { toggle, getActive } from '../services/toggle-service';
 import icon from './icon.vue';
 import allIcons from '../services/icons';
 import dragula from 'dragula';
-import { getComponentName } from '../services/references';
 import { findAvailableComponents, addToSpace } from '../services/add-service';
 
 const MAX_PROPERTIES_FOR_READOUT_LABEL = 2,
@@ -208,7 +207,7 @@ export default {
         components = state.components,
         contents = map(this.items, (item, index) => {
           const logicData = components[item._ref],
-            logicName = utils.references.getComponentName(item._ref),
+            logicName = window.kiln.utils.references.getComponentName(item._ref),
             logicSchema = this.$store.state.schemas[logicName],
             componentLabel = this.componentNameFromLogic(logicData),
             readouts = this.createReadouts(logicData, logicSchema);
@@ -244,7 +243,7 @@ export default {
      * @return {String}
      */
     componentNameFromLogic(logicData) {
-      return utils.label(utils.references.getComponentName(logicData.embededComponent.data._ref));
+      return utils.label(window.kiln.utils.references.getComponentName(logicData.embededComponent.data._ref));
     },
     /**
      * Creates readouts for a component. These are shown in the

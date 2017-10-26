@@ -42,7 +42,7 @@ function getAvailableComponents(store, parentEl, list) {
     parentUri = parentEl.getAttribute('data-layout-uri');
   }
 
-  parentName = references.getComponentName(parentUri);
+  parentName = window.kiln.utils.references.getComponentName(parentUri);
 
   componentList = store.state.schemas[parentName][list]._componentList;
   include = _.filter(_.get(componentList, 'include', ''), function (value) {
@@ -70,7 +70,7 @@ function getAvailableComponents(store, parentEl, list) {
 
   exclude = _.get(componentList, 'exclude', '');
 
-  return _.remove(references.availableComponents(include, exclude), function (component) {
+  return _.remove(window.kiln.utils.getAvailableComponents(include, exclude), function (component) {
     return component === references.spaceEdit || !_.startsWith(component, references.spacePrefix);
   });
 }
@@ -89,7 +89,7 @@ function spaceInComponentList(parent) {
     exclude = _.get(parent, '_componentList.exclude', []);
 
   // Filter out components that are not Space components nor the Edit component
-  return _.filter(references.availableComponents(possibleComponents, exclude), function (item) {
+  return _.filter(window.kiln.utils.getAvailableComponents(possibleComponents, exclude), function (item) {
     return _.startsWith(item, references.spacePrefix) && item !== references.spaceEdit;
   });
 }
@@ -113,7 +113,7 @@ function availableSpaces(el) {
  * @return {Element}
  */
 function createFilterableList(items, callbacks) {
-  return references.filterableList.create(items, callbacks);
+  return window.kiln.utils['filterable-list'].filterableList.create(items, callbacks);
 }
 
 /**
