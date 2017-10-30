@@ -25,6 +25,7 @@ import { openUI } from '../services/ui-service';
 import icon from './icon.vue';
 import { getSpaceElFromLogic } from '../services/utils';
 import dom from '@nymag/dom';
+import { get, isUndefined } from 'lodash';
 
 export default {
   name: 'UiLaunchButton',
@@ -60,9 +61,13 @@ export default {
      * @return {Boolean}
      */
     shouldDisplay() {
-      const ref = this.$store.state.ui.currentSelection.parentURI;
+      const isSelected = !isUndefined(get(this.$store,'state.ui.currentSelection.uri'));
 
-      return _.includes(ref, 'space-logic');
+      var ref;
+      if (isSelected) {
+        ref = this.$store.state.ui.currentSelection.parentURI;
+        return _.includes(ref, 'space-logic');
+      }
     }
   },
   methods: {

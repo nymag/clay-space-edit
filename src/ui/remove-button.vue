@@ -19,6 +19,7 @@ import { checkIfLogic } from '../services/utils';
 import icon from './icon.vue';
 import { getSpaceElFromLogic } from '../services/utils';
 import { removeLogic } from '../services/remove-service';
+import { get, isUndefined } from 'lodash';
 
 export default {
   name: 'logicRemoveButton',
@@ -43,7 +44,11 @@ export default {
      * @return {Boolean}
      */
     shouldDisplay() {
-      return checkIfLogic(this.$store.state.ui.currentSelection.parentURI);
+      const isSelected = !isUndefined(get(this.$store,'state.ui.currentSelection.uri'));
+
+      if (isSelected) {
+        return checkIfLogic(this.$store.state.ui.currentSelection.parentURI);
+      }
     }
   },
   methods: {
