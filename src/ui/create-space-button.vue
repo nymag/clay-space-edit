@@ -30,7 +30,7 @@ export default {
         return;
       }
 
-      parentComponentName = getComponentName(currentSelection.parentURI);
+      parentComponentName = window.kiln.utils.references.getComponentName(currentSelection.parentURI);
       componentListName = currentSelection.parentField.path;
 
       return get(this.$store.state.schemas, `[${parentComponentName}][${componentListName}]`);
