@@ -1,7 +1,7 @@
 <template>
-  <button v-if="shouldDisplay" class="create-space-button" v-on:click="handleClick">
+  <ui-icon-button v-if="shouldDisplay" class="create-space-button" @click.stop="handleClick" :tooltip="`Create Space`">
     <icon name="add-to-space"></icon>
-  </button>
+  </ui-icon-button>
 </template>
 
 <script>
@@ -9,6 +9,7 @@ import { get, isUndefined } from 'lodash';
 import { checkIfSpaceEdit, checkIfSpace, spaceInComponentList, checkIfSpaceOrLogic } from '../services/utils';
 import { createSpace } from '../services/create-service';
 import icon from './icon.vue';
+import { UiIconButton } from 'keen-ui';
 
 export default {
   name: 'createSpaceButton',
@@ -66,7 +67,7 @@ export default {
     }
   },
   methods: {
-    handleClick() {
+    handleClick: function () {
       const store = this.$store,
         {
           uri: ref,
@@ -82,7 +83,8 @@ export default {
     }
   },
   components: {
-    icon
+    icon,
+    UiIconButton
   }
 }
 </script>

@@ -8,9 +8,9 @@
 
 
 <template>
-  <button v-if="shouldDisplay" class="space-remove-button" v-on:click="handleClick">
+  <ui-icon-button v-if="shouldDisplay" @click.stop="handleClick" class="space-remove-button" :tooltip="`Remove Space`">
     <icon name="remove"></icon>
-  </button>
+  </ui-icon-button>
 </template>
 
 <script>
@@ -20,6 +20,7 @@ import icon from './icon.vue';
 import { getSpaceElFromLogic } from '../services/utils';
 import { removeLogic } from '../services/remove-service';
 import { get, isUndefined } from 'lodash';
+import { UiIconButton } from 'keen-ui';
 
 export default {
   name: 'logicRemoveButton',
@@ -59,7 +60,7 @@ export default {
      *
      * @return {Promise} [description]
      */
-    handleClick() {
+    handleClick: function () {
       const logicUri = this.$store.state.ui.currentSelection.parentURI;
 
       removeLogic(this.$store, logicUri, this.spaceContentLength)
@@ -67,7 +68,8 @@ export default {
     }
   },
   components: {
-    icon
+    icon,
+    UiIconButton
   }
 }
 </script>

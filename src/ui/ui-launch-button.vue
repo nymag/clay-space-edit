@@ -14,10 +14,10 @@
 </style>
 
 <template>
-  <button v-if="shouldDisplay" class="launch-ui-button" v-on:click="handleClick">
+  <ui-icon-button v-if="shouldDisplay" class="launch-ui-button" @click.stop="handleClick" :tooltip="`Edit Spaces`">
     <icon name="list-space"></icon>
     <span>{{ spaceLogicCount }}</span>
-  </button>
+  </ui-icon-button>
 </template>
 
 <script>
@@ -25,7 +25,8 @@ import { openUI } from '../services/ui-service';
 import icon from './icon.vue';
 import { getSpaceElFromLogic } from '../services/utils';
 import dom from '@nymag/dom';
-import { get, isUndefined } from 'lodash';
+import { get, isUndefined} from 'lodash';
+import { UiIconButton } from 'keen-ui';
 
 export default {
   name: 'UiLaunchButton',
@@ -78,13 +79,12 @@ export default {
      *
      * @return {Promise} [description]
      */
-    handleClick() {
-      openUI(this.$store, this.spaceParentRef);
-      this.$store.dispatch('unselect');
+    handleClick: function () {
     }
   },
-  components: {
-    icon
-  }
+    components: {
+      icon,
+      UiIconButton
+    }
 }
 </script>
