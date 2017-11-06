@@ -21,20 +21,19 @@ export function spaceElFromLogicUri(uri) {
  * @return {Promise}
  */
 export function openUI(store, spaceRef) {
+
   const spaceName = window.kiln.utils.references.getComponentName(spaceRef),
-    paneOptions = {
-      position: 'center',
+    modalOptions = {
+      title: 'Edit Space',
       size: 'large',
-      content: {
-        component: 'spaces-ui',
+      type: 'spaces-ui',
+      data: {
         spaceRef,
         spaceName
-      },
-      name: 'spaces-ui',
-      title: store.state.schemas[spaceName]._title
+      }
     };
 
-  return store.dispatch('openPane', paneOptions);
+  return store.dispatch('openModal', modalOptions);
 }
 
 /**
@@ -47,17 +46,15 @@ export function openUI(store, spaceRef) {
  */
 export function openAddComponent(store, spaceRef, components) {
   const spaceName = window.kiln.utils.references.getComponentName(spaceRef),
-    paneOptions = {
-      position: 'center',
-      size: 'medium',
-      content: {
-        component: 'add-to-space',
+    modalOptions = {
+      title: 'Add Component to Space',
+      size: 'large',
+      type: 'add-to-space',
+      data: {
         components,
         spaceRef
-      },
-      name: 'add-to-space',
-      title: 'Add Component To Space'
+      }
     };
 
-  return store.dispatch('openPane', paneOptions);
+  return store.dispatch('openModal', modalOptions);
 }
