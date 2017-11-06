@@ -1,5 +1,5 @@
 <template>
-  <ui-icon-button v-if="shouldDisplay" class="create-space-button" @click.stop="handleClick" :tooltip="`Create Space`">
+  <ui-icon-button v-if="shouldDisplay" class="create-space-button" @click.stop="handleClick" :tooltip="`Turn into Space`">
     <icon name="add-to-space"></icon>
   </ui-icon-button>
 </template>
