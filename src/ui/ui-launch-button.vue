@@ -14,7 +14,7 @@
 </style>
 
 <template>
-  <ui-icon-button v-if="shouldDisplay" class="launch-ui-button" @click.stop="handleClick" :tooltip="`Edit Spaces`">
+  <ui-icon-button v-if="shouldDisplay" class="launch-ui-button" @click.stop="handleClick" :tooltip="`Edit Space`">
     <icon name="list-space"></icon>
     <span>{{ spaceLogicCount }}</span>
   </ui-icon-button>
@@ -80,6 +80,8 @@ export default {
      * @return {Promise} [description]
      */
     handleClick: function () {
+      openUI(this.$store, this.spaceParentRef);
+      this.$store.dispatch('unselect');
     }
   },
     components: {

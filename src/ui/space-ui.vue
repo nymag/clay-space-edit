@@ -105,15 +105,11 @@
               </ul>
             </div>
           </button>
-          <button class="listItem-target uiButton" v-on:click="openTarget(item.logicRef)">
-            <icon name="target"></icon>
-          </button>
-          <button class="listItem-remove uiButton" v-on:click="removeFromSpace(item.logicRef)">
-            <icon name="remove"></icon>
-          </button>
+          <ui-icon-button v-on:click="openTarget(item.logicRef)" icon="settings" :tooltip="`Edit Logic`"></ui-icon-button>
+          <ui-icon-button v-on:click="removeFromSpace(item.logicRef)" icon="delete" :tooltip="`Delete Logic`"></ui-icon-button>
         </li>
       </ul>
-      <button type="button" v-on:click="addComponent">Add Component To Space</button>
+      <ui-button buttonType="button" type="secondary" color="accent" icon="add" v-on:click="addComponent">Add Component to Space</ui-button>
     </div>
   </div>
 </template>
@@ -127,6 +123,7 @@ import icon from './icon.vue';
 import allIcons from '../services/icons';
 import dragula from 'dragula';
 import { findAvailableComponents, addToSpace } from '../services/add-service';
+import { UiButton, UiIconButton } from 'keen-ui';
 
 const MAX_PROPERTIES_FOR_READOUT_LABEL = 2,
   utils = window.kiln.utils,
@@ -174,6 +171,7 @@ function addDragula(el, reorder) {
 }
 
 export default {
+  props: ['data'],
   data() {
     return {
       active: null
@@ -181,13 +179,13 @@ export default {
   },
   computed: {
     spaceName() {
-      return this.$store.state.ui.currentPane.content.spaceName;
+      return this.data.spaceName;
     },
     spaceRef() {
-      return this.$store.state.ui.currentPane.content.spaceRef;
+      return this.data.spaceRef;
     },
     items() {
-      return this.$store.state.components[this.spaceRef].content;
+      return this.$store.state.components[this.data.spaceRef].content;
     },
     /**
      * Grab the description from the schema for the space
@@ -243,7 +241,7 @@ export default {
      * @return {String}
      */
     componentNameFromLogic(logicData) {
-      return utils.label(window.kiln.utils.references.getComponentName(logicData.embededComponent.data._ref));
+      return window.kiln.utils.label(window.kiln.utils.references.getComponentName(logicData.embededComponent.data._ref));
     },
     /**
      * Creates readouts for a component. These are shown in the
@@ -289,8 +287,7 @@ export default {
      * @param  {String} uri
      */
     openTarget(uri) {
-      this.$store.dispatch('closePane');
-      this.$store.dispatch('focus', { uri, path: 'settings' });
+      this.$store.dispatch('focus', { uri: uri, path: 'settings' });
     },
     /**
      * Re-order Logics in the Space
@@ -320,8 +317,8 @@ export default {
       if (components.length > 1) {
         var componentList = map(components, (cmp) => {
           return {
-            id: cmp,
-            title: utils.label(cmp)
+            componentName: cmp,
+            title: window.kiln.utils.label(cmp)
           };
         });
 
@@ -332,7 +329,9 @@ export default {
     }
   },
   components: {
-    icon
+    icon,
+    UiButton,
+    UiIconButton
   }
 }
 </script>
