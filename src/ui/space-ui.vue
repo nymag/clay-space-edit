@@ -316,8 +316,10 @@ export default {
 
       if (components.length > 1) {
         var componentList = map(components, (cmp) => {
+          // this list will be passed into the filterable-list component and
+          // requires each item to have an id and title
           return {
-            componentName: cmp,
+            id: cmp,
             title: window.kiln.utils.label(cmp)
           };
         });

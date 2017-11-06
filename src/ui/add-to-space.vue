@@ -11,12 +11,13 @@ import { openUI } from '../services/ui-service';
 import { addToSpace } from '../services/add-service';
 
 export default {
+  props: ['data'],
   data() {
     return {}
   },
   computed: {
     components() {
-      return this.$store.state.ui.currentPane.content.components;
+      return this.data.components;
     }
   },
   methods: {
@@ -26,14 +27,11 @@ export default {
      * @param  {String} value
      */
     itemClick(value) {
-      const spaceRef = this.$store.state.ui.currentPane.content.spaceRef;
+      const spaceRef = this.data.spaceRef;
 
       addToSpace(this.$store, spaceRef, value)
         .then(() => openUI(this.$store, spaceRef));
     }
-  },
-  components: {
-    'filterable-list': window.kiln.panes['filterable-list']
   }
 }
 </script>
