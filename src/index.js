@@ -25,17 +25,18 @@ import { setAttr, initSpaces } from './services/toggle-service';
 // Default styles
 require('./styles/defaults.scss');
 
-// Selector Buttons
+// Register Selector Buttons
+window.kiln.selectorButtons = window.kiln.selectorButtons || {};
 window.kiln.selectorButtons.createSpaceButton = createSpaceButton;
 window.kiln.selectorButtons.UiLaunchButton = UILaunchButton;
 window.kiln.selectorButtons.logicRemoveButton = logicRemoveButton;
 
-// Register Kiln Panes
-window.kiln.panes['spaces-ui'] = spaceUI;
-window.kiln.panes['add-to-space'] = addToSpace;
+// Register Kiln Modals
+window.kiln.modals = window.kiln.modals || {};
+window.kiln.modals['spaces-ui'] = spaceUI;
+window.kiln.modals['add-to-space'] = addToSpace;
 
-// Main process
-
+// Register Plugins
 window.kiln.plugins = window.kiln.plugins || {};
 window.kiln.plugins['clay-space-edit'] = function spaceEdit(store) {
   store.subscribe(function spaceEditHandleMutation(mutation, state) {
