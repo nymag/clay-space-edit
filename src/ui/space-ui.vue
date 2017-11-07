@@ -1,5 +1,6 @@
 <style lang="sass">
   @import '../styles/_mixins';
+  $dragging: #eeeeee;
 
   .spaceUI {
     padding: 17px;
@@ -48,10 +49,6 @@
         align-items: flex-start;
         display: flex;
 
-        &.active {
-          border-bottom: 2px solid #229ed3;
-        }
-
         &-main {
           align-items: center;
           appearance: none;
@@ -73,6 +70,11 @@
           }
         }
       }
+
+      .sortable-chosen {
+        /*blue-grey color from KeenUI material design css*/
+        background-color: $dragging;
+      }
     }
 
     .uiButton {
@@ -87,30 +89,27 @@
       <!-- Description is populated here -->
     </div>
     <div class="spaceUI-readout">
-      <ul class="spaceUI-list" ref="list">
-        <li v-for="(item, index) in spaceContent" class="listItem" :data-item-id="item.logicRef" :class="{ active: item.isActive }">
-          <button class="listItem-main" v-on:click="itemClick(item.logicRef)">
-            <div class="listItem-main-left uiButton" v-if="items.length > 1">
-              <icon name="drag"></icon>
-            </div>
+      <draggable v-model="spaceContent" element="ul" class="spaceUI-list" ref="list">
+        <li class="listItem" v-for="item in spaceContent">
+          <div class="listItem-main">
             <div class="listItem-main-right">
-              <span class="listItem-main-right-name">{{ item.componentLabel }}</span>
+              <span class="listItem-main-right-name">{{item.componentLabel}}</span>
               <ul class="readouts">
-                <li v-for="readout in item.readouts" class="readouts-item">
-                  <div class="readouts-item-icon">
-                    <icon :name="validateReadoutIcon(`icon-${readout.icon}`)"></icon>
-                  </div>
-                  <span class="readout-item-label">{{ readout.label }}</span>
-                </li>
+                 <li v-for="readout in item.readouts" class="readouts-item">
+                    <div class="readouts-item-icon">
+                      <icon :name="validateReadoutIcon(`icon-${readout.icon}`)"></icon>
+                    </div>
+                    <span class="readout-item-label">{{ readout.label }}</span>
+                  </li>
               </ul>
             </div>
-          </button>
+          </div>
           <ui-icon-button v-on:click="openTarget(item.logicRef)" icon="settings" :tooltip="`Edit Logic`"></ui-icon-button>
           <ui-icon-button v-on:click="removeFromSpace(item.logicRef)" icon="delete" :tooltip="`Delete Logic`"></ui-icon-button>
         </li>
-      </ul>
-      <ui-button buttonType="button" type="secondary" color="accent" icon="add" v-on:click="addComponent">Add Component to Space</ui-button>
+      </draggable>
     </div>
+    <ui-button buttonType="button" type="secondary" color="accent" icon="add" @click="addComponent">Add Component to Space</ui-button>
   </div>
 </template>
 
@@ -118,10 +117,10 @@
 import { map, assign, filter, findIndex, compact } from 'lodash';
 import { removeLogic, removeSpace } from '../services/remove-service';
 import { openAddComponent } from '../services/ui-service';
-import { toggle, getActive } from '../services/toggle-service';
+import { toggle } from '../services/toggle-service';
 import icon from './icon.vue';
 import allIcons from '../services/icons';
-import dragula from 'dragula';
+import draggable from 'vuedraggable';
 import { findAvailableComponents, addToSpace } from '../services/add-service';
 import { UiButton, UiIconButton } from 'keen-ui';
 
@@ -130,9 +129,6 @@ const MAX_PROPERTIES_FOR_READOUT_LABEL = 2,
   acceptedIcons = compact(map(allIcons, function (icon, key) {
     return key.indexOf('icon-') === 0 ? key : null;
   }));
-
-// Placeholder for Dragula instance
-var drag;
 
 /**
  * get index of a child element in a container
@@ -144,39 +140,8 @@ function getIndex(el, container) {
   return findIndex(container.children, (child) => child === el);
 }
 
-/**
- * Add Dragula functionality
- *
- * @param {Element} el
- * @param {Function} reorder
- */
-function addDragula(el, reorder) {
-  var oldIndex;
-
-  drag = dragula([el], {
-    direction: 'vertical'
-  });
-
-  drag.on('drag', function (selectedItem, container) {
-    oldIndex = getIndex(selectedItem, container);
-  });
-
-  drag.on('cancel', function () {
-    oldIndex = null;
-  });
-
-  drag.on('drop', function (selectedItem, container) {
-    reorder(selectedItem.getAttribute('data-item-id'), getIndex(selectedItem, container), oldIndex, selectedItem);
-  });
-}
-
 export default {
   props: ['data'],
-  data() {
-    return {
-      active: null
-    };
-  },
   computed: {
     spaceName() {
       return this.data.spaceName;
@@ -200,41 +165,38 @@ export default {
      *
      * @return {Array}
      */
-    spaceContent() {
-      const { state } = this.$store,
-        components = state.components,
-        contents = map(this.items, (item, index) => {
-          const logicData = components[item._ref],
-            logicName = window.kiln.utils.references.getComponentName(item._ref),
-            logicSchema = this.$store.state.schemas[logicName],
-            componentLabel = this.componentNameFromLogic(logicData),
-            readouts = this.createReadouts(logicData, logicSchema);
+    spaceContent: {
+      get() {
+        const { state } = this.$store,
+          components = state.components,
+          contents = map(this.items, (item, index) => {
+            const logicData = components[item._ref],
+              logicName = window.kiln.utils.references.getComponentName(item._ref),
+              logicSchema = this.$store.state.schemas[logicName],
+              componentLabel = this.componentNameFromLogic(logicData),
+              readouts = this.createReadouts(logicData, logicSchema);
 
           return {
             logicData,
             logicRef: item._ref,
-            isActive: this.active === item._ref,
             componentLabel,
             readouts
           };
         });
 
       return contents;
-    }
-  },
-  created() {
-    this.active = getActive(this.$store, this.spaceRef);
-  },
-  mounted() {
-    // Add dragula
-    if (this.items.length > 1) {
-      addDragula(this.$refs.list, this.onReorder);
+      },
+      set(reordered) {
+        // spaceContent is computed from the Space component's content and if we want to
+        // save the clay space, we need to do some data munging
+        const reorderedSpaceContent = map(reordered, (item) => {
+          return { _ref: item.logicRef};
+        })
+        this.$store.dispatch('saveComponent', { uri: this.spaceRef, data: { content: reorderedSpaceContent }});
+      }
     }
   },
   methods: {
-    itemClick(logicRef) {
-      this.active = toggle(this.active, logicRef);
-    },
     /**
      * Pretty format a component's name
      * @param  {String} item
@@ -253,6 +215,7 @@ export default {
      * @return {Array<Object<String, String>>} {label, icon} for each target
      *
      */
+
     createReadouts(logicData, logicSchema) {
       const targets = logicSchema['_targeting'] || [];
 
@@ -290,20 +253,6 @@ export default {
       this.$store.dispatch('focus', { uri: uri, path: 'settings' });
     },
     /**
-     * Re-order Logics in the Space
-     *
-     * @param  {String} id
-     * @param  {Number} index
-     * @param  {Number} oldIndex
-     */
-    onReorder(id, index, oldIndex) {
-      var spaceContent = _.cloneDeep(this.items);
-
-      spaceContent.splice(oldIndex, 1); // remove at the old index
-      spaceContent.splice(index, 0, { _ref: id }); // add at the new index
-      this.$store.dispatch('saveComponent', { uri: this.spaceRef, data: { content: spaceContent }})
-    },
-    /**
     * Add a component to the Space
     */
     addComponent() {
@@ -331,6 +280,7 @@ export default {
     }
   },
   components: {
+    draggable,
     icon,
     UiButton,
     UiIconButton

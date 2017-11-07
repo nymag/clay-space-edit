@@ -57,6 +57,7 @@
     "keen-ui": "^1.0.1",
     "null-loader": "^0.1.1",
     "raw-loader": "^0.5.1",
-    "tape": "^4.6.3"
+    "tape": "^4.6.3",
+    "vuedraggable": "^2.15.0"
   }
 }
