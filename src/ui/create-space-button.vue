@@ -1,3 +1,11 @@
+<style lang="sass">
+  @import '../styles/_mixins';
+
+  .create-space-button {
+    @include button();
+  }
+</style>
+
 <template>
   <ui-icon-button v-if="shouldDisplay" class="create-space-button" @click.stop="handleClick" :tooltip="`Turn into Space`">
     <icon name="add-to-space"></icon>
