@@ -104,8 +104,8 @@
               </ul>
             </div>
           </div>
-          <ui-icon-button v-on:click="openTarget(item.logicRef)" icon="settings" :tooltip="`Edit Logic`"></ui-icon-button>
-          <ui-icon-button v-on:click="removeFromSpace(item.logicRef)" icon="delete" :tooltip="`Delete Logic`"></ui-icon-button>
+          <ui-icon-button @click.stop="openTarget(item.logicRef)" icon="settings" :tooltip="`Edit Logic`"></ui-icon-button>
+          <ui-icon-button @click.stop="removeFromSpace(item.logicRef)" icon="delete" :tooltip="`Delete Logic`"></ui-icon-button>
         </li>
       </draggable>
     </div>
@@ -250,7 +250,10 @@ export default {
      * @param  {String} uri
      */
     openTarget(uri) {
-      this.$store.dispatch('focus', { uri: uri, path: 'settings' });
+      const store = this.$store;
+
+      return this.$store.dispatch('closeModal')
+        .then(() => store.dispatch('focus', { uri, path: 'settings' }));
     },
     /**
     * Add a component to the Space
