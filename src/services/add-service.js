@@ -16,11 +16,9 @@ export function addToSpace(store, spaceRef, componentName) {
     embeddedComponent = window.kiln.utils.create.default([{name:componentName}]);
 
   return embeddedComponent.then(function (res) {
-    var embededComponent = _.last(res),
+    var embeddedComponent = _.last(res),
       newSpaceLogicData = {
-        embededComponent: {
-          data: embededComponent
-        }
+        embeddedComponent: embeddedComponent
       };
 
     return store.dispatch('addComponents', {

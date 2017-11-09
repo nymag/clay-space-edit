@@ -203,7 +203,7 @@ export default {
      * @return {String}
      */
     componentNameFromLogic(logicData) {
-      return window.kiln.utils.label(window.kiln.utils.references.getComponentName(logicData.embededComponent.data._ref));
+      return window.kiln.utils.label(window.kiln.utils.references.getComponentName(logicData.embeddedComponent._ref));
     },
     /**
      * Creates readouts for a component. These are shown in the

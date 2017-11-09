@@ -87,10 +87,8 @@ function addComponents(store, { currentURI, parentURI, path, replace, components
  */
 function componentToSpace(store, ref, parentRef, spaceName) {
   const newSpaceLogicData = {
-      embededComponent: {
-        data: {
-          _ref: ref
-        }
+      embeddedComponent: {
+        _ref: ref
       }
     },
     // create a space logic component with the target component
