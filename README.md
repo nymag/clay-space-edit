@@ -9,7 +9,7 @@ All the information you need for setting up a Space can be found in [the wiki of
 
 ## Developing Clay-Space-Edit
 
-- Get coding, first time: `nvm use && yarn install && npm run watch`
+- Get coding, first time: `nvm use && npm install && npm run watch`
 - Next time: `nvm use && npm run watch`
 - Use [npm link](https://docs.npmjs.com/cli/link) to run your Clay implementation against your dev build of Clay-Space-Edit.
 - To test and lint, do `npm test`
