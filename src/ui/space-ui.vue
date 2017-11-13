@@ -17,16 +17,11 @@
       padding-left: 4px;
       margin: 8px 0 4px;
       font-size: 12px;
-      display: flex;
-
-      > .readouts-item + .readouts-item {
-        margin-left: 8px;
-      }
-
 
       .readouts-item {
         align-items: center;
         display: flex;
+        margin-bottom: 2px;
       }
 
       .readouts-item-icon {
@@ -99,13 +94,13 @@
                     <div class="readouts-item-icon">
                       <icon :name="validateReadoutIcon(`icon-${readout.icon}`)"></icon>
                     </div>
-                    <span class="readout-item-label">{{ readout.label }}</span>
+                    <span class="readout-item-label">{{ readout.label }}:</span> {{readout.value}}
                   </li>
               </ul>
             </div>
           </div>
-          <ui-icon-button @click.stop="openTarget(item.logicRef)" icon="settings" :tooltip="`Edit Logic`"></ui-icon-button>
-          <ui-icon-button @click.stop="removeFromSpace(item.logicRef)" icon="delete" :tooltip="`Delete Logic`"></ui-icon-button>
+          <ui-icon-button @click.stop="openTarget(item.logicRef)" icon="settings" :tooltip="`Edit Logic`" color="clear"></ui-icon-button>
+          <ui-icon-button @click.stop="removeFromSpace(item.logicRef)" icon="delete" :tooltip="`Delete Logic`" color="clear"></ui-icon-button>
         </li>
       </draggable>
     </div>
@@ -114,7 +109,7 @@
 </template>
 
 <script>
-import { map, assign, filter, findIndex, compact } from 'lodash';
+import { map, filter, find, findIndex, compact, get, has, set } from 'lodash';
 import { removeLogic, removeSpace } from '../services/remove-service';
 import { openAddComponent } from '../services/ui-service';
 import { toggle } from '../services/toggle-service';
@@ -138,6 +133,19 @@ const MAX_PROPERTIES_FOR_READOUT_LABEL = 2,
  */
 function getIndex(el, container) {
   return findIndex(container.children, (child) => child === el);
+}
+
+/**
+ * map property name to an icon
+ * @param {string} propName
+ * @returns {string}
+ */
+function getIcon(propName) {
+  const availableIcons = ['time', 'tag'];
+
+  return find(availableIcons, function(icon) {
+    return propName.toLowerCase().includes(icon);
+  }) || '';
 }
 
 export default {
@@ -217,11 +225,32 @@ export default {
      */
 
     createReadouts(logicData, logicSchema) {
-      const targets = logicSchema['_targeting'] || [];
+      // assumes all the readouts we'd want are set in the 'settings' group in
+      // the schema
+      const logicProps = get(logicSchema._groups.settings, 'fields'),
+      readoutProps = filter(logicProps, function (val) {
+        // remove undefined properties and properties that have Action in their
+        // name
+        return !!logicData[val] && !val.includes('Action');
+      }),
+      // if the prop has an associated Action property, create the appropiate
+      // readout label
+      readouts = map(readoutProps, function (val) {
+        let actionProp = val + 'Action',
+          label = val;
 
-      return compact(map(targets, function ({ icon, property }) {
-        return logicData[property] ? { icon, label: logicData[property] } : null
-      }));
+        if (has(logicSchema, actionProp)) {
+          label = logicData[actionProp] + ' ' + val;
+        }
+
+        return {
+          label: label,
+          value: logicData[val],
+          icon: getIcon(val)
+        };
+      });
+
+      return readouts;
     },
     /**
      * Validate that the icon requested is available.
@@ -233,7 +262,8 @@ export default {
       if (acceptedIcons.indexOf(iconName) > -1) {
         return iconName;
       } else {
-        console.error(`Clay Space Logic: icon ${iconName} not found, no icon will be displayed`);
+        console.warn(`Clay Space Logic: icon ${iconName} not found, no icon will be displayed`);
+
       }
     },
     /**
