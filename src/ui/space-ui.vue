@@ -120,20 +120,9 @@ import { findAvailableComponents, addToSpace } from '../services/add-service';
 import { UiButton, UiIconButton } from 'keen-ui';
 
 const MAX_PROPERTIES_FOR_READOUT_LABEL = 2,
-  utils = window.kiln.utils,
   acceptedIcons = compact(map(allIcons, function (icon, key) {
     return key.indexOf('icon-') === 0 ? key : null;
   }));
-
-/**
- * get index of a child element in a container
- * @param {Element} el
- * @param {Element} container
- * @returns {number}
- */
-function getIndex(el, container) {
-  return findIndex(container.children, (child) => child === el);
-}
 
 /**
  * map property name to an icon
