@@ -51,8 +51,6 @@
     "wrap-iife": 2,
     // strict mode
     "strict": [2, "never"],
-    // variables
-    "no-unused-vars": 2,
     // node.js
     "handle-callback-err": [2, "^.*(e|E)rr"],
     "no-mixed-requires": 0,

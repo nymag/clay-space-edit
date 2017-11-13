@@ -1,78 +1,57 @@
-var dom = require('@nymag/dom'),
-  utils = require('./utils'),
-  _ = require('lodash'),
-  references = require('references'),
-  statusService = require('./status-service');
+import dom from '@nymag/dom';
+import { filter } from 'lodash';
+import { getSpaceElFromLogic } from './utils';
 
 /**
- * [removeLogic description]
- * @param  {[type]} ref    [description]
- * @param  {[type]} parent [description]
- * @return {[type]}        [description]
- */
-function removeLogic(ref, parent) {
-  var targetEl = dom.find(parent, '[data-uri="' + ref + '"]'),
-    removeOpts = {
-      el: targetEl,
-      ref: ref,
-      parentField: 'content',
-      parentRef: parent.getAttribute('data-uri')
-    };
-
-  return references.edit.removeFromParentList(removeOpts);
-}
-
-/**
- * [removeSpace description]
- * @param {Element} space
- * @param {Object} parent
+ * Given a Logic URI, remove the Space
+ * in which it resides.
+ *
+ * @param  {Object} store
+ * @param  {String} logicUri
  * @return {Promise}
  */
-function removeSpace(space, parent) {
-  var removeOpts = {
-    el: space,
-    ref: space.getAttribute('data-uri'),
-    parentField: parent.path,
-    parentRef: parent.ref
-  };
+export function removeSpace(store, logicUri) {
+  const logicEl = dom.find(`[data-uri="${logicUri}"]`),
+    spaceEl = getSpaceElFromLogic(store.state.site.prefix, logicEl);
 
-  return references.edit.removeFromParentList(removeOpts);
+  return store.dispatch('removeComponent', spaceEl);
 }
 
-
 /**
- * [removeIconClick description]
- * @param {Element} logic
+ * Given a Space URI and a Logic URI, remove the
+ * Logic URI from the Space.
+ *
+ * @param  {Object} store
+ * @param  {String} spaceRef
+ * @param  {String} logicUri
+ * @return {Promise}
  */
-function removeIconClick(logic) {
-  var logicRef = logic.getAttribute('data-uri'),
-    index = _.findIndex(this.childrenLogics, function (logicComponent) {
-      return logicRef === logicComponent.getAttribute('data-uri');
+export function remove(store, spaceRef, logicUri) {
+  var spaceContent = store.state.components[spaceRef].content,
+    filteredSpace = filter(spaceContent, (item) => {
+      return item._ref !== logicUri;
     });
 
-  removeLogic(logicRef, logic.parentElement)
-    .then(findNextActive.bind(this, index));
+  return store.dispatch('saveComponent', { uri: spaceRef, data: { content: filteredSpace }});
 }
 
 /**
- * [findNextActive description]
- * @param  {[type]} index [description]
+ * Given the URI for a Logic component, find the parent Space
+ * and remove the Logic
+ *
+ * @param  {Object}  store
+ * @param  {String}  logicUri
+ * @param  {Number}  itemsLength
+ * @return {Promise}
  */
-function findNextActive(index) {
-  this.childrenLogics = utils.findAllLogic(this.el);
-  this.findLogicCount();
+export function removeLogic(store, logicUri, itemsLength) {
+  const logicEl = dom.find(`[data-uri="${logicUri}"]`),
+    spaceEl = getSpaceElFromLogic(store.state.site.prefix, logicEl);
+  let removalPromise = remove(store, spaceEl.getAttribute('data-uri'), logicUri);
 
-  if (this.childrenLogics[index]) {
-    statusService.setEditing(this.childrenLogics[index]);
-  } else if (this.childrenLogics[index - 1]) {
-    statusService.setEditing(this.childrenLogics[index - 1]);
-  } else {
-    if (window.confirm('You are removing the last component in this Space, this will remove the Space entirely from the page, is this ok?')) {
-      removeSpace(this.el, this.parent);
-    }
+  if (itemsLength && itemsLength === 1) {
+    removalPromise.then(removeSpace(store, logicUri));
   }
-}
 
-module.exports.removeLogic = removeLogic;
-module.exports.removeSpace = removeSpace;
-module.exports.removeIconClick = removeIconClick;
+  return removalPromise;
+}
