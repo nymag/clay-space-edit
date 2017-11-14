@@ -45,7 +45,7 @@ export default {
       return get(this.$store.state.schemas, `[${parentComponentName}][${componentListName}]`);
     },
     /**
-     * Gran the available Spaces. Availability determined by the presence
+     * Grab the available Spaces. Availability determined by the presence
      * of a component beginning with `clay-space` in the schema for the
      * component
      *
@@ -67,9 +67,10 @@ export default {
 
       // Check to make sure we:
       // 1) Have Spaces available in the component list
-      // 2) we're not dealing with the `clay-space-edit` module
-      // 3) Check if we're dealing with a Space component
-        return this.availableSpaces.length && !checkIfSpaceEdit(ref) && !checkIfSpace(ref);
+      // 2) We're not dealing with the `clay-space-edit` module
+      // 3) We're not dealing with a space component (we don't want to create a
+      //    nested Space)
+      return this.availableSpaces.length && !checkIfSpaceEdit(ref) && !checkIfSpace(ref);
       }
       return false;
     }

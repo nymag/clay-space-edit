@@ -76,7 +76,7 @@ function addComponents(store, { currentURI, parentURI, path, replace, components
 }
 
 /**
- * Create a componenet wrapped in a Logic which is inside of a
+ * Create a component wrapped in a Logic which is inside of a
  * component list in a Space
  *
  * @param {Object} store
