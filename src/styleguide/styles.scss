@@ -1,0 +1,76 @@
+$UI_PRIMARY: #B4A5BC;
+$UI_BUTTON: #694C79;
+
+[data-space] > .component-selector,
+[data-logic] > .component-selector,
+[data-space] > [data-logic] {
+  display: none;
+}
+
+[data-space] > [data-logic-editing]  {
+  display: block;
+}
+
+.filtered-item-title-sub {
+  font-size: 10px;
+  font-style: italic;
+}
+
+.space-create {
+  border-left: 1px solid $UI_PRIMARY;
+}
+
+.logic-count {
+  position: absolute;
+}
+
+.space-browse {
+  border-left: 1px solid $UI_PRIMARY;
+  position: relative;
+
+  .logic-count {
+    bottom: 13px;
+    right: 7px;
+  }
+}
+
+
+// Readouts inside the logic browse pane
+.filtered-list-button {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  flex: 0 0 auto;
+  margin-left: 10px;
+  outline: none;
+  padding: 0;
+  position: relative;
+
+  .logic-count {
+    bottom: -5px;
+    right: -8px;
+  }
+}
+
+.filtered-item-title-logic-readout {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+.logic-group {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: 8px;
+
+  & svg {
+    height: 12px;
+    vertical-align: text-top;
+    width: 12px;
+  }
+
+  & > .readout-icon {
+    margin-right: 5px;
+  }
+}
