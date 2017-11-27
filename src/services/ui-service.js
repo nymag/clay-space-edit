@@ -45,16 +45,15 @@ export function openUI(store, spaceRef) {
  * @return {Promise}
  */
 export function openAddComponent(store, spaceRef, components) {
-  const spaceName = window.kiln.utils.references.getComponentName(spaceRef),
-    modalOptions = {
-      title: 'Add Component to Space',
-      size: 'large',
-      type: 'add-to-space',
-      data: {
-        components,
-        spaceRef
-      }
-    };
+  const modalOptions = {
+    title: 'Add Component to Space',
+    size: 'large',
+    type: 'add-to-space',
+    data: {
+      components,
+      spaceRef
+    }
+  };
 
   return store.dispatch('openModal', modalOptions);
 }

@@ -1,5 +1,5 @@
 import dom from '@nymag/dom';
-import { map, forEach } from 'lodash';
+import { forEach } from 'lodash';
 
 const activeAttr = 'data-logic-active';
 
@@ -10,11 +10,12 @@ const activeAttr = 'data-logic-active';
  * @param  {Object} store
  */
 export function initSpaces(store) {
-  var allSpaces = Array.from(dom.findAll(`[data-uri*="clay-space"]`));
+  var allSpaces = Array.from(dom.findAll('[data-uri*="clay-space"]')),
+    activeUri;
 
   forEach(allSpaces, function (space) {
     if (!space.classList.contains('clay-space-edit')) {
-      var activeUri = getActive(store, space.getAttribute('data-uri'), space);
+      activeUri = getActive(store, space.getAttribute('data-uri'), space);
 
       setAttr(dom.find(`[data-uri="${activeUri}"]`));
     }

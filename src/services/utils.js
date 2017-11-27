@@ -30,7 +30,7 @@ export function findSpaceParentUriAndList(spaceRef) {
  * a component's uri and a list from that component's schema.
  *
  * @param  {Object}  store
- * @param  {Element} parentUri
+ * @param  {Element} parentEl
  * @param  {String}  list
  * @return {Array}
  */
@@ -144,17 +144,6 @@ function checkIfSpaceOrLogic(ref) {
  */
 function checkIfSpaceEdit(ref) {
   return _.includes(ref, references.spaceEdit);
-}
-
-/**
- * Return an array of all components with the
- * `data-logic` attribute
- *
- * @param  {Element} el
- * @return {Array}
- */
-function findAllLogic(el) {
-  return dom.findAll(el, '[data-logic]');
 }
 
 /**
