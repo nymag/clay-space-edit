@@ -17,7 +17,8 @@ import { get, isUndefined } from 'lodash';
 import { checkIfSpaceEdit, checkIfSpace, spaceInComponentList, checkIfSpaceOrLogic } from '../services/utils';
 import { createSpace } from '../services/create-service';
 import icon from './icon.vue';
-import { UiIconButton } from 'keen-ui';
+
+const UiIconButton = window.kiln.utils.components.UiIconButton;
 
 export default {
   name: 'createSpaceButton',

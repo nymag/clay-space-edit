@@ -19,7 +19,8 @@ import icon from './icon.vue';
 import { getSpaceElFromLogic } from '../services/utils';
 import { removeLogic } from '../services/remove-service';
 import { get, isUndefined } from 'lodash';
-import { UiIconButton } from 'keen-ui';
+
+const UiIconButton = window.kiln.utils.components.UiIconButton;
 
 export default {
   name: 'logicRemoveButton',

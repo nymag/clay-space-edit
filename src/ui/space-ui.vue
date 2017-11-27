@@ -117,7 +117,10 @@ import icon from './icon.vue';
 import allIcons from '../services/icons';
 import draggable from 'vuedraggable';
 import { findAvailableComponents, addToSpace } from '../services/add-service';
-import { UiButton, UiIconButton } from 'keen-ui';
+
+const UiButton = window.kiln.utils.components.UiButton,
+  UiIconButton = window.kiln.utils.components.UiIconButton;
+
 
 const MAX_PROPERTIES_FOR_READOUT_LABEL = 2,
   acceptedIcons = compact(map(allIcons, function (icon, key) {
