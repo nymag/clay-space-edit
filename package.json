@@ -12,6 +12,9 @@
     "watch": "NODE_ENV=development webpack -w -d",
     "prepublish": "NODE_ENV=production webpack -p"
   },
+  "pre-push": [
+    "lint"
+  ],
   "keywords": [
     "clay",
     "space",
