@@ -49,8 +49,7 @@ export default {
      * @return {Number}
      */
     spaceLogicCount() {
-      const space = _.get(this.$store.state.components, this.spaceParentRef),
-        spaceContent = _.get(space, 'content');
+      const space = _.get(this.$store.state.components, this.spaceParentRef);
 
       if (_.has(space,'content')) {
         return _.get(space, 'content').length;
@@ -64,7 +63,6 @@ export default {
      */
     shouldDisplay() {
       const isSelected = !isUndefined(get(this.$store,'state.ui.currentSelection.uri'));
-
       var ref;
       if (isSelected) {
         ref = this.$store.state.ui.currentSelection.parentURI;
