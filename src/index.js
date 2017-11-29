@@ -74,7 +74,7 @@ window.kiln.plugins['clay-space-edit'] = function spaceEdit(store) {
           window.kiln.modals['add-to-space'] = addToSpace;
 
           // We need to init every Space once Kiln is loaded.
-          console.log("loading Clay Space Edit (v. 1.0.5-0) for:", state.site.prefix);
+          console.log("loading Clay Space Edit (v. 1.0.6-0) for:", state.site.prefix);
           initSpaces(store);
         default:
           return;

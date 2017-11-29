@@ -10,23 +10,16 @@ const activeAttr = 'data-logic-active';
  * @param  {Object} store
  */
 export function initSpaces(store) {
-  var possibleSpaces = Array.from(dom.findAll('[data-uri*="clay-space"]')),
-    allSpaces,
+  var allSpaces = Array.from(dom.findAll('[data-uri*="components/clay-space"]')),
     activeUri;
 
-  console.log('Possible spaces on page:', possibleSpaces);
-
-  allSpaces = filter(possibleSpaces, function (el) {
-    // if the element is the HTML element or is the clay-space-edit component
-    // then it is not a valid clay-space-component
-    return el.tagName !== 'HTML' && !el.classList.contains('clay-space-edit');
-  });
-
-  console.log('All Spaces:', allSpaces);
+  console.log('Possible spaces on page:', allSpaces);
 
   forEach(allSpaces, function (space) {
-    activeUri = getActive(store, space.getAttribute('data-uri'), space);
-    setAttr(dom.find(`[data-uri="${activeUri}"]`));
+    if (!space.classList.contains('clay-space-edit')) {
+      activeUri = getActive(store, space.getAttribute('data-uri'), space);
+      setAttr(dom.find(`[data-uri="${activeUri}"]`));
+    }
   });
 }
 
