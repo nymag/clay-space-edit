@@ -41,9 +41,6 @@ export default {
      * @return {String}
      */
     spaceParentRef() {
-      console.log('getting spaceParentRef');
-      console.log('site prefix:', this.$store.state.site.prefix);
-      console.log('sitecurrentSelection:', this.$store.state.ui.currentSelection.el);
       return getSpaceElFromLogic(this.$store.state.site.prefix, this.$store.state.ui.currentSelection.el).getAttribute('data-uri');
     },
     /**
