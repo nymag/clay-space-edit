@@ -39,7 +39,7 @@ window.kiln.modals['add-to-space'] = addToSpace;
 // Register Plugins
 window.kiln.plugins = window.kiln.plugins || {};
 window.kiln.plugins['clay-space-edit'] = function spaceEdit(store) {
-  store.subscribe(function spaceEditHandleMutation(mutation, state) {
+  store.subscribe(function spaceEditHandleMutation(mutation) {
     // wrap in a `try` so the UI doesn't stop working entirely
     // if the DOM scraping below doesn't work
     try {
