@@ -54,8 +54,10 @@ export default {
     spaceLogicCount() {
       const space = _.get(this.$store.state.components, this.spaceParentRef);
 
-      if (_.has(space,'content')) {
+      if (!isUndefined(space) && _.has(space,'content')) {
         return _.get(space, 'content').length;
+      } else {
+        return 0;
       }
     },
     /**
