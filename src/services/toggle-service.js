@@ -13,10 +13,11 @@ export function initSpaces(store) {
   var allSpaces = Array.from(dom.findAll('[data-uri*="clay-space"]')),
     activeUri;
 
+  console.log('Possible spaces on page:', allSpaces);
+
   forEach(allSpaces, function (space) {
     if (!space.classList.contains('clay-space-edit')) {
       activeUri = getActive(store, space.getAttribute('data-uri'), space);
-
       setAttr(dom.find(`[data-uri="${activeUri}"]`));
     }
   });
@@ -39,6 +40,8 @@ export function getActive({ state: { components } }, spaceRef, spaceEl) {
     activeUri = $firstActive.shift().getAttribute('data-uri');
     forEach($firstActive, removeAttr);
   } else {
+    console.log('Setting active spaceRef:',spaceRef);
+    console.log('Component data for spaceRef:', components[spaceRef]);
     activeUri = components[spaceRef].content[0]._ref;
   }
 
