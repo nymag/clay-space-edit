@@ -85,7 +85,7 @@
     </div>
     <div class="spaceUI-readout">
       <draggable v-model="spaceContent" element="ul" class="spaceUI-list" ref="list">
-        <li class="listItem" v-for="item in spaceContent" icon="settings">
+        <li class="listItem" v-for="item in spaceContent" icon="settings" @click.stop="setActiveLogic(item)">
           <div class="listItem-main">
             <div class="listItem-main-right">
               <ui-icon icon="sort"></ui-icon>
@@ -113,7 +113,7 @@
 import { map, filter, find, findIndex, compact, get, has, set } from 'lodash';
 import { removeLogic, removeSpace } from '../services/remove-service';
 import { openAddComponent } from '../services/ui-service';
-import { getActive, setAttr, toggle } from '../services/toggle-service';
+import { getActive, setAttr, removeAttr } from '../services/toggle-service';
 import { findAvailableComponents, addToSpace } from '../services/add-service';
 import icon from './icon.vue';
 import allIcons from '../services/icons';
@@ -313,6 +313,15 @@ export default {
       } else {
         addToSpace(this.$store, this.spaceRef, components[0])
       }
+    },
+    setActiveLogic(logic) {
+      // set the target logic to active so that the user can edit it
+      const currentActive = document.querySelector(`[data-uri="${this.spaceRef}"] > [data-logic-active]`);
+
+      removeAttr(currentActive);
+      setAttr(logic.logicRef);
+
+      this.$store.dispatch('closeModal');
     }
   },
   components: {

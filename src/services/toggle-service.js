@@ -49,7 +49,7 @@ export function getActive({ state: { components } }, spaceRef, spaceEl) {
  *
  * @param  {Element} $el
  */
-function removeAttr($el) {
+export function removeAttr($el) {
   $el.removeAttribute(activeAttr);
 }
 
@@ -73,12 +73,11 @@ export function setAttr(ref) {
  * @return {String}
  */
 export function toggle(currentActive, targetLogic) {
-  var currentActive = dom.find(`[data-uri="${currentActive}"]`),
-    targetActive = dom.find(`[data-uri="${targetLogic}"]`);
+  var currentActive = dom.find(`[data-uri="${currentActive}"]`);
 
   // toggle attr in DOM
   removeAttr(currentActive);
-  setAttr(targetActive);
+  setAttr(targetLogic);
 
   return targetLogic;
 }

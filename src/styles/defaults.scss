@@ -6,7 +6,3 @@
 [data-uri*="clay-space"] > [data-logic-active] {
   display: block;
 }
-
-[data-uri*="clay-space"] > [data-logic-active] ~ [data-logic-active] {
-  display: none;
-}
