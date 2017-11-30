@@ -56,7 +56,7 @@ window.kiln.plugins['clay-space-edit'] = function spaceEdit(store) {
             spaceEl = spaceElFromLogicUri(activeLogic);
 
             // Make sure the component that was active is displayed
-            setAttr(dom.find(`[data-uri="${activeLogic}"]`));
+            setAttr(activeLogic);
 
             // Open the UI pane
             openUI(store, spaceEl.getAttribute('data-uri'));
