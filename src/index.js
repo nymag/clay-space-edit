@@ -9,7 +9,6 @@ import {
   LOADING_SUCCESS
 } from './mutationTypes';
 import { includes } from 'lodash';
-import dom from '@nymag/dom';
 
 // Vue Components
 import createSpaceButton from './ui/create-space-button.vue';

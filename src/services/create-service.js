@@ -57,25 +57,6 @@ export function findSpaceLogic(store, space) {
 }
 
 /**
- * thin wrapper around Kiln Vuex API
- * for `addComponents` action
- *
- * @param {Object} store
- * @param {Object} addComponentsPayload // see Kiln docs
- * @return {Promise} // promise for new component DOM element
- *
- */
-function addComponents(store, { currentURI, parentURI, path, replace, components }) {
-  return store.dispatch('addComponents', {
-    currentURI,
-    parentURI,
-    path,
-    components,
-    replace
-  });
-}
-
-/**
  * Create a component wrapped in a Logic which is inside of a
  * component list in a Space
  *
@@ -94,9 +75,7 @@ function componentToSpace(store, ref, parentRef, spaceName) {
     // create a space logic component with the target component
     newSpaceLogicCmpt = window.kiln.utils.create.default([{name:'space-logic', data: newSpaceLogicData}]),
     // find the area/componentList/etc where the component resides
-    parentData = _.get(store.state.components, parentRef),
-    parentList = findSpaceParentUriAndList(ref).list,
-    parentListData = parentData[parentList];
+    parentList = findSpaceParentUriAndList(ref).list;
 
   return newSpaceLogicCmpt
     .then((res)=>_.last(res))
@@ -121,7 +100,7 @@ function componentToSpace(store, ref, parentRef, spaceName) {
         ]
       });
     })
-    .catch(function (e) {
+    .catch(function () {
       throw new Error(`error creating space for ${ref}`);
     });
 }
