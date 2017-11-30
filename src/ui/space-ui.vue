@@ -113,11 +113,11 @@
 import { map, filter, find, findIndex, compact, get, has, set } from 'lodash';
 import { removeLogic, removeSpace } from '../services/remove-service';
 import { openAddComponent } from '../services/ui-service';
-import { toggle } from '../services/toggle-service';
+import { getActive, setAttr, toggle } from '../services/toggle-service';
+import { findAvailableComponents, addToSpace } from '../services/add-service';
 import icon from './icon.vue';
 import allIcons from '../services/icons';
 import draggable from 'vuedraggable';
-import { findAvailableComponents, addToSpace } from '../services/add-service';
 
 const UiButton = window.kiln.utils.components.UiButton,
   UiIcon = window.kiln.utils.components.UiIcon,
@@ -189,12 +189,21 @@ export default {
       return contents;
       },
       set(reordered) {
+        const store = this.$store,
+          spaceRef = this.spaceRef,
+          previousActiveLogic = getActive(this.$store, this.spaceRef);
         // spaceContent is computed from the Space component's content and if we want to
         // save the clay space, we need to do some data munging
         const reorderedSpaceContent = map(reordered, (item) => {
           return { _ref: item.logicRef};
-        })
-        this.$store.dispatch('saveComponent', { uri: this.spaceRef, data: { content: reorderedSpaceContent }});
+        });
+
+        this.$store.dispatch('saveComponent', { uri: this.spaceRef, data: { content: reorderedSpaceContent }})
+          .then(function(){
+            const newActiveLogic = getActive(store, spaceRef);
+
+            setAttr(newActiveLogic);
+          });
       }
     }
   },

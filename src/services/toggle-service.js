@@ -16,7 +16,7 @@ export function initSpaces(store) {
   forEach(allSpaces, function (space) {
     if (!space.classList.contains('clay-space-edit')) {
       activeUri = getActive(store, space.getAttribute('data-uri'), space);
-      setAttr(dom.find(`[data-uri="${activeUri}"]`));
+      setAttr(activeUri);
     }
   });
 }
@@ -56,10 +56,12 @@ function removeAttr($el) {
 /**
  * Set the active attribute
  *
- * @param {Element} $el
+ * @param {string} ref
  */
-export function setAttr($el) {
-  $el.setAttribute(activeAttr, '');
+export function setAttr(ref) {
+  const targetEl = dom.find(`[data-uri="${ref}"]`);
+
+  targetEl.setAttribute(activeAttr, '');
 }
 
 /**
