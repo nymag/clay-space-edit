@@ -14,7 +14,7 @@
 
     .readouts {
       list-style-type: none;
-      padding-left: 4px;
+      padding-left: 28px;
       margin: 8px 0 4px;
       font-size: 12px;
 
@@ -85,9 +85,10 @@
     </div>
     <div class="spaceUI-readout">
       <draggable v-model="spaceContent" element="ul" class="spaceUI-list" ref="list">
-        <li class="listItem" v-for="item in spaceContent">
+        <li class="listItem" v-for="item in spaceContent" icon="settings">
           <div class="listItem-main">
             <div class="listItem-main-right">
+              <ui-icon icon="sort"></ui-icon>
               <span class="listItem-main-right-name">{{item.componentLabel}}</span>
               <ul class="readouts">
                  <li v-for="readout in item.readouts" class="readouts-item">
@@ -99,7 +100,7 @@
               </ul>
             </div>
           </div>
-          <ui-icon-button @click.stop="openTarget(item.logicRef)" icon="settings" :tooltip="`Edit Logic`" color="clear"></ui-icon-button>
+          <ui-icon-button @click.stop="openTarget(item.logicRef)" icon="gps_fixed" :tooltip="`Edit Logic`" color="clear"></ui-icon-button>
           <ui-icon-button @click.stop="removeFromSpace(item.logicRef)" icon="delete" :tooltip="`Delete Logic`" color="clear"></ui-icon-button>
         </li>
       </draggable>
@@ -119,6 +120,7 @@ import draggable from 'vuedraggable';
 import { findAvailableComponents, addToSpace } from '../services/add-service';
 
 const UiButton = window.kiln.utils.components.UiButton,
+  UiIcon = window.kiln.utils.components.UiIcon,
   UiIconButton = window.kiln.utils.components.UiIconButton;
 
 
@@ -308,6 +310,7 @@ export default {
     draggable,
     icon,
     UiButton,
+    UiIcon,
     UiIconButton
   }
 }
