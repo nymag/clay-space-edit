@@ -41,7 +41,10 @@ export default {
      * @return {String}
      */
     spaceParentRef() {
-      return getSpaceElFromLogic(this.$store.state.site.prefix, this.$store.state.ui.currentSelection.el).getAttribute('data-uri');
+      const selectionUri = this.$store.state.ui.currentSelection.uri,
+        selectionEl = window.kiln.utils.componentElements.getComponentEl(selectionUri);
+
+      return getSpaceElFromLogic(this.$store.state.site.prefix, selectionEl).getAttribute('data-uri');
     },
     /**
      * Count the number of items in the `content` array
