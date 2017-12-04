@@ -72,9 +72,14 @@
       }
     }
 
-    .uiButton {
+    .ui-icon-button__icon {
       @include button();
     }
+
+    .ui-icon {
+      color: #607d8b;
+    }
+
   }
 </style>
 
@@ -88,7 +93,7 @@
         <li class="listItem" v-for="item in spaceContent" icon="settings" @click.stop="setActiveLogic(item)">
           <div class="listItem-main">
             <div class="listItem-main-right">
-              <ui-icon icon="sort"></ui-icon>
+              <ui-icon icon="drag_handle" type="secondary"></ui-icon>
               <span class="listItem-main-right-name">{{item.componentLabel}}</span>
               <ul class="readouts">
                  <li v-for="readout in item.readouts" class="readouts-item">
@@ -100,8 +105,8 @@
               </ul>
             </div>
           </div>
-          <ui-icon-button @click.stop="openTarget(item.logicRef)" icon="gps_fixed" :tooltip="`Edit Logic`" color="clear"></ui-icon-button>
-          <ui-icon-button @click.stop="removeFromSpace(item.logicRef)" icon="delete" :tooltip="`Delete Logic`" color="clear"></ui-icon-button>
+          <ui-icon-button @click.stop="openTarget(item.logicRef)" icon="gps_fixed" :tooltip="`Edit Logic`" color="clear" type="secondary"></ui-icon-button>
+          <ui-icon-button @click.stop="removeFromSpace(item.logicRef)" icon="delete" :tooltip="`Delete Logic`" color="clear" type="secondary"></ui-icon-button>
         </li>
       </draggable>
     </div>

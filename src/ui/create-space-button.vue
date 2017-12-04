@@ -7,7 +7,7 @@
 </style>
 
 <template>
-  <ui-icon-button v-if="shouldDisplay" class="create-space-button" @click.stop="handleClick" :tooltip="`Turn into Space`" color="clear">
+  <ui-icon-button v-if="shouldDisplay" class="create-space-button" @click.stop="handleClick" :tooltip="`Turn into Space`" color="clear" type="secondary">
     <icon name="add-to-space"></icon>
   </ui-icon-button>
 </template>

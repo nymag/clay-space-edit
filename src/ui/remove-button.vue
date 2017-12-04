@@ -8,7 +8,7 @@
 
 
 <template>
-  <ui-icon-button v-if="shouldDisplay" @click.stop="handleClick" class="space-remove-button" :tooltip="`Remove Space`" color="clear" icon="delete">
+  <ui-icon-button v-if="shouldDisplay" @click.stop="handleClick" class="space-remove-button" :tooltip="`Remove Space`" color="clear" icon="delete" type="secondary">
   </ui-icon-button>
 </template>
 
