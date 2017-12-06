@@ -65,6 +65,21 @@ export function setAttr(ref) {
 }
 
 /**
+ * Set new active logic.
+ * For cases when the components are re-rendered after a dispatched event. The
+ * '.active' class is set manually and is not tied to any data. This class
+ * disappears after a Vue render and needs to be set manually again.
+ *
+ * @param {Object} store
+ * @param {string} spaceRef
+ */
+export function setNewActive(store, spaceRef) {
+  const newActiveLogic = getActive(store, spaceRef);
+
+  setAttr(newActiveLogic);
+}
+
+/**
  * Turn all components to inactive and then set the
  * target to active
  *

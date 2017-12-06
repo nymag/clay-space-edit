@@ -118,7 +118,7 @@
 import { map, filter, find, findIndex, compact, get, has, set } from 'lodash';
 import { removeLogic, removeSpace } from '../services/remove-service';
 import { openAddComponent } from '../services/ui-service';
-import { getActive, setAttr, removeAttr } from '../services/toggle-service';
+import { getActive, setAttr, removeAttr, setNewActive } from '../services/toggle-service';
 import { findAvailableComponents, addToSpace } from '../services/add-service';
 import icon from './icon.vue';
 import allIcons from '../services/icons';
@@ -280,7 +280,13 @@ export default {
      * @return {Promise}
      */
     removeFromSpace(uri) {
+      const store = this.$store,
+        spaceRef = this.spaceRef;
+
       removeLogic(this.$store, uri, this.items.length)
+        .then(function(){
+            setNewActive(store, spaceRef);
+        });
     },
     /**
      * Open the settings pane for a Logic

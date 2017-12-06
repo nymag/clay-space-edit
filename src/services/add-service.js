@@ -1,5 +1,6 @@
 import { getAvailableComponents, findSpaceParentUriAndList } from './utils';
 import { findSpaceLogic } from './create-service';
+import { setNewActive } from '../services/toggle-service';
 
 export function findAvailableComponents(store, spaceRef) {
   const parent = findSpaceParentUriAndList(spaceRef);
@@ -29,7 +30,7 @@ export function addToSpace(store, spaceRef, componentName) {
           data: newSpaceLogicData
         }
       ]
-    });
-
+    })
+    .then(() => setNewActive(store, spaceRef));
   });
 }
