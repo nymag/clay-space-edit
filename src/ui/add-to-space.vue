@@ -28,7 +28,7 @@ export default {
      * @param  {String} value
      */
     itemClick(value) {
-      const spaceRef = this.data.spaceRef
+      const spaceRef = this.data.spaceRef,
        store = this.$store;
 
       addToSpace(this.$store, spaceRef, value)
