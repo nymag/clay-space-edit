@@ -8,7 +8,7 @@
 
 
 <template>
-  <ui-icon-button v-if="shouldDisplay" @click.stop="handleClick" class="space-remove-button" :tooltip="`Remove Space`" color="clear" icon="delete" type="secondary">
+  <ui-icon-button v-if="shouldDisplay" @click.stop="handleClick()" class="space-remove-button" :tooltip="`Remove Space`" color="clear" icon="delete" type="secondary">
   </ui-icon-button>
 </template>
 
@@ -35,7 +35,8 @@ export default {
      */
     spaceContentLength() {
       const state = this.$store.state,
-        parentRef = getSpaceElFromLogic(state.site.prefix, state.ui.currentSelection.el).getAttribute('data-uri');
+        selectionEl = window.kiln.utils.componentElements.getComponentEl(state.ui.currentSelection.uri),
+        parentRef = getSpaceElFromLogic(state.site.prefix, selectionEl).getAttribute('data-uri');
 
       return state.components[parentRef].content.length;
     },
