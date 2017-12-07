@@ -11,6 +11,8 @@ import { openUI } from '../services/ui-service';
 import { addToSpace } from '../services/add-service';
 import { setNewActive } from '../services/toggle-service';
 
+const filterableList = window.kiln.utils.components.filterableList;
+
 export default {
   props: ['data'],
   data() {
@@ -35,6 +37,9 @@ export default {
         .then(() => openUI(this.$store, spaceRef))
         .then(() => setNewActive(store, spaceRef));
     }
+  },
+  components: {
+    filterableList
   }
 }
 </script>

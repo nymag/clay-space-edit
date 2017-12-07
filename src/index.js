@@ -65,13 +65,6 @@ window.kiln.plugins['clay-space-edit'] = function spaceEdit(store) {
           }
           break;
         case LOADING_SUCCESS:
-          // Register the filterable-list component after Kiln loads. We're not
-          // registering the component in the Vue file because Kiln loads AFTER
-          // clay-space-edit, and all Kiln utils are not available yet.
-          addToSpace.components = {'filterable-list': window.kiln.utils.components.filterableList };
-          // update the modal
-          window.kiln.modals['add-to-space'] = addToSpace;
-
           // We need to init every Space once Kiln is loaded.
           initSpaces(store);
         default:
