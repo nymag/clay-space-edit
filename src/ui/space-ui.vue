@@ -207,7 +207,7 @@ export default {
           .then(function(){
             const newActiveLogic = getActive(store, spaceRef);
 
-            setAttr(newActiveLogic);
+            setAttr(spaceRef, newActiveLogic);
           });
       }
     }
@@ -327,11 +327,7 @@ export default {
     },
     setActiveLogic(logic) {
       // set the target logic to active so that the user can edit it
-      const currentActive = document.querySelector(`[data-uri="${this.spaceRef}"] > [data-logic-active]`);
-
-      removeAttr(currentActive);
-      setAttr(logic.logicRef);
-
+      setAttr(this.spaceRef, logic.logicRef);
       this.$store.dispatch('closeModal');
     }
   },

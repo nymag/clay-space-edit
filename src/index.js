@@ -1,6 +1,7 @@
 // Tracking variables
 let activeLogic = undefined,
-  spaceEl;
+  spaceEl,
+  spaceRef;
 
 // Kiln Mutations
 import {
@@ -19,7 +20,7 @@ import addToSpace from './ui/add-to-space.vue';
 
 // Internal Services
 import { openUI, spaceElFromLogicUri } from './services/ui-service';
-import { setAttr, initSpaces } from './services/toggle-service';
+import { setAttr, initSpaces} from './services/toggle-service';
 
 // Default styles
 require('./styles/defaults.scss');
@@ -45,17 +46,16 @@ window.kiln.plugins['clay-space-edit'] = function spaceEdit(store) {
       switch (mutation.type) {
         case FOCUS:
           // Set the logic tracker to true
-          // TODO: NEEDS TO NOT BE SET TO `space-logic`. Should probably be a little more flexible? Or
-          // we need to define the contract with Logics better
-          activeLogic = includes(mutation.payload, 'components/space-logic') ? mutation.payload : undefined;
+          activeLogic = includes(mutation.payload.uri, 'components/space-logic') ? mutation.payload : undefined;
           break;
         case CLOSE_FORM:
           if (activeLogic) {
             // Select the Space element
-            spaceEl = spaceElFromLogicUri(activeLogic);
+            spaceEl = spaceElFromLogicUri(activeLogic.uri);
+            spaceRef = spaceEl.getAttribute('data-uri');
 
             // Make sure the component that was active is displayed
-            setAttr(activeLogic);
+            setAttr(spaceRef, activeLogic.uri);
 
             // Open the UI pane
             openUI(store, spaceEl.getAttribute('data-uri'));

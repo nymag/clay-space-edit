@@ -16,7 +16,7 @@ export function initSpaces(store) {
   forEach(allSpaces, function (space) {
     if (!space.classList.contains('clay-space-edit')) {
       activeUri = getActive(store, space.getAttribute('data-uri'), space);
-      setAttr(activeUri);
+      dom.find(`[data-uri="${activeUri}"]`).setAttribute(activeAttr, '');
     }
   });
 }
@@ -47,21 +47,28 @@ export function getActive({ state: { components } }, spaceRef, spaceEl) {
 /**
  * Remove the active attribute
  *
- * @param  {Element} $el
+ * @param  {String} $el
  */
 export function removeAttr($el) {
   $el.removeAttribute(activeAttr);
 }
 
 /**
- * Set the active attribute
+ * Set the active attribute and make sure each Space only has one active Logic
  *
- * @param {string} ref
+ * @param {string} spaceRef
+ * @param {string} logicRef
  */
-export function setAttr(ref) {
-  const targetEl = dom.find(`[data-uri="${ref}"]`);
+export function setAttr(spaceRef, logicRef) {
+  // make sure there are no other active Logics with in the space
+  const currentActive = document.querySelector(`[data-uri="${spaceRef}"] > [${activeAttr}]`),
+    targetLogic = dom.find(`[data-uri="${logicRef}"]`);
 
-  targetEl.setAttribute(activeAttr, '');
+  if (currentActive) {
+    removeAttr(currentActive);
+  }
+
+  targetLogic.setAttribute(activeAttr, '');
 }
 
 /**
@@ -76,7 +83,7 @@ export function setAttr(ref) {
 export function setNewActive(store, spaceRef) {
   const newActiveLogic = getActive(store, spaceRef);
 
-  setAttr(newActiveLogic);
+  setAttr(spaceRef, newActiveLogic);
 }
 
 /**
