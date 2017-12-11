@@ -14,7 +14,7 @@
 
 <script>
 import { openUI } from '../services/ui-service';
-import { checkIfLogic } from '../services/utils';
+import { isSpaceLogic } from '../services/utils';
 import icon from './icon.vue';
 import { getSpaceElFromLogic } from '../services/utils';
 import { removeLogic } from '../services/remove-service';
@@ -49,7 +49,7 @@ export default {
       const isSelected = !isUndefined(get(this.$store,'state.ui.currentSelection.uri'));
 
       if (isSelected) {
-        return checkIfLogic(this.$store.state.ui.currentSelection.parentURI);
+        return isSpaceLogic(this.$store.state.ui.currentSelection.parentURI);
       }
     }
   },

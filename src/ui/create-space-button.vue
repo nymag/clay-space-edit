@@ -14,7 +14,7 @@
 
 <script>
 import { get, isUndefined } from 'lodash';
-import { checkIfSpaceEdit, checkIfSpace, spaceInComponentList, checkIfSpaceOrLogic } from '../services/utils';
+import { checkIfSpaceEdit, isClaySpace, spaceInComponentList, checkIfSpaceOrLogic } from '../services/utils';
 import { createSpace } from '../services/create-service';
 import icon from './icon.vue';
 
@@ -71,7 +71,7 @@ export default {
       // 2) We're not dealing with the `clay-space-edit` module
       // 3) We're not dealing with a space component (we don't want to create a
       //    nested Space)
-      return this.availableSpaces.length && !checkIfSpaceEdit(ref) && !checkIfSpace(ref);
+      return this.availableSpaces.length && !checkIfSpaceEdit(ref) && !isClaySpace(ref);
       }
       return false;
     }

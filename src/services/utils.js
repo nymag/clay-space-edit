@@ -122,7 +122,7 @@ function createFilterableList(items, callbacks) {
  * @param  {String} ref The uri of a component
  * @return {Boolean}
  */
-function checkIfSpace(ref) {
+function isClaySpace(ref) {
   return _.includes(ref, references.spacePrefix);
 }
 
@@ -151,7 +151,7 @@ function checkIfSpaceEdit(ref) {
  * @param  {String} uri
  * @return {Boolean}
  */
-function checkIfLogic(uri) {
+function isSpaceLogic(uri) {
   return uri.indexOf('/space-logic') > -1;
 }
 
@@ -170,8 +170,8 @@ function getSpaceElFromLogic(prefix, logicEl) {
 module.exports.spaceInComponentList = spaceInComponentList;
 module.exports.availableSpaces = availableSpaces;
 module.exports.createFilterableList = createFilterableList;
-module.exports.checkIfSpace = checkIfSpace;
-module.exports.checkIfLogic = checkIfLogic;
+module.exports.isClaySpace = isClaySpace;
+module.exports.isSpaceLogic = isSpaceLogic;
 module.exports.checkIfSpaceEdit = checkIfSpaceEdit;
 module.exports.getAvailableComponents = getAvailableComponents;
 module.exports.checkIfSpaceOrLogic = checkIfSpaceOrLogic;
