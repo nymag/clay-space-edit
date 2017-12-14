@@ -6,10 +6,10 @@ test('create-service', t => {
   t.test('createSpace', t => {
     t.test('throws NOT YET IMPLEMENTED on multiple components', t => {
       createSpace(null, '', '', [1, 2])
-      .catch(err => {
-        t.true(err.message.includes('NOT YET IMPLEMENTED'));
-        t.end();
-      });
+        .catch(err => {
+          t.true(err.message.includes('NOT YET IMPLEMENTED'));
+          t.end();
+        });
     });
 
 
@@ -30,13 +30,13 @@ test('create-service', t => {
         };
 
       createSpace(store, '', '', [space])
-      .catch(err => {
+        .catch(err => {
         // un-comment to see what the error message is
         // t.comment(err.message);
-        t.true(err.message.includes('Check the schema.yml'));
-        t.end();
-        return true;
-      });
+          t.true(err.message.includes('Check the schema.yml'));
+          t.end();
+          return true;
+        });
     });
 
     t.test('instantiates logic, embeds component', t => {
@@ -65,6 +65,7 @@ test('create-service', t => {
                 }
               }
             }
+
           },
           dispatch(type, payload) {
             dispatchCalls.push({type, payload});
@@ -77,30 +78,30 @@ test('create-service', t => {
         };
 
       createSpace(store, ref, parentRef, availableSpaces)
-      .then(() => {
+        .then(() => {
         // t.comment(JSON.stringify(dispatchCalls, null, 2));
-        t.equal(dispatchCalls.length, 2);
-        t.deepEqual(dispatchCalls[0], {
-          type: 'addComponents',
-          payload: {
-            currentURI: ref,
-            parentURI: parentRef,
-            path,
-            components: [{name: space}],
-            replace: true
-          }
-        });
+          t.equal(dispatchCalls.length, 2);
+          t.deepEqual(dispatchCalls[0], {
+            type: 'addComponents',
+            payload: {
+              currentURI: ref,
+              parentURI: parentRef,
+              path,
+              components: [{name: space}],
+              replace: true
+            }
+          });
 
-        // can't check the second call because we're not actually
-        // talking to Kiln so Kiln so can't give us a reference to a
-        // DOM node
-        t.end();
-      })
-      .catch(err => {
+          // can't check the second call because we're not actually
+          // talking to Kiln so Kiln so can't give us a reference to a
+          // DOM node
+          t.end();
+        })
+        .catch(err => {
         // t.comment(JSON.stringify(dispatchCalls, null, 2));
-        t.fail(err);
-        t.end();
-      });
+          t.fail(err);
+          t.end();
+        });
     });
   });
   t.end();
