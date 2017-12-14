@@ -23,7 +23,7 @@ const UiIconButton = window.kiln.utils.components.UiIconButton;
 export default {
   name: 'createSpaceButton',
   data() {
-    return {}
+    return {} // eslint-disable-line semi
   },
   computed: {
     /**
@@ -63,15 +63,17 @@ export default {
     shouldDisplay() {
       const isSelected = !isUndefined(get(this.$store,'state.ui.currentSelection.uri'));
       var ref;
+
       if (isSelected) {
         ref = this.$store.state.ui.currentSelection.uri;
 
-      // Check to make sure we:
-      // 1) Have Spaces available in the component list
-      // 2) We're not dealing with the `clay-space-edit` module
-      // 3) We're not dealing with a space component (we don't want to create a
-      //    nested Space)
-      return this.availableSpaces.length && !checkIfSpaceEdit(ref) && !isClaySpace(ref);
+        // Check to make sure we:
+        // 1) Have Spaces available in the component list
+        // 2) We're not dealing with the `clay-space-edit` module
+        // 3) We're not dealing with a space component (we don't want to create a
+        //    nested Space)
+
+        return this.availableSpaces.length && !checkIfSpaceEdit(ref) && !isClaySpace(ref);
       }
       return false;
     }
@@ -96,5 +98,5 @@ export default {
     icon,
     UiIconButton
   }
-}
+};
 </script>

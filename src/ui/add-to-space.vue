@@ -16,7 +16,7 @@ const filterableList = window.kiln.utils.components.filterableList;
 export default {
   props: ['data'],
   data() {
-    return {}
+    return {} // eslint-disable-line semi
   },
   computed: {
     components() {
@@ -31,7 +31,7 @@ export default {
      */
     itemClick(value) {
       const spaceRef = this.data.spaceRef,
-       store = this.$store;
+        store = this.$store;
 
       addToSpace(this.$store, spaceRef, value)
         .then(() => openUI(this.$store, spaceRef))
@@ -41,5 +41,5 @@ export default {
   components: {
     filterableList
   }
-}
+};
 </script>

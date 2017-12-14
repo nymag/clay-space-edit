@@ -13,7 +13,6 @@
 </template>
 
 <script>
-import { openUI } from '../services/ui-service';
 import { isSpaceLogic } from '../services/utils';
 import icon from './icon.vue';
 import { getSpaceElFromLogic } from '../services/utils';
@@ -25,7 +24,7 @@ const UiIconButton = window.kiln.utils.components.UiIconButton;
 export default {
   name: 'logicRemoveButton',
   data() {
-    return {}
+    return {} // eslint-disable-line semi
   },
   computed: {
     /**
@@ -54,13 +53,7 @@ export default {
     }
   },
   methods: {
-    /**
-     * Handle button click. Should launch the pane and
-     * put the component's Space parent in the store so
-     * that the pane can grab data.
-     *
-     * @return {Promise} [description]
-     */
+    // remove the space
     handleClick: function () {
       const logicUri = this.$store.state.ui.currentSelection.parentURI;
 
@@ -72,5 +65,5 @@ export default {
     icon,
     UiIconButton
   }
-}
+};
 </script>

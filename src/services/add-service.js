@@ -31,6 +31,6 @@ export function addToSpace(store, spaceRef, componentName) {
         }
       ]
     })
-    .then(() => setNewActive(store, spaceRef));
+      .then(() => setNewActive(store, spaceRef));
   });
 }
