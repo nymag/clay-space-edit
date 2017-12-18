@@ -1,35 +1,25 @@
 {
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es6": true,
+    "mocha": true
+  },
+  "plugins": [
+    "html",
+    "vue"
+  ],
   "parserOptions": {
     "sourceType": "module",
     "ecmaVersion": 6
   },
-  "env": {
-    "browser": true,
-    "commonjs": true,
-    "mocha": true,
-    "es6": true,
-  },
-  // add global vars for chai, etc
-  "globals": {
-    "expect": false,
-    "chai": false,
-    "sinon": false
-  },
-  // enable the es6 features supported by our browsers / iojs
-  "ecmaFeatures": {
-    "arrowFunctions": true,
-    "blockBindings": true,
-    "forOf": true,
-    "objectLiteralDuplicateProperties": true,
-    "objectLiteralShorthandProperties": true,
-    "objectLiteralShorthandMethods": true,
-    "octalLiterals": true,
-    "binaryLiterals": true,
-    "templateStrings": true,
-    "generators": true,
-    "modules": true
-  },
-  "rules": {
+    // add global vars for chai, etc
+    "globals": {
+      "expect": false,
+      "chai": false,
+      "sinon": false
+    },
+    "rules": {
     // possible errors
     "no-extra-parens": 1,
     "valid-jsdoc": [1, {
@@ -69,6 +59,7 @@
     "no-trailing-spaces": 2,
     "no-underscore-dangle": 0,
     "no-unneeded-ternary": 1,
+    "no-multiple-empty-lines": 2,
     "one-var": 2,
     "quotes": [2, "single", "avoid-escape"],
     "semi": [2, "always"],
