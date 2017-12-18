@@ -1,0 +1,8 @@
+machine:
+  timezone:
+    America/New_York
+  node:
+    version: 8.9.0
+dependencies:
+  pre:
+    - npm install -g eslint
