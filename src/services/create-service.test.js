@@ -1,5 +1,7 @@
+import * as utils from './utils.js';
 import { createSpace } from './create-service.js';
 import test from 'tape';
+import sinon from 'sinon';
 
 test('create-service', t => {
 
@@ -9,33 +11,6 @@ test('create-service', t => {
         .catch(err => {
           t.true(err.message.includes('NOT YET IMPLEMENTED'));
           t.end();
-        });
-    });
-
-
-    t.test('throws on schemas that don\'t meet Spaces API', t => {
-      const space = 'my-clay-space',
-        store = {
-          state: {
-            schemas: {
-              [space]: {
-                content: {
-                  _componentList: {
-                    include: ['somthing else']
-                  }
-                }
-              }
-            }
-          }
-        };
-
-      createSpace(store, '', '', [space])
-        .catch(err => {
-        // un-comment to see what the error message is
-        // t.comment(err.message);
-          t.true(err.message.includes('Check the schema.yml'));
-          t.end();
-          return true;
         });
     });
 
@@ -75,20 +50,48 @@ test('create-service', t => {
               }
             });
           }
-        };
+        },
+        //stubs
+        stubbedCreateFunction = sinon.stub(window.kiln.utils.create, 'default'),
+        stubbedFindSpaceParentUriAndList = sinon.stub(utils,'findSpaceParentUriAndList'),
+        stubbedReload = sinon.stub(window.location,'reload');
+
+        stubbedCreateFunction.returns(
+          Promise.resolve([
+            "alpha",
+            "beta"
+          ])
+        );
+
+        stubbedFindSpaceParentUriAndList.returns(
+          {
+            el: 'parentEl',
+            uri: 'parentUri',
+            list: 'list'
+          }
+        );
 
       createSpace(store, ref, parentRef, availableSpaces)
         .then(() => {
         // t.comment(JSON.stringify(dispatchCalls, null, 2));
-          t.equal(dispatchCalls.length, 2);
+          t.equal(dispatchCalls.length, 1);
           t.deepEqual(dispatchCalls[0], {
             type: 'addComponents',
             payload: {
-              currentURI: ref,
-              parentURI: parentRef,
-              path,
-              components: [{name: space}],
-              replace: true
+              "parentURI": "parentRef",
+              "currentURI": "ref",
+              "path": "list",
+              "replace": true,
+              "components": [
+                {
+                  "name": "my-clay-space",
+                  "data": {
+                    "content": [
+                      "beta"
+                    ]
+                  }
+                }
+              ]
             }
           });
 
