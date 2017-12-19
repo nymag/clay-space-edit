@@ -34,3 +34,5 @@ dist
 # compiled for tests
 test-bundle.js
 
+# Temporarily adding this until we work out the proper workflow for it
+package-lock.json
