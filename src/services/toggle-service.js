@@ -34,7 +34,9 @@ export function getActive({ state: { components } }, spaceRef, spaceEl) {
     $firstActive = Array.from(dom.findAll($spaceEl, `[${activeAttr}]`)),
     activeUri;
 
-  if ($firstActive.length > 1) {
+  // account for Logic components that don't have properties set, and will always
+  // have displaySelf: true
+  if ($firstActive.length > 0) {
     activeUri = $firstActive.shift().getAttribute('data-uri');
     forEach($firstActive, removeAttr);
   } else {
