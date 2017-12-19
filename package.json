@@ -13,7 +13,7 @@
     "test": "NODE_ENV=testing webpack test.js -d --target web && tape -r  ./test/dom-setup.js test-bundle.js | tap-difflet ",
     "prepublish": "NODE_ENV=production webpack -p"
   },
-  "pre-push": [
+  "pre-commit": [
     "lint"
   ],
   "keywords": [
