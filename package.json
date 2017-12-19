@@ -11,7 +11,7 @@
     "lint": "eslint src/**/*.js src/**/*.vue",
     "watch": "NODE_ENV=development webpack -w -d",
     "test": "NODE_ENV=testing webpack test.js -d --target web && tape -r  ./test/dom-setup.js test-bundle.js | tap-difflet ",
-    "prepublish": "NODE_ENV=production webpack -p"
+    "prepare": "NODE_ENV=production webpack -p"
   },
   "pre-commit": [
     "lint"
