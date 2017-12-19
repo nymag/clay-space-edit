@@ -10,7 +10,7 @@
   "scripts": {
     "lint": "eslint src/**/*.js src/**/*.vue",
     "watch": "NODE_ENV=development webpack -w -d",
-    "test": "NODE_ENV=testing webpack test.js -d --target web && tape -r  ./test/dom-setup.js test-bundle.js",
+    "test": "NODE_ENV=testing webpack test.js -d --target web && tape -r  ./test/dom-setup.js test-bundle.js | tap-difflet ",
     "prepublish": "NODE_ENV=production webpack -p"
   },
   "pre-push": [
@@ -53,6 +53,7 @@
     "sass-loader": "^4.1.1",
     "sinon": "^4.1.3",
     "style-loader": "^0.13.1",
+    "tap-difflet": "^0.7.0",
     "vue": "^2.3.2",
     "vue-loader": "^12.0.2",
     "vue-style-loader": "^3.0.0",
