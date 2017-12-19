@@ -10,9 +10,10 @@
   "scripts": {
     "lint": "eslint src/**/*.js src/**/*.vue",
     "watch": "NODE_ENV=development webpack -w -d",
-    "prepublish": "NODE_ENV=production webpack -p"
+    "test": "NODE_ENV=testing webpack test.js -d --target web && tape -r  ./test/dom-setup.js test-bundle.js | tap-difflet ",
+    "prepublishOnly": "NODE_ENV=production webpack -p"
   },
-  "pre-push": [
+  "pre-commit": [
     "lint"
   ],
   "keywords": [
@@ -45,11 +46,14 @@
     "eslint-plugin-vue": "^4.0.0-beta.2",
     "extract-text-webpack-plugin": "^2.1.0",
     "jsdom": "^10.1.0",
+    "jsdom-global": "^3.0.2",
     "lodash": "^4.14.2",
     "node-sass": "^3.8.0",
     "postcss-loader": "^2.0.5",
     "sass-loader": "^4.1.1",
+    "sinon": "^4.1.3",
     "style-loader": "^0.13.1",
+    "tap-difflet": "^0.7.0",
     "vue": "^2.3.2",
     "vue-loader": "^12.0.2",
     "vue-style-loader": "^3.0.0",

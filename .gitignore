@@ -30,3 +30,7 @@ node_modules
 
 # compiled scripts and styles (generated on postinstall)
 dist
+
+# compiled for tests
+test-bundle.js
+

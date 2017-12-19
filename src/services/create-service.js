@@ -13,7 +13,6 @@ import { findSpaceParentUriAndList } from './utils';
 export function createSpace(store, ref, parentRef, availableSpaces) {
   if (availableSpaces.length > 1) {
     return Promise.reject(new Error('create space with multiple spaces available NOT YET IMPLEMENTED'));
-    // selectSpace(availableSpaces, clickedComponent, options, parent);
   } else {
     try {
       return componentToSpace(store, ref, parentRef, availableSpaces[0])

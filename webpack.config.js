@@ -1,15 +1,14 @@
 var ExtractTextPlugin = require('extract-text-webpack-plugin'),
   webpack = require('webpack'),
   path = require('path'),
-  nodeEnv = process.env.NODE_ENV || 'production';
+  nodeEnv = process.env.NODE_ENV || 'production',
+  isTesting = nodeEnv === 'testing' || false;
 
-
-// TODO: Add in test function: `"test": "NODE_ENV=testing webpack test.js -d --target node && node --require source-map-support/register test-bundle.js #; npm run lint",`
 module.exports = {
-  entry: nodeEnv === 'testing' ? './test.js' : './src/index.js',
+  entry: isTesting ? './test.js' : './src/index.js',
   output: {
-    filename: nodeEnv === 'testing' ? 'test-bundle.js' : 'clay-space-edit.js',
-    path: path.resolve(__dirname, nodeEnv === 'testing' ? '.' : './dist'),
+    filename: isTesting ? 'test-bundle.js' : 'clay-space-edit.js',
+    path: path.resolve(__dirname, isTesting ? '.' : './dist'),
   },
   // sub in empty modules for Node built-ins
   // so webpack doesn't complain about not being able to find the modules
@@ -50,7 +49,7 @@ module.exports = {
       {
         test: /\.scss$/,
         // don't inject styles when we don't have a window
-        use: nodeEnv === 'testing'
+        use:isTesting
             ? 'null-loader'
             : ExtractTextPlugin.extract({
               fallback: 'style-loader', // backup loader when not building .css file
@@ -74,7 +73,7 @@ module.exports = {
   plugins: [
     new webpack.EnvironmentPlugin(['NODE_ENV'])
   ].concat(
-    nodeEnv === 'testing'
+   isTesting
       ? []
       : [new ExtractTextPlugin('clay-space-edit.css')]
   )
