@@ -51,25 +51,25 @@ test('create-service', t => {
             });
           }
         },
-        //stubs
+        // stubs
         stubbedCreateFunction = sinon.stub(window.kiln.utils.create, 'default'),
         stubbedFindSpaceParentUriAndList = sinon.stub(utils,'findSpaceParentUriAndList'),
         stubbedReload = sinon.stub(window.location,'reload');
 
-        stubbedCreateFunction.returns(
-          Promise.resolve([
-            "alpha",
-            "beta"
-          ])
-        );
+      stubbedCreateFunction.returns(
+        Promise.resolve([
+          'alpha',
+          'beta'
+        ])
+      );
 
-        stubbedFindSpaceParentUriAndList.returns(
-          {
-            el: 'parentEl',
-            uri: 'parentUri',
-            list: 'list'
-          }
-        );
+      stubbedFindSpaceParentUriAndList.returns(
+        {
+          el: 'parentEl',
+          uri: 'parentUri',
+          list: 'list'
+        }
+      );
 
       createSpace(store, ref, parentRef, availableSpaces)
         .then(() => {
@@ -78,16 +78,16 @@ test('create-service', t => {
           t.deepEqual(dispatchCalls[0], {
             type: 'addComponents',
             payload: {
-              "parentURI": "parentRef",
-              "currentURI": "ref",
-              "path": "list",
-              "replace": true,
-              "components": [
+              parentURI: 'parentRef',
+              currentURI: 'ref',
+              path: 'list',
+              replace: true,
+              components: [
                 {
-                  "name": "my-clay-space",
-                  "data": {
-                    "content": [
-                      "beta"
+                  name: 'my-clay-space',
+                  data: {
+                    content: [
+                      beta
                     ]
                   }
                 }
