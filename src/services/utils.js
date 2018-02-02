@@ -3,6 +3,16 @@ var dom = require('@nymag/dom'),
   references = require('./references');
 
 /**
+ * Checks that the string is a route while accounting for underscored routes
+ * @param {string} string
+ * @param {string} route
+ * @return {boolean}
+ */
+function checkUri(string, route) {
+  return string.indexOf('/' + route + '/') > -1 ||  string.indexOf('/_' + route + '/') > -1;
+}
+
+/**
  * Return information about the parent space logic
  * @param  {string} spaceRef reference to the space components
  * @return {Object}
@@ -14,7 +24,7 @@ export function findSpaceParentUriAndList(spaceRef) {
     parentUri = parentEl.getAttribute('data-uri'),
     parentListName = parentList.getAttribute('data-editable');
 
-  if (parentUri.indexOf('/pages/') > -1) {
+  if (checkUri(parentUri, 'pages')) {
     parentUri = parentEl.getAttribute('data-layout-uri');
   }
 
@@ -38,7 +48,7 @@ function getAvailableComponents(store, parentEl, list) {
   var parentUri = parentEl.getAttribute('data-uri'),
     parentName, componentList, include, exclude;
 
-  if (parentUri.indexOf('/pages/') > -1) {
+  if (checkUri(parentUri, 'pages')) {
     parentUri = parentEl.getAttribute('data-layout-uri');
   }
 
@@ -164,7 +174,10 @@ function isSpaceLogic(uri) {
  * @return {Element}
  */
 function getSpaceElFromLogic(prefix, logicEl) {
-  return dom.closest(logicEl, `[data-uri^="${prefix}/components/clay-space"]`);
+  var el = dom.closest(logicEl, `[data-uri^="${prefix}/components/clay-space"]`) ||
+      dom.closest(logicEl, `[data-uri^="${prefix}/_components/clay-space"]`);
+
+  return el;
 }
 
 module.exports.spaceInComponentList = spaceInComponentList;
