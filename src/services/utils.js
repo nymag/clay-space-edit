@@ -8,8 +8,10 @@ var dom = require('@nymag/dom'),
  * @param {string} route
  * @return {boolean}
  */
-function checkUri(string, route) {
-  return string.indexOf('/' + route + '/') > -1 ||  string.indexOf('/_' + route + '/') > -1;
+function isRouteUri(string, route) {
+  var routeFormat = '\/[_]?' + route + '\/';
+
+  return !!string.match(routeFormat);
 }
 
 /**
@@ -24,7 +26,7 @@ export function findSpaceParentUriAndList(spaceRef) {
     parentUri = parentEl.getAttribute('data-uri'),
     parentListName = parentList.getAttribute('data-editable');
 
-  if (checkUri(parentUri, 'pages')) {
+  if (isRouteUri(parentUri, 'pages')) {
     parentUri = parentEl.getAttribute('data-layout-uri');
   }
 
@@ -48,7 +50,7 @@ function getAvailableComponents(store, parentEl, list) {
   var parentUri = parentEl.getAttribute('data-uri'),
     parentName, componentList, include, exclude;
 
-  if (checkUri(parentUri, 'pages')) {
+  if (isRouteUri(parentUri, 'pages')) {
     parentUri = parentEl.getAttribute('data-layout-uri');
   }
 
@@ -174,8 +176,7 @@ function isSpaceLogic(uri) {
  * @return {Element}
  */
 function getSpaceElFromLogic(prefix, logicEl) {
-  var el = dom.closest(logicEl, `[data-uri^="${prefix}/components/clay-space"]`) ||
-      dom.closest(logicEl, `[data-uri^="${prefix}/_components/clay-space"]`);
+  var el = dom.closest(logicEl, `[data-uri^="${prefix}/components/clay-space"], [data-uri^="${prefix}/_components/clay-space"]`);
 
   return el;
 }
