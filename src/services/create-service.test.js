@@ -53,7 +53,7 @@ test('create-service', t => {
         },
         // stubs
         stubbedCreateFunction = sinon.stub(window.kiln.utils.create, 'default'),
-        stubbedFindSpaceParentUriAndList = sinon.stub(utils,'findSpaceParentUriAndList'),
+        stubbedFindParentUriAndList = sinon.stub(utils,'findParentUriAndList'),
         stubbedReload = sinon.stub(window.location,'reload');
 
       stubbedCreateFunction.returns(
@@ -63,7 +63,7 @@ test('create-service', t => {
         ])
       );
 
-      stubbedFindSpaceParentUriAndList.returns(
+      stubbedFindParentUriAndList.returns(
         {
           el: 'parentEl',
           uri: 'parentUri',

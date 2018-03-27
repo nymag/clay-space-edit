@@ -1,4 +1,4 @@
-import { findSpaceParentUriAndList } from './utils';
+import { findParentUriAndList } from './utils';
 /**
  * Find the component to convert to a Space, find the Spaces available
  * in the parent's component list, figure out which Space needs to be
@@ -74,7 +74,7 @@ function componentToSpace(store, ref, parentRef, spaceName) {
     // create a space logic component with the target component
     newSpaceLogicCmpt = window.kiln.utils.create.default([{name:'space-logic', data: newSpaceLogicData}]),
     // find the area/componentList/etc where the component resides
-    parentList = findSpaceParentUriAndList(ref).list;
+    parentList = findParentUriAndList(ref).list;
 
   return newSpaceLogicCmpt
     .then((res)=>_.last(res))
