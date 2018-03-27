@@ -19,9 +19,9 @@ function isRouteUri(string, route) {
  * @param  {string} spaceRef reference to the space components
  * @return {Object}
  */
-export function findSpaceParentUriAndList(spaceRef) {
-  var spaceEl = dom.find(`[data-uri="${spaceRef}"]`),
-    parentList = dom.closest(spaceEl, '[data-editable]'),
+export function findParentUriAndList(ref) {
+  var el = dom.find(`[data-uri="${ref}"]`),
+    parentList = dom.closest(el.parentNode, '[data-editable]'),
     parentEl = dom.closest(parentList, '[data-uri]'),
     parentUri = parentEl.getAttribute('data-uri'),
     parentListName = parentList.getAttribute('data-editable');

@@ -1,9 +1,9 @@
-import { getAvailableComponents, findSpaceParentUriAndList } from './utils';
+import { getAvailableComponents, findParentUriAndList } from './utils';
 import { findSpaceLogic } from './create-service';
 import { setNewActive } from '../services/toggle-service';
 
 export function findAvailableComponents(store, spaceRef) {
-  const parent = findSpaceParentUriAndList(spaceRef);
+  const parent = findParentUriAndList(spaceRef);
 
   return getAvailableComponents(store, parent.el, parent.list);
 }
