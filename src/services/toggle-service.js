@@ -1,5 +1,5 @@
 import dom from '@nymag/dom';
-import { forEach } from 'lodash';
+import { forEach, get } from 'lodash';
 
 const activeAttr = 'data-logic-active';
 
@@ -40,7 +40,7 @@ export function getActive({ state: { components } }, spaceRef, spaceEl) {
     activeUri = $firstActive.shift().getAttribute('data-uri');
     forEach($firstActive, removeAttr);
   } else {
-    activeUri = components[spaceRef].content[0]._ref;
+    activeUri = get(components, `${spaceRef}.content[0]._ref`);
   }
 
   return activeUri;
