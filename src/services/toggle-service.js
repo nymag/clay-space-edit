@@ -16,7 +16,9 @@ export function initSpaces(store) {
   forEach(allSpaces, function (space) {
     if (!space.classList.contains('clay-space-edit')) {
       activeUri = getActive(store, space.getAttribute('data-uri'), space);
-      dom.find(`[data-uri="${activeUri}"]`).setAttribute(activeAttr, '');
+      if (activeUri) {
+        dom.find(`[data-uri="${activeUri}"]`).setAttribute(activeAttr, '');
+      }
     }
   });
 }
@@ -40,7 +42,12 @@ export function getActive({ state: { components } }, spaceRef, spaceEl) {
     activeUri = $firstActive.shift().getAttribute('data-uri');
     forEach($firstActive, removeAttr);
   } else {
-    activeUri = get(components, `${spaceRef}.content[0]._ref`);
+    if (!get(components, spaceRef).content.length) {
+      console.warn(`clay-space ${spaceRef} is empty! This component should have been removed.`);
+      activeUri = undefined;
+    } else {
+      activeUri = get(components, spaceRef).content[0]._ref;
+    }
   }
 
   return activeUri;
