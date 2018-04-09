@@ -11,7 +11,8 @@
     "lint": "eslint src/**/*.js src/**/*.vue",
     "watch": "NODE_ENV=development webpack -w -d",
     "test": "NODE_ENV=testing webpack test.js -d --target web && tape -r  ./test/dom-setup.js test-bundle.js | tap-difflet ",
-    "prepublishOnly": "NODE_ENV=production webpack -p"
+    "prepublishOnly": "NODE_ENV=production webpack -p",
+    "release-patch": "git pull origin master && npm version patch && git push && git push --tag"
   },
   "pre-commit": [
     "lint"
