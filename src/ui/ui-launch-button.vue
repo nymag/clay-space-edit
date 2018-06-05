@@ -14,7 +14,7 @@
 </style>
 
 <template>
-  <ui-icon-button v-if="shouldDisplay" class="launch-ui-button" @click.stop="handleClick" :tooltip="`Edit Space`" color="clear" type="secondary">
+  <ui-icon-button v-if="shouldDisplay" class="quick-bar-button launch-ui-button" @click.stop="handleClick" :tooltip="`Edit Space`" type="secondary" color="primary">
     <icon name="list-space"></icon>
     <span>{{ spaceLogicCount }}</span>
   </ui-icon-button>
