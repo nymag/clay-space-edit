@@ -16,7 +16,7 @@ function isRouteUri(string, route) {
 
 /**
  * Return information about the parent space logic
- * @param  {string} spaceRef reference to the space components
+ * @param  {string} ref reference to the space components
  * @return {Object}
  */
 export function findParentUriAndList(ref) {
@@ -82,7 +82,7 @@ function getAvailableComponents(store, parentEl, list) {
 
   exclude = _.get(componentList, 'exclude', '');
 
-  return _.remove(window.kiln.utils.getAvailableComponents(include, exclude), function (component) {
+  return _.remove(window.kiln.utils.getAvailableComponents(store, include, exclude), function (component) {
     return component === references.spaceEdit || !_.startsWith(component, references.spacePrefix);
   });
 }
@@ -94,14 +94,15 @@ function getAvailableComponents(store, parentEl, list) {
  * from specific Spaces.
  *
  * @param  {Object} parent  The parent component which contains a componentList
+ * @param {Object} store
  * @return {String[]}  The names of available space components, e.g. "clay-space" or "clay-space-ads"
  */
-function spaceInComponentList(parent) {
+function spaceInComponentList(parent, store) {
   const possibleComponents = _.get(parent, '_componentList.include', []),
     exclude = _.get(parent, '_componentList.exclude', []);
 
   // Filter out components that are not Space components nor the Edit component
-  return _.filter(window.kiln.utils.getAvailableComponents(possibleComponents, exclude), function (item) {
+  return _.filter(window.kiln.utils.getAvailableComponents(store, possibleComponents, exclude), function (item) {
     return _.startsWith(item, references.spacePrefix) && item !== references.spaceEdit;
   });
 }

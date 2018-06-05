@@ -2,21 +2,18 @@
   @import '../styles/_mixins';
 
   .create-space-button {
-    @include button();
+    @include md-button();
   }
 </style>
 
 <template>
-  <ui-icon-button v-if="shouldDisplay" class="create-space-button" @click.stop="handleClick" :tooltip="`Turn into Space`" color="clear" type="secondary">
-    <icon name="add-to-space"></icon>
-  </ui-icon-button>
+  <ui-icon-button v-if="shouldDisplay" type="secondary" color="primary" class="quick-bar-button create-space-button" icon="playlist_add" @click.stop="handleClick" :tooltip="`Turn into Space`"></ui-icon-button>
 </template>
 
 <script>
 import { get, isUndefined } from 'lodash';
 import { checkIfSpaceEdit, isClaySpace, spaceInComponentList, checkIfSpaceOrLogic } from '../services/utils';
 import { createSpace } from '../services/create-service';
-import icon from './icon.vue';
 
 const UiIconButton = window.kiln.utils.components.UiIconButton;
 
@@ -53,7 +50,7 @@ export default {
      * @return {Array}
      */
     availableSpaces() {
-      return spaceInComponentList(this.componentList);
+      return spaceInComponentList(this.componentList, this.$store);
     },
     /**
      * Determine if the button should be displayed
@@ -95,7 +92,6 @@ export default {
     }
   },
   components: {
-    icon,
     UiIconButton
   }
 };

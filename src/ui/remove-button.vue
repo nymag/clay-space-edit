@@ -2,13 +2,13 @@
   @import '../styles/_mixins';
 
   .space-remove-button {
-    @include button();
+    @include md-button();
   }
 </style>
 
 
 <template>
-  <ui-icon-button v-if="shouldDisplay" @click.stop="handleClick()" class="space-remove-button" :tooltip="`Remove Space`" color="clear" icon="delete" type="secondary">
+  <ui-icon-button v-if="shouldDisplay" type="secondary" color="primary" @click.stop="handleClick()" class="quick-bar-button space-remove-button" :tooltip="`Remove Space`" icon="delete">
   </ui-icon-button>
 </template>
 

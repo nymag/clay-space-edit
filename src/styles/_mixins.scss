@@ -1,4 +1,6 @@
-// Default button mixin
+$thin-border: 1px solid #607d8b;
+
+// custom icon buttons
 @mixin button {
   appearance: none;
   background: transparent;
@@ -12,4 +14,24 @@
   padding: 14px;
   width: 48px;
   z-index: 1;
+}
+
+// material design icon buttons
+@mixin md-button {
+  border-radius: 0;
+  // note: 46px is width minus border
+  flex: 0 0 46px;
+  height: 46px;
+  width: 46px;
+  z-index: 1;
+
+  .selector-left &,
+  .selector-right &, {
+    border-bottom: $thin-border;
+  }
+
+  .selector-top &,
+  .selector-bottom & {
+    border-right: $thin-border;
+  }
 }
