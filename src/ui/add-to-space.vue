@@ -3,7 +3,7 @@
 </style>
 
 <template>
-  <filterable-list :content="components" :onClick="itemClick"></filterable-list>
+  <filterable-list :content="components" @root-action="itemClick"></filterable-list>
 </template>
 
 <script>
@@ -27,13 +27,13 @@ export default {
     /**
      * Click handler for the components in the list
      *
-     * @param  {String} value
+     * @param  {String} id
      */
-    itemClick(value) {
+    itemClick(id) {
       const spaceRef = this.data.spaceRef,
         store = this.$store;
 
-      addToSpace(this.$store, spaceRef, value)
+      addToSpace(this.$store, spaceRef, id)
         .then(() => openUI(this.$store, spaceRef))
         .then(() => setNewActive(store, spaceRef));
     }
