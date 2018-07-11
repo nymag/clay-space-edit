@@ -24,6 +24,7 @@ export function VuexStoreStub(uiPath, dispatches) {
   };
 
   this.state = {
+    components:{},
     schemas: {
       'clay-space': spaceSchema
     },
@@ -36,6 +37,5 @@ export function VuexStoreStub(uiPath, dispatches) {
     }
   };
 };
-
 
 module.exports.kilnApiStub = kilnApiStub;
