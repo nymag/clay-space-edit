@@ -28,6 +28,9 @@ export function VuexStoreStub(uiPath, dispatches) {
     schemas: {
       'clay-space': spaceSchema
     },
+    site: {
+      prefix: 'site-prefix'
+    },
     ui: {
       currentSelection: {
         parentField: {
