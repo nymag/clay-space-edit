@@ -15,8 +15,7 @@ describe('create-service', () => {
       // in Jest, the window object can be stubbed via global
       global.location.reload = jest.fn();
       global.kiln = kilnApiStub;
-      global.kiln.utils.create.default = jest.fn();
-      global.kiln.utils.create.default.mockReturnValue(
+      global.kiln.utils.create.default = jest.fn().mockReturnValue(
         Promise.resolve(['my-space','new-space-logic'])
       );
     });
@@ -37,9 +36,8 @@ describe('create-service', () => {
     test('create a new Space with a Space Logic with the correct component embedded in it', ()=> {
       const availableSpaces = ['clay-space'];
 
-      utils.findParentUriAndList = jest.fn();
-      utils.findParentUriAndList.mockReturnValue(
-        {
+      utils.findParentUriAndList = jest.fn()
+        .mockReturnValue({
           el: 'parentEl',
           uri: 'parentUri',
           list: 'list'
