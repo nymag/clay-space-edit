@@ -11,6 +11,7 @@ describe('create-service', () => {
 
   describe('create space', () => {
     beforeEach(() => {
+      dispatchCalls = [];
       storeStub = new VuexStoreStub(null, dispatchCalls);
       // in Jest, the window object can be stubbed via global
       global.location.reload = jest.fn();
@@ -18,10 +19,6 @@ describe('create-service', () => {
       global.kiln.utils.create.default = jest.fn().mockReturnValue(
         Promise.resolve(['my-space','new-space-logic'])
       );
-    });
-
-    afterEach(() => {
-      dispatchCalls = [];
     });
 
     test('NOT YET IMPLEMENTED error is thrown when attempting to create a Space within a Space', ()=>{
