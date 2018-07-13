@@ -25,7 +25,7 @@ describe('add-service', ()=>{
     utils.findParentUriAndList = jest.fn()
       .mockReturnValue({el: 'layout', list:'teritary'});
 
-    toggleService.setNewActive = jest.fn();
+    toggleService.setNewActiveLogic = jest.fn();
 
     global.kiln = kilnApiStub;
     global.kiln.utils.create.default = jest.fn()
@@ -45,7 +45,7 @@ describe('add-service', ()=>{
     it('after adding a new Logic, that logic is set to active', ()=>{
       return addToSpace(storeStub, spaceRef, 'related-stories')
         .then(()=>{
-          expect(toggleService.setNewActive).toBeCalledWith(storeStub, spaceRef);
+          expect(toggleService.setNewActiveLogic).toBeCalledWith(storeStub, spaceRef);
         });
     });
 

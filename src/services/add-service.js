@@ -1,6 +1,6 @@
 import { getAvailableComponents, findParentUriAndList } from './utils';
 import { findSpaceLogic } from './create-service';
-import { setNewActive } from '../services/toggle-service';
+import { setNewActiveLogic } from '../services/toggle-service';
 import { last } from 'lodash';
 
 export function findAvailableComponents(store, spaceRef) {
@@ -32,6 +32,6 @@ export function addToSpace(store, spaceRef, componentName) {
         }
       ]
     })
-      .then(() => setNewActive(store, spaceRef));
+      .then(() => setNewActiveLogic(store, spaceRef));
   });
 }

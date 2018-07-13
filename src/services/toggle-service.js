@@ -4,21 +4,35 @@ import { forEach, get } from 'lodash';
 const activeAttr = 'data-logic-active';
 
 /**
- * Find every Space, iterate through them, set
- * the first active.
+ * Find every Space and exclude the clay-space-edit component.
+ * Exporting it so we can mock for tests.
+ *
+ * @return {Array}
+ *
+ */
+export function findAllSpaces() {
+  let allSpaces = Array.from(dom.findAll('[data-uri*="components/clay-space"]'));
+
+  return allSpaces.filter((space)=>{
+    return !space.classList.contains('clay-space-edit');
+  });
+}
+
+/**
+ * Find every Space, iterate through them, set the first active.
  *
  * @param  {Object} store
  */
 export function initSpaces(store) {
-  var allSpaces = Array.from(dom.findAll('[data-uri*="components/clay-space"]')),
-    activeUri;
+  const allSpaces = findAllSpaces();
+  let activeUri;
 
   forEach(allSpaces, function (space) {
-    if (!space.classList.contains('clay-space-edit')) {
-      activeUri = getActive(store, space.getAttribute('data-uri'), space);
-      if (activeUri) {
-        dom.find(`[data-uri="${activeUri}"]`).setAttribute(activeAttr, '');
-      }
+    console.log('foo');
+    // get active logic and set the attribute so it is displayed
+    activeUri = getActive(store, space.getAttribute('data-uri'));
+    if (activeUri) {
+      dom.find(`[data-uri="${activeUri}"]`).setAttribute(activeAttr, '');
     }
   });
 }
@@ -28,26 +42,29 @@ export function initSpaces(store) {
  *
  * @param  {Object} store
  * @param  {String} spaceRef
- * @param  {Element} spaceEl
  * @return {String}
  */
-export function getActive({ state: { components } }, spaceRef, spaceEl) {
-  var $spaceEl = spaceEl ? spaceEl : dom.find(`[data-uri="${spaceRef}"]`),
-    $firstActive = Array.from(dom.findAll($spaceEl, `[${activeAttr}]`)),
-    activeUri;
+export function getActive({ state: { components } }, spaceRef) {
+  const $spaceEl = dom.find(`[data-uri="${spaceRef}"]`),
+    $activeLogics = Array.from(dom.findAll($spaceEl, `[${activeAttr}]`));
+  let activeUri;
 
-  // account for Logic components that don't have properties set, and will always
-  // have displaySelf: true
-  if ($firstActive.length > 0) {
-    activeUri = $firstActive.shift().getAttribute('data-uri');
-    forEach($firstActive, removeAttr);
+  if ($activeLogics.length > 0) {
+    // if there is more than Logic that has its conditions for display are
+    // satisfied, only the first Logic should be displayed
+    activeUri = $activeLogics.shift().getAttribute('data-uri');
+
+    // ...the other active Logics should be hidden
+    forEach($activeLogics, removeAttr);
   } else {
-    if (!get(components, spaceRef).content.length) {
-      console.warn(`clay-space ${spaceRef} is empty! This component should have been removed.`);
-      activeUri = undefined;
-    } else {
-      activeUri = get(components, spaceRef).content[0]._ref;
-    }
+    // if there are no Logics active, set the first Logic in the Space to be
+    // active
+    activeUri = get(components, spaceRef).content[0]._ref;
+  }
+
+  if (!get(components, spaceRef).content.length) {
+    console.warn(`clay-space ${spaceRef} is empty! This component should have been removed.`);
+    activeUri = undefined;
   }
 
   return activeUri;
@@ -70,7 +87,7 @@ export function removeAttr($el) {
  */
 export function setAttr(spaceRef, logicRef) {
   // make sure there are no other active Logics with in the space
-  const currentActive = document.querySelector(`[data-uri="${spaceRef}"] > [${activeAttr}]`),
+  const currentActive = dom.find(`[data-uri="${spaceRef}"] > [${activeAttr}]`),
     targetLogic = dom.find(`[data-uri="${logicRef}"]`);
 
   if (currentActive) {
@@ -83,32 +100,14 @@ export function setAttr(spaceRef, logicRef) {
 /**
  * Set new active logic.
  * For cases when the components are re-rendered after a dispatched event. The
- * '.active' class is set manually and is not tied to any data. This class
- * disappears after a Vue render and needs to be set manually again.
+ * 'data-logic-active' attribute is set manually and is not tied to any data.
+ * This class disappears after a Vue render and needs to be set manually again.
  *
  * @param {Object} store
  * @param {string} spaceRef
  */
-export function setNewActive(store, spaceRef) {
+export function setNewActiveLogic(store, spaceRef) {
   const newActiveLogic = getActive(store, spaceRef);
 
   setAttr(spaceRef, newActiveLogic);
-}
-
-/**
- * Turn all components to inactive and then set the
- * target to active
- *
- * @param  {String} currentActive
- * @param  {String} targetLogic
- * @return {String}
- */
-export function toggle(currentActive, targetLogic) {
-  var currentActive = dom.find(`[data-uri="${currentActive}"]`);
-
-  // toggle attr in DOM
-  removeAttr(currentActive);
-  setAttr(targetLogic);
-
-  return targetLogic;
 }

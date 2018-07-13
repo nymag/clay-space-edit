@@ -118,7 +118,7 @@
 import { compact, map, filter, find, get, has } from 'lodash';
 import { removeLogic} from '../services/remove-service';
 import { openAddComponent } from '../services/ui-service';
-import { getActive, setAttr, setNewActive } from '../services/toggle-service';
+import { getActive, setAttr, setNewActiveLogic } from '../services/toggle-service';
 import { findAvailableComponents, addToSpace } from '../services/add-service';
 import icon from './icon.vue';
 import allIcons from '../services/icons';
@@ -279,7 +279,7 @@ export default {
         spaceRef = this.spaceRef;
 
       removeLogic(this.$store, uri, this.items.length)
-        .then(()=>setNewActive(store, spaceRef));
+        .then(()=>setNewActiveLogic(store, spaceRef));
     },
     /**
      * Open the settings pane for a Logic
