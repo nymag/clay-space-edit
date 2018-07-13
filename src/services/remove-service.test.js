@@ -61,20 +61,21 @@ describe('remove-service', ()=>{
       });
   });
 
-  // test('remove a Space if its last Space Logic is removed', ()=>{
-  //   lib.remove = jest.fn()
-  //     .mockReturnValue(Promise.resolve({}));
-  //   lib.removeSpace = jest.fn()
-  //     .mockReturnValue(Promise.resolve({}));
+  // TODO: fix this test. This test is not passing due to some promise trickiness :-/
+/*
+  test('remove a Space if its last Space Logic is removed', ()=>{
+    lib.remove = jest.fn()
+      .mockReturnValue(Promise.resolve({}));
+    lib.removeSpace = jest.fn()
+      .mockReturnValue(Promise.resolve({}));
 
-  //   return lib.removeLogic(storeStub, fakeLogicUri, 1)
-  //     .then(()=>{
-  //       // expect(lib.remove).toBeCalledWith(storeStub, fakeSpaceUri, fakeLogicUri);
-  //       // expect(lib.removeSpace).toBeCalledWith(storeStub, fakeLogicUri);
-
-  //       lib.remove.mockRestore();
-  //       lib.removeSpace.mockRestore();
-  //     });
-  // });
-
+    return lib.removeLogic(storeStub, fakeLogicUri, 1)
+      .then(()=>{
+        expect(lib.remove).toBeCalledWith(storeStub, fakeSpaceUri, fakeLogicUri);
+        expect(lib.removeSpace).toBeCalledWith(storeStub, fakeLogicUri);
+        lib.remove.mockRestore();
+        lib.removeSpace.mockRestore();
+      });
+  });
+*/
 });
