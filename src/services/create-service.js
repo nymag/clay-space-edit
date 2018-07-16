@@ -102,7 +102,6 @@ function componentToSpace(store, ref, parentRef, spaceName) {
       });
     })
     .catch(function (res) {
-      console.log(res);
       throw new Error(`error creating space for ${ref}`);
     });
 }
