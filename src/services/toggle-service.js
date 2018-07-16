@@ -28,7 +28,6 @@ export function initSpaces(store) {
   let activeUri;
 
   forEach(allSpaces, function (space) {
-    console.log('foo');
     // get active logic and set the attribute so it is displayed
     activeUri = getActive(store, space.getAttribute('data-uri'));
     if (activeUri) {
