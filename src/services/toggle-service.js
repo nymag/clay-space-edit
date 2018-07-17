@@ -1,5 +1,5 @@
 import dom from '@nymag/dom';
-import { forEach, get } from 'lodash';
+import _ from 'lodash';
 
 const activeAttr = 'data-logic-active';
 
@@ -27,7 +27,7 @@ export function initSpaces(store) {
   const allSpaces = findAllSpaces();
   let activeUri;
 
-  forEach(allSpaces, function (space) {
+  _.forEach(allSpaces, function (space) {
     // get active logic and set the attribute so it is displayed
     activeUri = getActive(store, space.getAttribute('data-uri'));
     if (activeUri) {
@@ -54,14 +54,14 @@ export function getActive({ state: { components } }, spaceRef) {
     activeUri = $activeLogics.shift().getAttribute('data-uri');
 
     // ...the other active Logics should be hidden
-    forEach($activeLogics, removeAttr);
+    _.forEach($activeLogics, removeAttr);
   } else {
     // if there are no Logics active, set the first Logic in the Space to be
     // active
-    activeUri = get(components, spaceRef).content[0]._ref;
+    activeUri = _.get(components, spaceRef).content[0]._ref;
   }
 
-  if (!get(components, spaceRef).content.length) {
+  if (!_.get(components, spaceRef).content.length) {
     console.warn(`clay-space ${spaceRef} is empty! This component should have been removed.`);
     activeUri = undefined;
   }

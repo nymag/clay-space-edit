@@ -24,7 +24,7 @@
 import { openUI } from '../services/ui-service';
 import icon from './icon.vue';
 import { getSpaceElFromLogic } from '../services/utils';
-import { get, isUndefined} from 'lodash';
+import _ from 'lodash';
 
 const UiIconButton = window.kiln.utils.components.UiIconButton;
 
@@ -53,7 +53,7 @@ export default {
     spaceLogicCount() {
       const space = _.get(this.$store.state.components, this.spaceParentRef);
 
-      if (!isUndefined(space) && _.has(space,'content')) {
+      if (!_.isUndefined(space) && _.has(space,'content')) {
         return _.get(space, 'content').length;
       } else {
         return 0;
@@ -66,7 +66,7 @@ export default {
      * @return {Boolean}
      */
     shouldDisplay() {
-      const isSelected = !isUndefined(get(this.$store,'state.ui.currentSelection.uri'));
+      const isSelected = !_.isUndefined(_.get(this.$store,'state.ui.currentSelection.uri'));
       let ref;
 
       if (isSelected) {

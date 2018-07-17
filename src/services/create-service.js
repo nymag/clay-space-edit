@@ -1,5 +1,5 @@
 import { findParentUriAndList } from './utils';
-import { last } from 'lodash';
+import _ from 'lodash';
 /**
  * Find the component to convert to a Space, find the Spaces available
  * in the parent's component list, figure out which Space needs to be
@@ -79,7 +79,7 @@ function componentToSpace(store, ref, parentRef, spaceName) {
     parentList = findParentUriAndList(ref).list;
 
   return newSpaceLogicCmpt
-    .then((res)=> last(res))
+    .then((res)=> _.last(res))
     .then(function (newSpaceLogic) {
       const newSpaceData = {
         content: [

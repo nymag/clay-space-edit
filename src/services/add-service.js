@@ -1,7 +1,7 @@
 import { getAvailableComponents, findParentUriAndList } from './utils';
 import { findSpaceLogic } from './create-service';
 import { setNewActiveLogic } from '../services/toggle-service';
-import { last } from 'lodash';
+import _ from 'lodash';
 
 export function findAvailableComponents(store, spaceRef) {
   const parent = findParentUriAndList(spaceRef);
@@ -11,11 +11,11 @@ export function findAvailableComponents(store, spaceRef) {
 
 export function addToSpace(store, spaceRef, componentName) {
   var logic = findSpaceLogic(store, window.kiln.utils.references.getComponentName(spaceRef)),
-    lastSpaceLogic = last(store.state.components[spaceRef].content)._ref,
+    lastSpaceLogic = _.last(store.state.components[spaceRef].content)._ref,
     embeddedComponent = window.kiln.utils.create.default([{name:componentName}]);
 
   return embeddedComponent.then(function (res) {
-    var embeddedComponent = last(res),
+    var embeddedComponent = _.last(res),
       newSpaceLogicData = {
         embeddedComponent: embeddedComponent
       };

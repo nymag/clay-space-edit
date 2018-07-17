@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { get, isUndefined } from 'lodash';
+import _ from 'lodash';
 import { checkIfSpaceEdit, isClaySpace, spaceInComponentList, checkIfSpaceOrLogic } from '../services/utils';
 import { createSpace } from '../services/create-service';
 
@@ -40,7 +40,7 @@ export default {
       parentComponentName = window.kiln.utils.references.getComponentName(currentSelection.parentURI);
       componentListName = currentSelection.parentField.path;
 
-      return get(this.$store.state.schemas, `[${parentComponentName}][${componentListName}]`);
+      return _.get(this.$store.state.schemas, `[${parentComponentName}][${componentListName}]`);
     },
     /**
      * Grab the available Spaces. Availability determined by the presence
@@ -58,7 +58,7 @@ export default {
      * @return {Boolean}
      */
     shouldDisplay() {
-      const isSelected = !isUndefined(get(this.$store,'state.ui.currentSelection.uri'));
+      const isSelected = !_.isUndefined(_.get(this.$store,'state.ui.currentSelection.uri'));
       var ref;
 
       if (isSelected) {
