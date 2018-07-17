@@ -1,7 +1,6 @@
 var dom = require('@nymag/dom'),
+  _ = require('lodash'),
   references = require('./references');
-
-import {filter, get, includes, remove, startsWith } from 'lodash';
 
 /**
  * Checks that the string is a route while accounting for underscored routes
@@ -58,10 +57,10 @@ function getAvailableComponents(store, parentEl, list) {
   parentName = window.kiln.utils.references.getComponentName(parentUri);
 
   componentList = store.state.schemas[parentName][list]._componentList;
-  include = filter(get(componentList, 'include', ''), function (value) {
+  include = _.filter(_.get(componentList, 'include', ''), function (value) {
     // for site-specific components check that the component is available for
     // the current site
-    const currentSlug = get(store, 'state.site.slug'),
+    const currentSlug = _.get(store, 'state.site.slug'),
       parens = /\(([^)]+)\)/;
     let includedSites;
 
@@ -81,10 +80,10 @@ function getAvailableComponents(store, parentEl, list) {
 
   });
 
-  exclude = get(componentList, 'exclude', '');
+  exclude = _.get(componentList, 'exclude', '');
 
-  return remove(window.kiln.utils.getAvailableComponents(store, include, exclude), function (component) {
-    return component === references.spaceEdit || !startsWith(component, references.spacePrefix);
+  return _.remove(window.kiln.utils.getAvailableComponents(store, include, exclude), function (component) {
+    return component === references.spaceEdit || !_.startsWith(component, references.spacePrefix);
   });
 }
 
@@ -99,12 +98,12 @@ function getAvailableComponents(store, parentEl, list) {
  * @return {String[]}  The names of available space components, e.g. "clay-space" or "clay-space-ads"
  */
 function spaceInComponentList(parent, store) {
-  const possibleComponents = get(parent, '_componentList.include', []),
-    exclude = get(parent, '_componentList.exclude', []);
+  const possibleComponents = _.get(parent, '_componentList.include', []),
+    exclude = _.get(parent, '_componentList.exclude', []);
 
   // Filter out components that are not Space components nor the Edit component
-  return filter(window.kiln.utils.getAvailableComponents(store, possibleComponents, exclude), function (item) {
-    return startsWith(item, references.spacePrefix) && item !== references.spaceEdit;
+  return _.filter(window.kiln.utils.getAvailableComponents(store, possibleComponents, exclude), function (item) {
+    return _.startsWith(item, references.spacePrefix) && item !== references.spaceEdit;
   });
 }
 
@@ -137,7 +136,7 @@ function createFilterableList(items, callbacks) {
  * @return {Boolean}
  */
 function isClaySpace(ref) {
-  return includes(ref, references.spacePrefix);
+  return _.includes(ref, references.spacePrefix);
 }
 
 /**
@@ -147,7 +146,7 @@ function isClaySpace(ref) {
  * @return {Boolean}
  */
 function checkIfSpaceOrLogic(ref) {
-  return includes(ref, 'space-logic') || includes(ref, references.spacePrefix);
+  return _.includes(ref, 'space-logic') || _.includes(ref, references.spacePrefix);
 }
 
 /**
@@ -157,7 +156,7 @@ function checkIfSpaceOrLogic(ref) {
  * @return {Boolean}
  */
 function checkIfSpaceEdit(ref) {
-  return includes(ref, references.spaceEdit);
+  return _.includes(ref, references.spaceEdit);
 }
 
 /**

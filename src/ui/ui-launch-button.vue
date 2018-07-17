@@ -24,7 +24,7 @@
 import { openUI } from '../services/ui-service';
 import icon from './icon.vue';
 import { getSpaceElFromLogic } from '../services/utils';
-import { get, has, includes, isUndefined} from 'lodash';
+import { get, isUndefined} from 'lodash';
 
 const UiIconButton = window.kiln.utils.components.UiIconButton;
 
@@ -51,10 +51,10 @@ export default {
      * @return {Number}
      */
     spaceLogicCount() {
-      const space = get(this.$store.state.components, this.spaceParentRef);
+      const space = _.get(this.$store.state.components, this.spaceParentRef);
 
-      if (!isUndefined(space) && has(space,'content')) {
-        return get(space, 'content').length;
+      if (!isUndefined(space) && _.has(space,'content')) {
+        return _.get(space, 'content').length;
       } else {
         return 0;
       }
@@ -71,7 +71,7 @@ export default {
 
       if (isSelected) {
         ref = this.$store.state.ui.currentSelection.parentURI;
-        return includes(ref, 'space-logic');
+        return _.includes(ref, 'space-logic');
       }
     }
   },
