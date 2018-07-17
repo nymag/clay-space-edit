@@ -1,4 +1,5 @@
 var ExtractTextPlugin = require('extract-text-webpack-plugin'),
+  LodashModuleReplacementPlugin = require('lodash-webpack-plugin'),
   webpack = require('webpack'),
   path = require('path'),
   nodeEnv = process.env.NODE_ENV || 'production';
@@ -67,6 +68,7 @@ module.exports = {
     }
   },
   plugins: [
+    new LodashModuleReplacementPlugin,
     new ExtractTextPlugin('clay-space-edit.css'),
     new webpack.EnvironmentPlugin(['NODE_ENV'])
   ]
