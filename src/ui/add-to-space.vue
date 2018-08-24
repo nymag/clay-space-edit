@@ -9,7 +9,7 @@
 <script>
 import { openUI } from '../services/ui-service';
 import { addToSpace } from '../services/add-service';
-import { setNewActive } from '../services/toggle-service';
+import { setNewActiveLogic } from '../services/toggle-service';
 
 const filterableList = window.kiln.utils.components.filterableList;
 
@@ -35,7 +35,7 @@ export default {
 
       addToSpace(this.$store, spaceRef, id)
         .then(() => openUI(this.$store, spaceRef))
-        .then(() => setNewActive(store, spaceRef));
+        .then(() => setNewActiveLogic(store, spaceRef));
     }
   },
   components: {

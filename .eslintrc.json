@@ -13,6 +13,13 @@
     "sourceType": "module",
     "ecmaVersion": 6
   },
+  "overrides": [
+    {
+      "files": ["src/**/*.js", "src/**/*.vue"],
+      "excludedFiles": "*.test.js"
+    }
+  ],
+
     // add global vars for chai, etc
     "globals": {
       "expect": false,
@@ -66,7 +73,7 @@
     "space-before-function-paren": [2, {"anonymous": "always", "named": "never"}],
     "space-infix-ops": [1, {"int32Hint": false}],
     "spaced-comment": [2, "always"],
-    // es6
+    // avoid-escape6
     "generator-star-spacing": [2, "before"],
     // legacy jshint rules
     "max-depth": [2, 4],

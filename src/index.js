@@ -9,7 +9,7 @@ import {
   CLOSE_FORM,
   LOADING_SUCCESS
 } from './mutationTypes';
-import { includes } from 'lodash';
+import _ from 'lodash';
 
 // Vue Components
 import createSpaceButton from './ui/create-space-button.vue';
@@ -46,7 +46,7 @@ window.kiln.plugins['clay-space-edit'] = function spaceEdit(store) {
       switch (mutation.type) {
         case FOCUS:
           // Set the logic tracker to true
-          activeLogic = includes(mutation.payload.uri, 'components/space-logic') ? mutation.payload : undefined;
+          activeLogic = _.includes(mutation.payload.uri, 'components/space-logic') ? mutation.payload : undefined;
           break;
         case CLOSE_FORM:
           if (activeLogic) {

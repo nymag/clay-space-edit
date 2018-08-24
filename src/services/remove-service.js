@@ -1,5 +1,5 @@
 import dom from '@nymag/dom';
-import { filter } from 'lodash';
+import _ from 'lodash';
 import { getSpaceElFromLogic } from './utils';
 
 /**
@@ -28,7 +28,7 @@ export function removeSpace(store, logicUri) {
  */
 export function remove(store, spaceRef, logicUri) {
   var spaceContent = store.state.components[spaceRef].content,
-    filteredSpace = filter(spaceContent, (item) => {
+    filteredSpace = _.filter(spaceContent, (item) => {
       return item._ref !== logicUri;
     });
 

@@ -1,4 +1,5 @@
 import { findParentUriAndList } from './utils';
+import _ from 'lodash';
 /**
  * Find the component to convert to a Space, find the Spaces available
  * in the parent's component list, figure out which Space needs to be
@@ -17,6 +18,7 @@ export function createSpace(store, ref, parentRef, availableSpaces) {
     try {
       return componentToSpace(store, ref, parentRef, availableSpaces[0])
         .then(function () {
+          // need to reference the page to see changes via the Kiln UI
           window.location.reload();
         });
     } catch (err) {
@@ -77,7 +79,7 @@ function componentToSpace(store, ref, parentRef, spaceName) {
     parentList = findParentUriAndList(ref).list;
 
   return newSpaceLogicCmpt
-    .then((res)=>_.last(res))
+    .then((res)=> _.last(res))
     .then(function (newSpaceLogic) {
       const newSpaceData = {
         content: [
@@ -99,7 +101,7 @@ function componentToSpace(store, ref, parentRef, spaceName) {
         ]
       });
     })
-    .catch(function () {
+    .catch(function (res) {
       throw new Error(`error creating space for ${ref}`);
     });
 }

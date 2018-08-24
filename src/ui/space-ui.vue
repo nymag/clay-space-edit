@@ -115,10 +115,10 @@
 </template>
 
 <script>
-import { compact, map, filter, find, get, has } from 'lodash';
+import _ from 'lodash';
 import { removeLogic} from '../services/remove-service';
 import { openAddComponent } from '../services/ui-service';
-import { getActive, setAttr, setNewActive } from '../services/toggle-service';
+import { getActive, setAttr, setNewActiveLogic } from '../services/toggle-service';
 import { findAvailableComponents, addToSpace } from '../services/add-service';
 import icon from './icon.vue';
 import allIcons from '../services/icons';
@@ -127,7 +127,7 @@ import draggable from 'vuedraggable';
 const UiButton = window.kiln.utils.components.UiButton,
   UiIcon = window.kiln.utils.components.UiIcon,
   UiIconButton = window.kiln.utils.components.UiIconButton,
-  acceptedIcons = compact(map(allIcons, function (icon, key) {
+  acceptedIcons = _.compact(_.map(allIcons, function (icon, key) {
     return key.indexOf('icon-') === 0 ? key : null;
   }));
 
@@ -139,7 +139,7 @@ const UiButton = window.kiln.utils.components.UiButton,
 function getIcon(propName) {
   const availableIcons = ['time', 'tag'];
 
-  return find(availableIcons, function (icon) {
+  return _.find(availableIcons, function (icon) {
     return propName.toLowerCase().includes(icon);
   }) || '';
 }
@@ -173,7 +173,7 @@ export default {
       get() {
         const { state } = this.$store,
           components = state.components,
-          contents = map(this.items, (item) => {
+          contents = _.map(this.items, (item) => {
             const logicData = components[item._ref],
               logicName = window.kiln.utils.references.getComponentName(item._ref),
               logicSchema = this.$store.state.schemas[logicName],
@@ -193,7 +193,7 @@ export default {
       set(reordered) {
         const store = this.$store,
           spaceRef = this.spaceRef,
-          reorderedSpaceContent = map(reordered, (item) => {
+          reorderedSpaceContent = _.map(reordered, (item) => {
             // spaceContent is computed from the Space component's content and if we want to
             // save the clay space, we need to do some data munging
             return { _ref: item.logicRef};
@@ -231,19 +231,19 @@ export default {
     createReadouts(logicData, logicSchema) {
       // assumes all the readouts we'd want are set in the 'settings' group in
       // the schema
-      const logicProps = get(logicSchema._groups.settings, 'fields'),
-        readoutProps = filter(logicProps, function (val) {
+      const logicProps = _.get(logicSchema._groups.settings, 'fields'),
+        readoutProps = _.filter(logicProps, function (val) {
         // remove undefined properties and properties that have Action in their
         // name
           return !!logicData[val] && !val.includes('Action');
         }),
         // if the prop has an associated Action property, create the appropiate
         // readout label
-        readouts = map(readoutProps, function (val) {
+        readouts = _.map(readoutProps, function (val) {
           let actionProp = val + 'Action',
             label = val;
 
-          if (has(logicSchema, actionProp)) {
+          if (_.has(logicSchema, actionProp)) {
             label = logicData[actionProp] + ' ' + val;
           }
 
@@ -279,7 +279,7 @@ export default {
         spaceRef = this.spaceRef;
 
       removeLogic(this.$store, uri, this.items.length)
-        .then(()=>setNewActive(store, spaceRef));
+        .then(()=>setNewActiveLogic(store, spaceRef));
     },
     /**
      * Open the settings pane for a Logic
@@ -305,7 +305,7 @@ export default {
       }
 
       if (components.length > 1) {
-        const componentList = map(components, (cmp) => {
+        const componentList = _.map(components, (cmp) => {
           // this list will be passed into the filterable-list component and
           // requires each item to have an id and title
           return {

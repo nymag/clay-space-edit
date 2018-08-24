@@ -1,14 +1,14 @@
 var ExtractTextPlugin = require('extract-text-webpack-plugin'),
+  LodashModuleReplacementPlugin = require('lodash-webpack-plugin'),
   webpack = require('webpack'),
   path = require('path'),
-  nodeEnv = process.env.NODE_ENV || 'production',
-  isTesting = nodeEnv === 'testing' || false;
+  nodeEnv = process.env.NODE_ENV || 'production';
 
 module.exports = {
-  entry: isTesting ? './test.js' : './src/index.js',
+  entry: './src/index.js',
   output: {
-    filename: isTesting ? 'test-bundle.js' : 'clay-space-edit.js',
-    path: path.resolve(__dirname, isTesting ? '.' : './dist'),
+    filename: 'clay-space-edit.js',
+    path: path.resolve(__dirname, './dist'),
   },
   // sub in empty modules for Node built-ins
   // so webpack doesn't complain about not being able to find the modules
@@ -48,16 +48,13 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        // don't inject styles when we don't have a window
-        use:isTesting
-            ? 'null-loader'
-            : ExtractTextPlugin.extract({
-              fallback: 'style-loader', // backup loader when not building .css file
-              use: [
-                'css-loader',
-                'sass-loader'
-              ]
-            })
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader', // backup loader when not building .css file
+          use: [
+            'css-loader',
+            'sass-loader'
+          ]
+        })
       },
       {
         test: /\.svg$/,
@@ -71,10 +68,8 @@ module.exports = {
     }
   },
   plugins: [
+    new LodashModuleReplacementPlugin,
+    new ExtractTextPlugin('clay-space-edit.css'),
     new webpack.EnvironmentPlugin(['NODE_ENV'])
-  ].concat(
-   isTesting
-      ? []
-      : [new ExtractTextPlugin('clay-space-edit.css')]
-  )
+  ]
 };

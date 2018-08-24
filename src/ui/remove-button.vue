@@ -17,7 +17,7 @@ import { isSpaceLogic } from '../services/utils';
 import icon from './icon.vue';
 import { getSpaceElFromLogic } from '../services/utils';
 import { removeLogic } from '../services/remove-service';
-import { get, isUndefined } from 'lodash';
+import _ from 'lodash';
 
 const UiIconButton = window.kiln.utils.components.UiIconButton;
 
@@ -45,7 +45,7 @@ export default {
      * @return {Boolean}
      */
     shouldDisplay() {
-      const isSelected = !isUndefined(get(this.$store,'state.ui.currentSelection.uri'));
+      const isSelected = !_.isUndefined(_.get(this.$store,'state.ui.currentSelection.uri'));
 
       if (isSelected) {
         return isSpaceLogic(this.$store.state.ui.currentSelection.parentURI);
