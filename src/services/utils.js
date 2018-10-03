@@ -51,12 +51,12 @@ function getAvailableComponents(store, parentEl, list) {
     parentName, componentList, include, exclude;
 
   if (isRouteUri(parentUri, 'pages')) {
-    parentUri = parentEl.getAttribute('data-layout-uri');
+    componentList = store.state.layout.schema[list]._componentList;
+  } else {
+    parentName = window.kiln.utils.references.getComponentName(parentUri);
+    componentList = store.state.schemas[parentName][list]._componentList;
   }
 
-  parentName = window.kiln.utils.references.getComponentName(parentUri);
-
-  componentList = store.state.schemas[parentName][list]._componentList;
   include = _.filter(_.get(componentList, 'include', ''), function (value) {
     // for site-specific components check that the component is available for
     // the current site
