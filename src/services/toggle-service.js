@@ -58,12 +58,11 @@ export function getActive({ state: { components } }, spaceRef) {
   } else {
     // if there are no Logics active, set the first Logic in the Space to be
     // active
-    activeUri = _.get(components, spaceRef).content[0]._ref;
+    activeUri = _.get(components[spaceRef], 'content[0]._ref');
   }
 
-  if (!_.get(components, spaceRef).content.length) {
+  if (!activeUri) {
     console.warn(`clay-space ${spaceRef} is empty! This component should have been removed.`);
-    activeUri = undefined;
   }
 
   return activeUri;
